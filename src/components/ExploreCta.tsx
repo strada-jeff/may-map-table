@@ -1,4 +1,4 @@
-import iconExploreMark from "../assets/welcome/icon-explore-mark.svg";
+import iconExploreMark from "../assets/icons/explore-mark.svg";
 
 type ExploreCtaProps = {
   onClick: () => void;

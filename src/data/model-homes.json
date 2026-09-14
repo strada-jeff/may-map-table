@@ -1,0 +1,40 @@
+[
+  {
+    "id": "mh-chesmar-magnolia",
+    "kind": "model-home",
+    "position": { "x": 1450, "y": 1120 },
+    "images": ["/model-homes/chesmar-magnolia-1.jpg"],
+    "address": "412 Magnolia Way, New Braunfels, TX",
+    "directionsUrl": "https://maps.google.com/?q=412+Magnolia+Way+New+Braunfels+TX",
+    "builderId": "chesmar-homes",
+    "name": "The Magnolia",
+    "collection": "Heritage Collection",
+    "squareFootage": 2450,
+    "beds": 4,
+    "baths": 3,
+    "garage": 2,
+    "stories": 2,
+    "priceText": "From the $400s",
+    "priceValue": 412990,
+    "hours": "Mon–Sat 10am–6pm, Sun 12pm–6pm"
+  },
+  {
+    "id": "mh-history-maker-brookstone",
+    "kind": "model-home",
+    "position": { "x": 1610, "y": 1195 },
+    "images": ["/model-homes/history-maker-brookstone-1.jpg"],
+    "address": "398 Brookstone Ln, New Braunfels, TX",
+    "directionsUrl": "https://maps.google.com/?q=398+Brookstone+Ln+New+Braunfels+TX",
+    "builderId": "history-maker-homes",
+    "name": "The Brookstone",
+    "collection": "Founders Collection",
+    "squareFootage": 1980,
+    "beds": 3,
+    "baths": 2,
+    "garage": 2,
+    "stories": 1,
+    "priceText": "From the $350s",
+    "priceValue": 359990,
+    "hours": "Mon–Sat 10am–6pm, Sun 12pm–6pm"
+  }
+]

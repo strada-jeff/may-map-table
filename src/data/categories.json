@@ -1,0 +1,27 @@
+[
+  {
+    "id": "model-homes",
+    "label": "See model homes",
+    "icon": "/icons/model-homes.svg"
+  },
+  {
+    "id": "amenities",
+    "label": "See amenities",
+    "icon": "/icons/amenities.svg"
+  },
+  {
+    "id": "commercial",
+    "label": "See commercial",
+    "icon": "/icons/commercial.svg"
+  },
+  {
+    "id": "parks-trails",
+    "label": "See parks & trails",
+    "icon": "/icons/parks-trails.svg"
+  },
+  {
+    "id": "schools",
+    "label": "See schools",
+    "icon": "/icons/schools.svg"
+  }
+]

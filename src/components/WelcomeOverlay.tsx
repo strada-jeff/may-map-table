@@ -1,9 +1,9 @@
-import welcomeTitle from "../assets/welcome/welcome-title.svg";
-import iconModelHomes from "../assets/welcome/icon-model-homes.svg";
-import iconAmenities from "../assets/welcome/icon-amenities.svg";
-import iconCommercial from "../assets/welcome/icon-commercial.svg";
-import iconParksTrails from "../assets/welcome/icon-parks-trails.svg";
-import iconSchools from "../assets/welcome/icon-schools.svg";
+import welcomeTitle from "../assets/welcome-title.svg";
+import iconModelHomes from "../assets/icons/model-homes.svg";
+import iconAmenities from "../assets/icons/amenities.svg";
+import iconCommercial from "../assets/icons/commercial.svg";
+import iconParksTrails from "../assets/icons/parks-trails.svg";
+import iconSchools from "../assets/icons/schools.svg";
 import TextIconCta from "./TextIconCta";
 import ExploreCta from "./ExploreCta";
 
