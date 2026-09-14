@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "Vision";
+  src:
+    url("./vision-webfont.woff2") format("woff2"),
+    url("./vision-webfont.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vision";
+  src:
+    url("./vision-heavy-webfont.woff2") format("woff2"),
+    url("./vision-heavy-webfont.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}

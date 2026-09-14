@@ -25,7 +25,7 @@ const BASE_MAP_CENTER: [number, number] = [
 function MapView() {
   return (
     <MapContainer
-      className="h-full w-full bg-[#f2f0ee]!"
+      className="h-full w-full bg-[#f2f0ee]! z-40"
       crs={L.CRS.Simple}
       bounds={BASE_MAP_BOUNDS}
       maxBounds={BASE_MAP_BOUNDS}

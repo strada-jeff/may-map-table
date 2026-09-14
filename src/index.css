@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@import "./fonts/vision.css";
+
+@theme {
+  --font-vision: "Vision", sans-serif;
+  --color-mayfair-navy: #254a5d;
+  --color-mayfair-blue: #82b1dd;
+}
 
 :root {
   color-scheme: light dark;
