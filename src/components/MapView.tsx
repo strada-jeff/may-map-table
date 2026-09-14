@@ -4,7 +4,6 @@ import 'leaflet/dist/leaflet.css'
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
-import './MapView.css'
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -26,7 +25,7 @@ const BASE_MAP_CENTER: [number, number] = [
 function MapView() {
   return (
     <MapContainer
-      className="map-view"
+      className="h-full w-full"
       crs={L.CRS.Simple}
       bounds={BASE_MAP_BOUNDS}
       maxBounds={BASE_MAP_BOUNDS}
