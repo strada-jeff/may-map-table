@@ -4,7 +4,10 @@ import type { Point } from "../routing/types";
 export type Category = {
   id: string;
   label: string;
-  icon: string;
+  /** Welcome-button glyph for a category that doesn't use the shared color flag (currently just model-homes). */
+  icon?: string;
+  /** Hex color for the shared flag icon (destination pin + welcome button), e.g. "#E7B78A". */
+  color?: string;
 };
 
 /** Shared builder lookup, referenced by id from model homes. */
@@ -56,15 +59,14 @@ export type Location = BasePin & {
   title: string;
   location: string;
   description: string;
-  icon: string;
 };
 
 export type MapPin = ModelHome | Location;
 
 export type DestinationPin = MapPin & {
   position: Point;
-  /** Every pin gets one, even model homes which have no per-pin icon field. */
-  markerIcon: string;
-  /** Overlaid on the icon — currently just the builder abbreviation on model homes. */
+  /** Model-home only — builder abbreviation overlaid on the balloon. */
   markerLabel?: string;
+  /** Location only — resolved from its category's color. */
+  markerColor?: string;
 };

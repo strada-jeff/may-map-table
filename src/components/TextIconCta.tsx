@@ -1,10 +1,15 @@
+import ButtonFlagIcon from "./ButtonFlagIcon";
+
 type TextIconCtaProps = {
   text: string;
-  icon: string;
+  /** Static glyph for a category with no flag color, e.g. model homes. */
+  icon?: string;
+  /** Flag color for a category using the shared flag icon. */
+  color?: string;
   onClick: () => void;
 };
 
-export default function TextIconCta({ text, icon, onClick }: TextIconCtaProps) {
+export default function TextIconCta({ text, icon, color, onClick }: TextIconCtaProps) {
   return (
     <button
       type="button"
@@ -14,7 +19,11 @@ export default function TextIconCta({ text, icon, onClick }: TextIconCtaProps) {
       <span className="font-vision text-[15px] font-extrabold uppercase tracking-[0.1em]">
         {text}
       </span>
-      <img src={icon} alt="" className="h-8 w-auto shrink-0" />
+      {color ? (
+        <ButtonFlagIcon color={color} className="h-8 w-auto shrink-0" />
+      ) : (
+        <img src={icon} alt="" className="h-8 w-auto shrink-0" />
+      )}
     </button>
   );
 }

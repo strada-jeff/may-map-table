@@ -1,24 +1,7 @@
 import welcomeTitle from "../assets/welcome-title.svg";
-import iconModelHomes from "../assets/icons/model-homes.svg";
-import iconAmenities from "../assets/icons/amenities.svg";
-import iconCommercial from "../assets/icons/commercial.svg";
-import iconParksTrails from "../assets/icons/parks-trails.svg";
-import iconSchools from "../assets/icons/schools.svg";
 import TextIconCta from "./TextIconCta";
 import ExploreCta from "./ExploreCta";
-
-type WelcomeCta = {
-  label: string;
-  icon: string;
-};
-
-const WELCOME_CTAS: WelcomeCta[] = [
-  { label: "See model homes", icon: iconModelHomes },
-  { label: "See amenities", icon: iconAmenities },
-  { label: "See commercial", icon: iconCommercial },
-  { label: "See parks & trails", icon: iconParksTrails },
-  { label: "See schools", icon: iconSchools },
-];
+import { useCategories } from "../hooks/useCategories";
 
 type WelcomeOverlayProps = {
   /** Called when the visitor deliberately picks one of the CTA/explore buttons. */
@@ -31,6 +14,8 @@ type WelcomeOverlayProps = {
 const stopBubble = (e: { stopPropagation: () => void }) => e.stopPropagation();
 
 export default function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
+  const categories = useCategories();
+
   return (
     <div
       className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-mayfair-navy/92 px-6 text-center"
@@ -46,13 +31,14 @@ export default function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
       />
 
       <div className="flex flex-wrap items-center justify-center gap-4">
-        {WELCOME_CTAS.map((cta) => (
+        {categories.map((category) => (
           <TextIconCta
-            key={cta.label}
-            text={cta.label}
-            icon={cta.icon}
+            key={category.id}
+            text={category.label}
+            icon={category.icon}
+            color={category.color}
             onClick={() => {
-              alert(cta.label);
+              alert(category.label);
               onDismiss();
             }}
           />

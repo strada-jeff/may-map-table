@@ -8,8 +8,7 @@
     "categoryId": "amenities",
     "title": "Mayfair Swim Club",
     "location": "Midtown Mayfair",
-    "description": "Resort-style pool with a splash pad, lap lanes, and a shaded lounge deck.",
-    "icon": "/icons/amenities.svg"
+    "description": "Resort-style pool with a splash pad, lap lanes, and a shaded lounge deck."
   },
   {
     "id": "loc-celebration-hall",
@@ -20,8 +19,7 @@
     "categoryId": "amenities",
     "title": "Celebration Hall",
     "location": "Midtown Mayfair",
-    "description": "Event space and community gathering hall available for resident use.",
-    "icon": "/icons/amenities.svg"
+    "description": "Event space and community gathering hall available for resident use."
   },
   {
     "id": "loc-costco",
@@ -33,7 +31,6 @@
     "title": "Costco",
     "location": "Midtown District",
     "description": "Warehouse retail just minutes from the community entrance.",
-    "icon": "/icons/commercial.svg",
     "iconOffset": { "x": 0, "y": -20 }
   }
 ]

@@ -1,0 +1,34 @@
+import { useId } from "react";
+
+type ButtonFlagIconProps = {
+  color: string;
+  className?: string;
+};
+
+/** button-flag-icon.svg's artwork (96x66), recolored per category. */
+export default function ButtonFlagIcon({ color, className }: ButtonFlagIconProps) {
+  const maskId = useId();
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="96"
+      height="66"
+      fill="none"
+      viewBox="0 0 96 66"
+      className={className}
+    >
+      <mask id={maskId} width="96" height="66" x="0" y="0" maskUnits="userSpaceOnUse" style={{ maskType: "alpha" }}>
+        <path fill="#d9d9d9" d="M0 0h96v66H0z" />
+      </mask>
+      <g mask={`url(#${maskId})`}>
+        <path
+          fill={color}
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M86 47.728c-7.86-4.636-12.063 4.416-21.25 4.879-8.884.45-9.008-7.021-9.008-7.021V36.59c-2.34-1.847-5.815-3.215-10.376-2.934-9.979.614-22.715-.463-25.643-4.1v61.917c0 .701-2.723.701-2.723 0V4.368C17 3.61 17.608 3 18.362 3c.753 0 1.361.611 1.361 1.368 0 0 .772 1.248 3.021 2.288 4.46 2.062 34.628-2.426 37.093 17.717 0 0 .222 6.964.266 12.246 2.527 1.425 6.091 1.519 10.759-1.448 7.194-4.572 13.292-2.424 14.387 1.092-4.152.894-6.471 4.192-6.471 4.192C84.5 41.097 86 47.728 86 47.728"
+        />
+      </g>
+    </svg>
+  );
+}

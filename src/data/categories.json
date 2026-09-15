@@ -7,21 +7,21 @@
   {
     "id": "amenities",
     "label": "See amenities",
-    "icon": "/icons/amenities.svg"
+    "color": "#E7B78A"
   },
   {
     "id": "commercial",
     "label": "See commercial",
-    "icon": "/icons/commercial.svg"
+    "color": "#E56B59"
   },
   {
     "id": "parks-trails",
     "label": "See parks & trails",
-    "icon": "/icons/parks-trails.svg"
+    "color": "#B6CD89"
   },
   {
     "id": "schools",
     "label": "See schools",
-    "icon": "/icons/schools.svg"
+    "color": "#AF75C4"
   }
 ]

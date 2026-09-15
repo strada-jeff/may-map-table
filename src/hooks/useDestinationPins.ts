@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { getBuilders, getLocations, getModelHomes } from "../data/api";
+import { getBuilders, getCategories, getLocations, getModelHomes } from "../data/api";
 import type { DestinationPin } from "../types/pins";
 import { anchors } from "../routing/generated";
 import type { Point } from "../routing/types";
 
 export type { DestinationPin };
-
-const MODEL_HOME_ICON = "/icons/model-home-balloon.svg";
 
 /**
  * iconOffset is in map units, applied directly to the anchor position here
@@ -32,15 +30,19 @@ export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean
     let cancelled = false;
 
     async function load() {
-      const [locations, modelHomes, builders] = await Promise.all([
+      const [locations, modelHomes, builders, categories] = await Promise.all([
         getLocations(),
         getModelHomes(),
         getBuilders(),
+        getCategories(),
       ]);
       if (cancelled) return;
 
       const abbreviationByBuilderId = new Map(
         builders.map((builder) => [builder.id, builder.abbreviation]),
+      );
+      const colorByCategoryId = new Map(
+        categories.map((category) => [category.id, category.color]),
       );
       const positionById = new Map(anchors.destinations.map((a) => [a.id, a.point]));
 
@@ -51,7 +53,7 @@ export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean
         resolved.push({
           ...location,
           position: withOffset(anchorPoint, location.iconOffset),
-          markerIcon: location.icon,
+          markerColor: colorByCategoryId.get(location.categoryId),
         });
       }
       for (const modelHome of modelHomes) {
@@ -61,7 +63,6 @@ export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean
         resolved.push({
           ...modelHome,
           position: withOffset(anchorPoint, modelHome.iconOffset),
-          markerIcon: MODEL_HOME_ICON,
           markerLabel: abbreviation.toUpperCase(),
         });
       }
