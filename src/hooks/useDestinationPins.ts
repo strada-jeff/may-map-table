@@ -1,9 +1,22 @@
 import { useEffect, useState } from "react";
-import { getCategories, getLocations, getModelHomes } from "../data/api";
+import { getBuilders, getLocations, getModelHomes } from "../data/api";
 import type { DestinationPin } from "../types/pins";
 import { anchors } from "../routing/generated";
+import type { Point } from "../routing/types";
 
 export type { DestinationPin };
+
+const MODEL_HOME_ICON = "/icons/model-home-balloon.svg";
+
+/**
+ * iconOffset is in map units, applied directly to the anchor position here
+ * — not to Leaflet's iconAnchor, which is always fixed screen pixels and
+ * wouldn't scale with zoom the way a road-relative nudge should.
+ */
+function withOffset(point: Point, offset?: { x: number; y: number }): Point {
+  if (!offset) return point;
+  return [point[0] + offset.x, point[1] + offset.y];
+}
 
 /**
  * Joins pin content (locations/model homes) with anchor position
@@ -19,25 +32,38 @@ export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean
     let cancelled = false;
 
     async function load() {
-      const [locations, modelHomes, categories] = await Promise.all([
+      const [locations, modelHomes, builders] = await Promise.all([
         getLocations(),
         getModelHomes(),
-        getCategories(),
+        getBuilders(),
       ]);
       if (cancelled) return;
 
-      const modelHomeIcon =
-        categories.find((category) => category.id === "model-homes")?.icon ?? "";
+      const abbreviationByBuilderId = new Map(
+        builders.map((builder) => [builder.id, builder.abbreviation]),
+      );
       const positionById = new Map(anchors.destinations.map((a) => [a.id, a.point]));
 
       const resolved: DestinationPin[] = [];
       for (const location of locations) {
-        const position = positionById.get(location.id);
-        if (position) resolved.push({ ...location, position, markerIcon: location.icon });
+        const anchorPoint = positionById.get(location.id);
+        if (!anchorPoint) continue;
+        resolved.push({
+          ...location,
+          position: withOffset(anchorPoint, location.iconOffset),
+          markerIcon: location.icon,
+        });
       }
       for (const modelHome of modelHomes) {
-        const position = positionById.get(modelHome.id);
-        if (position) resolved.push({ ...modelHome, position, markerIcon: modelHomeIcon });
+        const anchorPoint = positionById.get(modelHome.id);
+        if (!anchorPoint) continue;
+        const abbreviation = abbreviationByBuilderId.get(modelHome.builderId) ?? "";
+        resolved.push({
+          ...modelHome,
+          position: withOffset(anchorPoint, modelHome.iconOffset),
+          markerIcon: MODEL_HOME_ICON,
+          markerLabel: abbreviation.toUpperCase(),
+        });
       }
 
       setPins(resolved);

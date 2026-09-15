@@ -33,6 +33,7 @@
     "title": "Costco",
     "location": "Midtown District",
     "description": "Warehouse retail just minutes from the community entrance.",
-    "icon": "/icons/commercial.svg"
+    "icon": "/icons/commercial.svg",
+    "iconOffset": { "x": 0, "y": -20 }
   }
 ]

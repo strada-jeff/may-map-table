@@ -33,6 +33,7 @@
     "stories": 1,
     "priceText": "From the $350s",
     "priceValue": 359990,
-    "hours": "Mon–Sat 10am–6pm, Sun 12pm–6pm"
+    "hours": "Mon–Sat 10am–6pm, Sun 12pm–6pm",
+    "iconOffset": { "x": 20, "y": 0 }
   }
 ]

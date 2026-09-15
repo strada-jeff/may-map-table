@@ -12,7 +12,19 @@ export type Builder = {
   id: string;
   name: string;
   logo?: string;
+  /** Short mark shown on the model-home balloon icon, e.g. "CH". */
+  abbreviation: string;
 };
+
+/**
+ * Nudge for a pin's icon, in map units — the same artwork-pixel space as
+ * network.svg's anchors, y-down (positive y moves down, matching that
+ * space, not screen convention). Scales with zoom like the road does,
+ * rather than staying a fixed screen-pixel gap. Anchors are placed right on
+ * the road in network.svg for accurate routing/snapping, so the icon needs
+ * its own way to move off the road without moving the anchor itself.
+ */
+type MapOffset = { x: number; y: number };
 
 type BasePin = {
   id: string;
@@ -20,6 +32,7 @@ type BasePin = {
   address: string;
   /** Destination URL — encoded into a QR code at render time, not stored pre-rendered. */
   directionsUrl: string;
+  iconOffset?: MapOffset;
 };
 
 export type ModelHome = BasePin & {
@@ -52,4 +65,6 @@ export type DestinationPin = MapPin & {
   position: Point;
   /** Every pin gets one, even model homes which have no per-pin icon field. */
   markerIcon: string;
+  /** Overlaid on the icon — currently just the builder abbreviation on model homes. */
+  markerLabel?: string;
 };
