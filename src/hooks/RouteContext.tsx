@@ -6,15 +6,10 @@ import {
   type ReactNode,
 } from "react";
 import { CONFIG } from "../config";
-import { routes } from "./generated";
-import type { Point } from "./types";
+import { routes } from "../routing/generated";
+import type { ActiveRoute } from "../types/routing";
 
-export type ActiveRoute = {
-  destinationId: string;
-  originId: string;
-  coordinates: Point[];
-  distance: number;
-};
+export type { ActiveRoute };
 
 type RouteContextValue = {
   activeRoute: ActiveRoute | null;

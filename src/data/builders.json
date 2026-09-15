@@ -2,11 +2,19 @@
   {
     "id": "chesmar-homes",
     "name": "Chesmar Homes",
-    "logo": "/builders/chesmar-homes.svg"
+    "logo": "/builders/chesmar-homes.svg",
+    "abbreviation": "CH"
   },
   {
     "id": "history-maker-homes",
     "name": "History Maker Homes",
-    "logo": "/builders/history-maker-homes.svg"
+    "logo": "/builders/history-maker-homes.svg",
+    "abbreviation": "HM"
+  },
+  {
+    "id": "david-weekley-homes",
+    "name": "David Weekley Homes",
+    "logo": "/builders/david-weekley-homes.svg",
+    "abbreviation": "DW"
   }
 ]

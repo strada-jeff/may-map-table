@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { getCategories, getLocations, getModelHomes } from "../data/api";
-import type { Location, ModelHome } from "../types/pins";
-import { anchors } from "./generated";
-import type { Point } from "./types";
+import type { DestinationPin } from "../types/pins";
+import { anchors } from "../routing/generated";
 
-export type DestinationPin = (Location | ModelHome) & {
-  position: Point;
-  /** Every pin gets one, even model homes which have no per-pin icon field. */
-  markerIcon: string;
-};
+export type { DestinationPin };
 
 /**
  * Joins pin content (locations/model homes) with anchor position

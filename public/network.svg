@@ -44,5 +44,7 @@
     <circle id="loc-celebration-hall" cx="1869.66" cy="1137.35" r="2.13" fill="red"/>
     <circle id="loc-mayfair-swim-club" cx="1995.55" cy="927.38" r="2.13" fill="red"/>
     <circle id="loc-costco" cx="2076.93" cy="1896.18" r="2.13" fill="red"/>
+    <circle id="mh-history-maker-brookstone" cx="2040.99" cy="1472.96" r="2.13" fill="red"/>
+    <circle id="mh-chesmar-magnolia" cx="2094.27" cy="1413.79" r="2.13" fill="red"/>
   </g>
 </svg>

@@ -3,7 +3,7 @@ import { useMap } from "react-leaflet";
 import L from "leaflet";
 import { CONFIG } from "../config";
 import type { MapSpace } from "../routing";
-import { useRoute } from "../routing/RouteContext";
+import { useRoute } from "../hooks/RouteContext";
 import RouteLine from "./RouteLine";
 
 /**

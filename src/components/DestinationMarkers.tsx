@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { Marker } from "react-leaflet";
 import L from "leaflet";
 import type { MapSpace } from "../routing";
-import { useDestinationPins, type DestinationPin } from "../routing/useDestinationPins";
-import { useRoute } from "../routing/RouteContext";
+import { useDestinationPins, type DestinationPin } from "../hooks/useDestinationPins";
+import { useRoute } from "../hooks/RouteContext";
 
 function markerIconFor(pin: DestinationPin): L.DivIcon {
   return L.divIcon({

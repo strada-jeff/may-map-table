@@ -1,6 +1,6 @@
 import { CONFIG } from './config'
 import { useIdle } from './hooks/useIdle'
-import { RouteProvider } from './routing/RouteContext'
+import { RouteProvider } from './hooks/RouteContext'
 import MapView from './components/MapView'
 import WelcomeOverlay from './components/WelcomeOverlay'
 

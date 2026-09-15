@@ -1,3 +1,5 @@
+import type { Point } from "../routing/types";
+
 /** Shared taxonomy driving both the welcome-screen filter buttons and location pin filtering. */
 export type Category = {
   id: string;
@@ -45,3 +47,9 @@ export type Location = BasePin & {
 };
 
 export type MapPin = ModelHome | Location;
+
+export type DestinationPin = MapPin & {
+  position: Point;
+  /** Every pin gets one, even model homes which have no per-pin icon field. */
+  markerIcon: string;
+};
