@@ -4,7 +4,7 @@ import { Marker } from "react-leaflet";
 import L from "leaflet";
 import type { MapSpace } from "../routing";
 import type { DestinationPin } from "../hooks/useDestinationPins";
-import { useRoute } from "../hooks/RouteContext";
+import { usePinClick } from "../hooks/usePinClick";
 import DestinationFlagIcon from "./DestinationFlagIcon";
 
 // destination-flag.svg's native size and its pole-base anchor point
@@ -30,7 +30,7 @@ type LocationMarkerProps = {
 };
 
 export default function LocationMarker({ space, pin, visible }: LocationMarkerProps) {
-  const { routeTo } = useRoute();
+  const onClick = usePinClick(pin.id);
   const markerRef = useRef<L.Marker | null>(null);
   // Captured once so the icon's initial class matches the filter state it
   // mounts under — later changes are applied straight to the marker's DOM
@@ -63,7 +63,7 @@ export default function LocationMarker({ space, pin, visible }: LocationMarkerPr
       ref={markerRef}
       position={space.toLatLng(pin.position)}
       icon={icon}
-      eventHandlers={{ click: () => routeTo(pin.id) }}
+      eventHandlers={{ click: onClick }}
     />
   );
 }

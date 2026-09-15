@@ -10,6 +10,7 @@ import { MapSpace } from "../routing";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import DestinationMarkers from "./DestinationMarkers";
 import RouteEffects from "./RouteEffects";
+import FilterEffects from "./FilterEffects";
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -38,9 +39,10 @@ function MapView() {
       smoothWheelZoom
       smoothSensitivity={1}
     >
-      <ImageOverlay url="/base.png" bounds={space.latLngBounds} />
+      <ImageOverlay url="/base.jpg" bounds={space.latLngBounds} />
       <DestinationMarkers space={space} />
       <RouteEffects space={space} />
+      <FilterEffects space={space} />
       {isDebug && <DebugNetworkOverlay />}
     </MapContainer>
   );

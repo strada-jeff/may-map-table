@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useDestinationPins } from "../hooks/useDestinationPins";
 import { useCategories } from "../hooks/useCategories";
 import { useBuilders } from "../hooks/useBuilders";
 import { useFilter } from "../hooks/FilterContext";
+import { useDrawer } from "../hooks/DrawerContext";
 import DrawerCard from "./DrawerCard";
 import FilterChip from "./FilterChip";
 
@@ -12,7 +13,7 @@ const MODEL_HOMES_CHIP_COLOR = "#82b1dd";
 const ALL_CHIP_COLOR = "#82b1dd";
 
 export default function Drawer() {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen } = useDrawer();
   const { pins } = useDestinationPins();
   const categories = useCategories();
   const builders = useBuilders();

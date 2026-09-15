@@ -1,6 +1,7 @@
 import type { DestinationPin } from "../hooks/useDestinationPins";
 import type { Category } from "../types/pins";
 import { useRoute } from "../hooks/RouteContext";
+import { useDetails } from "../hooks/DetailsContext";
 import ButtonFlagIcon from "./ButtonFlagIcon";
 
 const FALLBACK_FLAG_COLOR = "#82b1dd";
@@ -15,22 +16,23 @@ type DrawerCardProps = {
 
 export default function DrawerCard({ pin, category, builderName }: DrawerCardProps) {
   const { routeTo } = useRoute();
+  const { openDetails } = useDetails();
 
   const title = pin.kind === "model-home" ? pin.name : pin.title;
   const subtitle = pin.kind === "model-home" ? (builderName ?? "") : pin.location;
   const image = pin.images[0];
 
-  function openDetails() {
-    alert(title);
+  function showDetails() {
+    openDetails(pin.id);
   }
 
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={openDetails}
+      onClick={showDetails}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") openDetails();
+        if (e.key === "Enter" || e.key === " ") showDetails();
       }}
       className="flex w-full shrink-0 cursor-pointer items-stretch gap-4 rounded-[10px] bg-white p-3 text-left shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
     >
@@ -51,7 +53,7 @@ export default function DrawerCard({ pin, category, builderName }: DrawerCardPro
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              openDetails();
+              showDetails();
             }}
             className="flex items-center gap-2 border-[1.5px] border-mayfair-blue px-4 py-2 font-vision text-xs font-extrabold uppercase tracking-[0.1em] text-mayfair-navy"
           >

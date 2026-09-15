@@ -2,7 +2,11 @@
   {
     "id": "loc-mayfair-swim-club",
     "kind": "location",
-    "images": ["https://picsum.photos/seed/loc-mayfair-swim-club/600/600"],
+    "images": [
+      "https://picsum.photos/seed/loc-mayfair-swim-club/600/600",
+      "https://picsum.photos/seed/loc-mayfair-swim-club1/600/600",
+      "https://picsum.photos/seed/loc-mayfair-swim-club2/600/600"
+    ],
     "address": "100 Clubhouse Dr, New Braunfels, TX",
     "directionsUrl": "https://maps.google.com/?q=100+Clubhouse+Dr+New+Braunfels+TX",
     "categoryId": "amenities",

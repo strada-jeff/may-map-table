@@ -3,7 +3,7 @@ import { Marker } from "react-leaflet";
 import L from "leaflet";
 import type { MapSpace } from "../routing";
 import type { DestinationPin } from "../hooks/useDestinationPins";
-import { useRoute } from "../hooks/RouteContext";
+import { usePinClick } from "../hooks/usePinClick";
 
 // model-home-balloon.svg's native size and the envelope's centre within it
 // (measured via getBBox on the balloon body path) — used to place the
@@ -28,7 +28,7 @@ type ModelHomeMarkerProps = {
 };
 
 export default function ModelHomeMarker({ space, pin, visible }: ModelHomeMarkerProps) {
-  const { routeTo } = useRoute();
+  const onClick = usePinClick(pin.id);
   const markerRef = useRef<L.Marker | null>(null);
   // Captured once so the icon's initial class matches the filter state it
   // mounts under — later changes are applied straight to the marker's DOM
@@ -57,7 +57,7 @@ export default function ModelHomeMarker({ space, pin, visible }: ModelHomeMarker
       ref={markerRef}
       position={space.toLatLng(pin.position)}
       icon={icon}
-      eventHandlers={{ click: () => routeTo(pin.id) }}
+      eventHandlers={{ click: onClick }}
     />
   );
 }
