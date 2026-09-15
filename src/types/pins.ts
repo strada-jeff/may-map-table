@@ -1,8 +1,3 @@
-export type MapPosition = {
-  x: number;
-  y: number;
-};
-
 /** Shared taxonomy driving both the welcome-screen filter buttons and location pin filtering. */
 export type Category = {
   id: string;
@@ -19,7 +14,6 @@ export type Builder = {
 
 type BasePin = {
   id: string;
-  position: MapPosition;
   images: string[];
   address: string;
   /** Destination URL — encoded into a QR code at render time, not stored pre-rendered. */

@@ -2,7 +2,6 @@
   {
     "id": "mh-chesmar-magnolia",
     "kind": "model-home",
-    "position": { "x": 1450, "y": 1120 },
     "images": ["/model-homes/chesmar-magnolia-1.jpg"],
     "address": "412 Magnolia Way, New Braunfels, TX",
     "directionsUrl": "https://maps.google.com/?q=412+Magnolia+Way+New+Braunfels+TX",
@@ -21,7 +20,6 @@
   {
     "id": "mh-history-maker-brookstone",
     "kind": "model-home",
-    "position": { "x": 1610, "y": 1195 },
     "images": ["/model-homes/history-maker-brookstone-1.jpg"],
     "address": "398 Brookstone Ln, New Braunfels, TX",
     "directionsUrl": "https://maps.google.com/?q=398+Brookstone+Ln+New+Braunfels+TX",
