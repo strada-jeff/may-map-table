@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Marker } from "react-leaflet";
 import L from "leaflet";
@@ -25,16 +25,25 @@ const FALLBACK_COLOR = "#82b1dd";
 type LocationMarkerProps = {
   space: MapSpace;
   pin: Extract<DestinationPin, { kind: "location" }>;
+  /** Whether this pin currently matches the active filter. */
+  visible: boolean;
 };
 
-export default function LocationMarker({ space, pin }: LocationMarkerProps) {
+export default function LocationMarker({ space, pin, visible }: LocationMarkerProps) {
   const { routeTo } = useRoute();
+  const markerRef = useRef<L.Marker | null>(null);
+  // Captured once so the icon's initial class matches the filter state it
+  // mounts under — later changes are applied straight to the marker's DOM
+  // element (see effect below) so the CSS transition has something to animate from.
+  const [initialVisible] = useState(visible);
   const icon = useMemo(
     () =>
       L.divIcon({
-        className: "",
+        className: initialVisible ? "destination-marker" : "destination-marker marker-hidden",
         html: renderToStaticMarkup(
-          <DestinationFlagIcon color={pin.markerColor ?? FALLBACK_COLOR} className="size-full" />,
+          <div className="destination-marker-inner size-full">
+            <DestinationFlagIcon color={pin.markerColor ?? FALLBACK_COLOR} className="size-full" />
+          </div>,
         ),
         iconSize: [DISPLAY_WIDTH, DISPLAY_HEIGHT],
         iconAnchor: [
@@ -42,11 +51,16 @@ export default function LocationMarker({ space, pin }: LocationMarkerProps) {
           Math.round((DISPLAY_HEIGHT * ANCHOR_Y) / NATURAL_HEIGHT),
         ],
       }),
-    [pin.markerColor],
+    [pin.markerColor, initialVisible],
   );
+
+  useEffect(() => {
+    markerRef.current?.getElement()?.classList.toggle("marker-hidden", !visible);
+  }, [visible]);
 
   return (
     <Marker
+      ref={markerRef}
       position={space.toLatLng(pin.position)}
       icon={icon}
       eventHandlers={{ click: () => routeTo(pin.id) }}

@@ -45,3 +45,25 @@ body {
   background: white;
   border-radius: 40px;
 }
+
+/* Leaflet sets its own inline transform on .leaflet-marker-icon for
+   positioning, so the y-axis move has to animate on an inner wrapper
+   instead — animating transform on the marker icon itself would fight
+   Leaflet's inline style. */
+.destination-marker {
+  transition: opacity 260ms ease;
+}
+
+.destination-marker.marker-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.destination-marker-inner {
+  transition: transform 260ms ease;
+  transform: translateY(0);
+}
+
+.destination-marker.marker-hidden .destination-marker-inner {
+  transform: translateY(-14px);
+}

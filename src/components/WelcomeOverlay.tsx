@@ -2,6 +2,7 @@ import welcomeTitle from "../assets/welcome-title.svg";
 import TextIconCta from "./TextIconCta";
 import ExploreCta from "./ExploreCta";
 import { useCategories } from "../hooks/useCategories";
+import { useFilter } from "../hooks/FilterContext";
 
 type WelcomeOverlayProps = {
   /** Called when the visitor deliberately picks one of the CTA/explore buttons. */
@@ -15,6 +16,7 @@ const stopBubble = (e: { stopPropagation: () => void }) => e.stopPropagation();
 
 export default function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
   const categories = useCategories();
+  const { setActiveCategoryId } = useFilter();
 
   return (
     <div
@@ -38,19 +40,14 @@ export default function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
             icon={category.icon}
             color={category.color}
             onClick={() => {
-              alert(category.label);
+              setActiveCategoryId(category.id);
               onDismiss();
             }}
           />
         ))}
       </div>
 
-      <ExploreCta
-        onClick={() => {
-          alert("Explore the map");
-          onDismiss();
-        }}
-      />
+      <ExploreCta onClick={onDismiss} />
     </div>
   );
 }

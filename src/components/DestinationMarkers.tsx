@@ -8,19 +8,16 @@ export default function DestinationMarkers({ space }: { space: MapSpace }) {
   const { pins } = useDestinationPins();
   const { activeCategoryId } = useFilter();
 
-  const visiblePins = activeCategoryId
-    ? pins.filter((pin) => pin.categoryId === activeCategoryId)
-    : pins;
-
   return (
     <>
-      {visiblePins.map((pin) =>
-        pin.kind === "model-home" ? (
-          <ModelHomeMarker key={pin.id} space={space} pin={pin} />
+      {pins.map((pin) => {
+        const visible = activeCategoryId === null || pin.categoryId === activeCategoryId;
+        return pin.kind === "model-home" ? (
+          <ModelHomeMarker key={pin.id} space={space} pin={pin} visible={visible} />
         ) : (
-          <LocationMarker key={pin.id} space={space} pin={pin} />
-        ),
-      )}
+          <LocationMarker key={pin.id} space={space} pin={pin} visible={visible} />
+        );
+      })}
     </>
   );
 }
