@@ -2,7 +2,7 @@
   {
     "id": "loc-mayfair-swim-club",
     "kind": "location",
-    "images": ["/locations/mayfair-swim-club-1.jpg"],
+    "images": ["https://picsum.photos/seed/loc-mayfair-swim-club/600/600"],
     "address": "100 Clubhouse Dr, New Braunfels, TX",
     "directionsUrl": "https://maps.google.com/?q=100+Clubhouse+Dr+New+Braunfels+TX",
     "categoryId": "amenities",
@@ -13,7 +13,7 @@
   {
     "id": "loc-celebration-hall",
     "kind": "location",
-    "images": ["/locations/celebration-hall-1.jpg"],
+    "images": ["https://picsum.photos/seed/loc-celebration-hall/600/600"],
     "address": "220 Gathering Way, New Braunfels, TX",
     "directionsUrl": "https://maps.google.com/?q=220+Gathering+Way+New+Braunfels+TX",
     "categoryId": "amenities",
@@ -24,7 +24,7 @@
   {
     "id": "loc-costco",
     "kind": "location",
-    "images": ["/locations/costco-1.jpg"],
+    "images": ["https://picsum.photos/seed/loc-costco/600/600"],
     "address": "5000 I-35 Frontage Rd, New Braunfels, TX",
     "directionsUrl": "https://maps.google.com/?q=5000+I-35+Frontage+Rd+New+Braunfels+TX",
     "categoryId": "commercial",

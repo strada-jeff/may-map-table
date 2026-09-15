@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getBuilders, getCategories, getLocations, getModelHomes } from "../data/api";
-import type { DestinationPin } from "../types/pins";
+import { MODEL_HOMES_CATEGORY_ID, type DestinationPin } from "../types/pins";
 import { anchors } from "../routing/generated";
 import type { Point } from "../routing/types";
 
@@ -64,6 +64,7 @@ export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean
           ...modelHome,
           position: withOffset(anchorPoint, modelHome.iconOffset),
           markerLabel: abbreviation.toUpperCase(),
+          categoryId: MODEL_HOMES_CATEGORY_ID,
         });
       }
 

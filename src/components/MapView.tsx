@@ -1,6 +1,7 @@
 import { MapContainer, ImageOverlay } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "../leaflet/smoothWheelZoom";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -32,7 +33,10 @@ function MapView() {
       maxBounds={space.latLngBounds}
       minZoom={-4}
       maxZoom={2}
-      scrollWheelZoom
+      zoomSnap={0}
+      scrollWheelZoom={false}
+      smoothWheelZoom
+      smoothSensitivity={1}
     >
       <ImageOverlay url="/base.png" bounds={space.latLngBounds} />
       <DestinationMarkers space={space} />

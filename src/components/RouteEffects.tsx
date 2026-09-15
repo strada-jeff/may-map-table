@@ -20,7 +20,11 @@ export default function RouteEffects({ space }: { space: MapSpace }) {
     if (!activeRoute) return;
     const bounds = L.latLngBounds(space.toLatLngs(activeRoute.coordinates));
     const padding = CONFIG.routing.fitPaddingPx;
-    map.fitBounds(bounds, { padding: [padding, padding], animate: true });
+    // flyToBounds drives real per-frame _move() calls at a true fractional
+    // zoom, unlike fitBounds's animated mode, which CSS-scales the whole
+    // pane as one flat image between the start/end view — that's what made
+    // the route line (and everything else) visibly balloon mid-transition.
+    map.flyToBounds(bounds, { padding: [padding, padding] });
   }, [activeRoute, map, space]);
 
   if (!activeRoute) return null;

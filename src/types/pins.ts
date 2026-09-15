@@ -63,10 +63,15 @@ export type Location = BasePin & {
 
 export type MapPin = ModelHome | Location;
 
+/** Model homes have no categoryId of their own; this is their category.json id for filtering/display purposes. */
+export const MODEL_HOMES_CATEGORY_ID = "model-homes";
+
 export type DestinationPin = MapPin & {
   position: Point;
   /** Model-home only — builder abbreviation overlaid on the balloon. */
   markerLabel?: string;
   /** Location only — resolved from its category's color. */
   markerColor?: string;
+  /** Location's categoryId, or MODEL_HOMES_CATEGORY_ID for a model home — normalizes both kinds for filtering. */
+  categoryId: Category["id"];
 };
