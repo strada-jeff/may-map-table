@@ -5,7 +5,7 @@ export const CONFIG = {
   map: {
     width: 3840, // pixel dimension of base artwork
     height: 2160,
-    minZoom: -2, // furthest the map controls can zoom out; build:tiles matches this
+    minZoom: -1, // furthest the map controls can zoom out; build:tiles matches this
     maxZoom: 2, // furthest the map controls can zoom in; build:tiles matches this
     initialCenter: "main" as string | readonly [number, number], // anchor id or [x, y] point
     initialZoom: 1.4, // zoom once the welcome screen is dismissed
