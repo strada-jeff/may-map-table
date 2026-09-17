@@ -15,9 +15,11 @@ import SignupCta from './components/SignupCta'
 import HelpCta from './components/HelpCta'
 import RotateControl from './components/RotateControl'
 import CompassControl from './components/CompassControl'
+import { useRotatedInputCorrection } from './hooks/useRotatedInputCorrection'
 
 function App() {
   const [rotated, setRotated] = useState(false)
+  useRotatedInputCorrection(rotated)
 
   return (
     <RouteProvider>
@@ -28,10 +30,10 @@ function App() {
               <SideModalProvider>
                 <MapInstanceProvider>
                   <div
-                    className="relative h-full w-full"
-                    style={{ transform: rotated ? 'rotate(180deg)' : undefined }}
+                    className="relative h-full w-full transition-transform duration-500 ease-in-out"
+                    style={{ transform: rotated ? 'rotate(180deg)' : 'rotate(0deg)' }}
                   >
-                    <MapView />
+                    <MapView rotated={rotated} />
                     <Drawer />
                     <DetailsView />
                     <SidePanel />

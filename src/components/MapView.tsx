@@ -33,7 +33,7 @@ const initialZoom = CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset;
 const isDebug =
   new URLSearchParams(window.location.search).get("debug") === "1";
 
-function MapView() {
+function MapView({ rotated }: { rotated: boolean }) {
   return (
     <MapContainer
       className="h-full w-full bg-[#f2f0ee]! z-40"
@@ -60,7 +60,7 @@ function MapView() {
       <DetailsMapEffect space={space} />
       <InitialViewEffect space={space} />
       <PublishMapInstance />
-      <ZoomSlider />
+      <ZoomSlider rotated={rotated} />
       {isDebug && <DebugNetworkOverlay />}
     </MapContainer>
   );

@@ -23,6 +23,16 @@ body,
      toolbar, background) that Leaflet doesn't own. */
   touch-action: none;
   overscroll-behavior: none;
+  /* Drawer/SidePanel sit off-canvas via `transform: translateX(...)` rather
+     than being unmounted, and a CSS transform still counts toward scrollable
+     overflow even though it's paint-only — so their off-screen position was
+     inflating scrollWidth/scrollHeight and forcing a scrollbar, which then
+     shrank the *available* 100% height/width html/body/#root actually get
+     by the scrollbar's own thickness. Harmless when upright, but it made the
+     App wrapper's rotate(180deg) (see App.tsx) fall a few px short of the
+     real viewport on one edge, exposing a sliver of background — hence
+     clipping instead of letting that phantom scroll area exist at all. */
+  overflow: hidden;
 }
 
 body {

@@ -25,7 +25,7 @@ const round = (n: number) => Math.round(n / STEP) * STEP;
  * ourselves sidesteps that entirely. Styling lives in index.css
  * (.zoom-slider-track/-rail/-thumb).
  */
-export default function ZoomSlider() {
+export default function ZoomSlider({ rotated }: { rotated: boolean }) {
   const map = useMap();
   const [zoom, setZoom] = useState(map.getZoom());
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -105,7 +105,17 @@ export default function ZoomSlider() {
       map.setZoom(clamp(zoom - STEP, minZoom, maxZoom));
   }
 
-  const thumbTopPercent = (1 - (zoom - minZoom) / (maxZoom - minZoom)) * 100;
+  // `top: X%` is authored assuming this element renders in normal, upright
+  // layout — the value that makes maxZoom sit at the visual top of the
+  // track. App.tsx's rotate(180deg) flips how that layout position ends up
+  // painted (top-of-layout renders at the visual bottom, and vice versa)
+  // without changing this element's own DOM/CSS at all, so the thumb needs
+  // the complementary offset here to land back at the correct visual end.
+  const unrotatedThumbTopPercent =
+    (1 - (zoom - minZoom) / (maxZoom - minZoom)) * 100;
+  const thumbTopPercent = rotated
+    ? 100 - unrotatedThumbTopPercent
+    : unrotatedThumbTopPercent;
 
   return (
     <div
