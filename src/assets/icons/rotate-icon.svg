@@ -1,0 +1,23 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="85" height="85" viewBox="0 0 85 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="rotate">
+<g id="Ellipse 4" filter="url(#filter0_d_0_89)">
+<circle cx="42.5" cy="38.5" r="32.5" fill="white"/>
+</g>
+<path id="Ellipse 5" d="M56.6721 39.1502C57.1224 32.8369 53.3549 26.7442 47.1012 24.5182C42.6709 22.9412 37.9815 23.6568 34.3294 26.0491" stroke="#254A5D" stroke-width="5"/>
+<path id="Polygon 4" d="M57.4335 45.9332C57.0353 46.5011 56.194 46.5011 55.7959 45.9332L50.3388 38.1493C49.8742 37.4866 50.3483 36.5752 51.1576 36.5752L62.0717 36.5752C62.8811 36.5752 63.3551 37.4866 62.8905 38.1493L57.4335 45.9332Z" fill="#254A5D"/>
+<path id="Ellipse 6" d="M28.4881 38.6178C28.0378 44.9312 31.8054 51.0238 38.059 53.2498C42.8448 54.9533 47.9329 53.9817 51.6893 51.111" stroke="#254A5D" stroke-width="5"/>
+<path id="Polygon 5" d="M27.7268 31.8351C28.125 31.2672 28.9663 31.2672 29.3644 31.8351L34.8215 39.619C35.2861 40.2817 34.812 41.193 34.0027 41.193L23.0886 41.193C22.2792 41.193 21.8052 40.2817 22.2698 39.619L27.7268 31.8351Z" fill="#254A5D"/>
+</g>
+<defs>
+<filter id="filter0_d_0_89" x="0" y="0" width="85" height="85" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_89"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_89" result="shape"/>
+</filter>
+</defs>
+</svg>

@@ -1,8 +1,8 @@
-import { useMemo, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { CONFIG } from "../config";
 import { useDetails } from "../hooks/DetailsContext";
-import { useDestinationPins } from "../hooks/useDestinationPins";
+import { useDestinationPins, type DestinationPin } from "../hooks/useDestinationPins";
 import { useCategories } from "../hooks/useCategories";
 import { useBuilders } from "../hooks/useBuilders";
 import { useRoute } from "../hooks/RouteContext";
@@ -28,7 +28,18 @@ export default function DetailsView() {
   const builders = useBuilders();
   const { routeTo } = useRoute();
 
-  const pin = useMemo(() => pins.find((p) => p.id === activePinId) ?? null, [pins, activePinId]);
+  // Kept across activePinId -> null so the panel still has content to show
+  // while it animates out, instead of popping empty/blank mid-transition.
+  // Set during render (not an effect) per React's "adjusting state when a
+  // prop changes" pattern — this is a derived value, not a side effect.
+  const [lastPin, setLastPin] = useState<DestinationPin | null>(null);
+  const activePin = pins.find((p) => p.id === activePinId) ?? null;
+  if (activePin && activePin !== lastPin) {
+    setLastPin(activePin);
+  }
+
+  const isOpen = activePinId !== null;
+  const pin = lastPin;
 
   if (!pin) return null;
 
@@ -44,10 +55,16 @@ export default function DetailsView() {
   }
 
   return (
-    <div className="details-view pointer-events-none absolute inset-0 z-50 flex h-full">
+    <div className="details-view pointer-events-none absolute inset-0 z-50 flex h-full overflow-hidden">
       <div
-        style={{ width: CONFIG.details.panelWidthPx }}
-        className="details-view-card pointer-events-auto flex h-full max-w-[50%] flex-col overflow-y-auto bg-white shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
+        style={{
+          width: CONFIG.details.panelWidthPx,
+          transform: isOpen ? "translateX(0)" : "translateX(-100%)",
+          opacity: isOpen ? 1 : 0,
+        }}
+        className={`details-view-card flex h-full max-w-[50%] flex-col overflow-y-auto bg-white shadow-[0_4px_5px_0_rgba(0,0,0,0.2)] transition-[transform,opacity] duration-300 ease-out ${
+          isOpen ? "pointer-events-auto" : "pointer-events-none"
+        }`}
       >
         <DetailsGallery images={pin.images} alt={title} onClose={closeDetails} />
 

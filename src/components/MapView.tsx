@@ -6,7 +6,8 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { CONFIG } from "../config";
-import { MapSpace, resolveMapPoint } from "../routing";
+import { resolveMapPoint } from "../routing";
+import { space } from "../mapSpace";
 import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import DestinationMarkers from "./DestinationMarkers";
@@ -14,17 +15,14 @@ import RouteEffects from "./RouteEffects";
 import FilterEffects from "./FilterEffects";
 import DetailsMapEffect from "./DetailsMapEffect";
 import InitialViewEffect from "./InitialViewEffect";
+import PublishMapInstance from "./PublishMapInstance";
+import ZoomSlider from "./ZoomSlider";
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
-
-const space = new MapSpace([
-  [0, 0],
-  [CONFIG.map.width, CONFIG.map.height],
-]);
 
 // The welcome screen is up on first paint, so the map should already be
 // showing its idle (zoomed-out) view rather than fitting the whole artwork
@@ -49,6 +47,11 @@ function MapView() {
       scrollWheelZoom={false}
       smoothWheelZoom
       smoothSensitivity={1}
+      // ZoomSlider changes zoom with animate:false so a drag doesn't fight
+      // its own transitions (see ZoomSlider) — with fade animation on,
+      // every one of those rapid, discrete zoom resets briefly fades the
+      // tile layer out/in, which reads as flashing/flickering.
+      fadeAnimation={false}
     >
       <ArtworkTiles space={space} />
       <DestinationMarkers space={space} />
@@ -56,6 +59,8 @@ function MapView() {
       <FilterEffects space={space} />
       <DetailsMapEffect space={space} />
       <InitialViewEffect space={space} />
+      <PublishMapInstance />
+      <ZoomSlider />
       {isDebug && <DebugNetworkOverlay />}
     </MapContainer>
   );
