@@ -11,8 +11,8 @@ export default function ArtworkTiles({ space }: { space: MapSpace }) {
   useEffect(() => {
     const layer = new ArtworkTileLayer("", {
       tileSize: CONFIG.tiles.tileSize,
-      minZoom: CONFIG.tiles.minZoom,
-      maxZoom: CONFIG.tiles.maxZoom,
+      minZoom: CONFIG.map.minZoom,
+      maxZoom: CONFIG.map.maxZoom,
       bounds: space.latLngBounds,
       noWrap: true,
     });

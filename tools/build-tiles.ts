@@ -9,12 +9,12 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_SVG = resolve(root, "public/base.svg");
 const OUT_DIR = resolve(root, "public/tiles");
 
-const { tileSize, minZoom, maxZoom } = CONFIG.tiles;
-const { width: baseWidth, height: baseHeight } = CONFIG.map;
+const { tileSize } = CONFIG.tiles;
+const { width: baseWidth, height: baseHeight, minZoom, maxZoom } = CONFIG.map;
 
 /**
  * Slices base.svg into a Leaflet-ready raster tile pyramid, one directory
- * per zoom level covering CONFIG.tiles.minZoom..maxZoom, so the map never
+ * per zoom level covering CONFIG.map.minZoom..maxZoom, so the map never
  * has to decode one giant bitmap to stay crisp while zooming (see
  * ArtworkTileLayer for the runtime half of this).
  *

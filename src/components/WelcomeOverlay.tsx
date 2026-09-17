@@ -3,24 +3,23 @@ import TextIconCta from "./TextIconCta";
 import ExploreCta from "./ExploreCta";
 import { useCategories } from "../hooks/useCategories";
 import { useFilter } from "../hooks/FilterContext";
-
-type WelcomeOverlayProps = {
-  /** Called when the visitor deliberately picks one of the CTA/explore buttons. */
-  onDismiss: () => void;
-};
+import { useWelcome } from "../hooks/WelcomeContext";
 
 // Only clicking a button should dismiss the overlay — clicks on the
 // backdrop itself must not, so background activity never bubbles up to
 // the window-level idle listener.
 const stopBubble = (e: { stopPropagation: () => void }) => e.stopPropagation();
 
-export default function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
+export default function WelcomeOverlay() {
+  const { isIdle, dismiss, explore } = useWelcome();
   const categories = useCategories();
   const { setActiveCategoryId } = useFilter();
 
   return (
     <div
-      className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-mayfair-navy/92 px-6 text-center"
+      className={`absolute inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-mayfair-navy/92 px-6 text-center transition-opacity duration-700 ${
+        isIdle ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
       onPointerDown={stopBubble}
       onTouchStart={stopBubble}
       onWheel={stopBubble}
@@ -41,13 +40,13 @@ export default function WelcomeOverlay({ onDismiss }: WelcomeOverlayProps) {
             color={category.color}
             onClick={() => {
               setActiveCategoryId(category.id);
-              onDismiss();
+              dismiss();
             }}
           />
         ))}
       </div>
 
-      <ExploreCta onClick={onDismiss} />
+      <ExploreCta onClick={explore} />
     </div>
   );
 }
