@@ -1,5 +1,6 @@
 import { useMemo, type ReactNode } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { CONFIG } from "../config";
 import { useDetails } from "../hooks/DetailsContext";
 import { useDestinationPins } from "../hooks/useDestinationPins";
 import { useCategories } from "../hooks/useCategories";
@@ -43,8 +44,11 @@ export default function DetailsView() {
   }
 
   return (
-    <div className="details-view absolute inset-0 z-50 flex items-center justify-center bg-mayfair-navy/92 p-6">
-      <div className="details-view-card flex max-h-full w-[min(94vw,1600px)] flex-col overflow-y-auto rounded-[10px] bg-white shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]">
+    <div className="details-view pointer-events-none absolute inset-0 z-50 flex h-full">
+      <div
+        style={{ width: CONFIG.details.panelWidthPx }}
+        className="details-view-card pointer-events-auto flex h-full max-w-[50%] flex-col overflow-y-auto bg-white shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
+      >
         <DetailsGallery images={pin.images} alt={title} onClose={closeDetails} />
 
         <div className="details-view-body flex flex-col gap-10 p-10 md:flex-row md:gap-14 md:p-16">

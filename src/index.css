@@ -17,6 +17,12 @@ body,
   margin: 0;
   height: 100%;
   background-color: #f2f0ee;
+  /* Leaflet already claims touch-action: none on .leaflet-container for its
+     own pan/zoom gestures. This blocks pinch-zoom, double-tap-zoom, and
+     swipe-triggered overscroll everywhere else in the kiosk UI (drawer,
+     toolbar, background) that Leaflet doesn't own. */
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 body {
@@ -25,6 +31,13 @@ body {
     "Segoe UI",
     Roboto,
     sans-serif;
+}
+
+.drawer-scroll,
+.details-view-card {
+  /* Re-enable single-finger vertical scroll only; still no pinch-zoom or
+     horizontal swipe-nav here. */
+  touch-action: pan-y;
 }
 
 .drawer-scroll {
@@ -66,4 +79,13 @@ body {
 
 .destination-marker.marker-hidden .destination-marker-inner {
   transform: translateY(-14px);
+}
+
+/* zoomSnap={0} allows fractional zoom (needed for smooth wheel-zoom), which
+   scales each tile by a non-integer factor. Adjacent tiles then round to
+   the nearest device pixel slightly differently, leaving hairline gaps at
+   some zoom levels — this bleeds each tile's paint 1px past its own edge to
+   cover that rounding gap. Purely cosmetic; doesn't affect tile layout. */
+.leaflet-tile {
+  outline: 1px solid transparent;
 }
