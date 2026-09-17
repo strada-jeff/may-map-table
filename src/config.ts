@@ -10,6 +10,7 @@ export const CONFIG = {
     initialCenter: "main" as string | readonly [number, number], // anchor id or [x, y] point
     initialZoom: 1.4, // zoom once the welcome screen is dismissed
     idleZoomOffset: 1, // idle view is initialZoom minus this, zoomed further out
+    pinDetailZoomLevel: 2, // zoom the map flies to when a pin's details open
   },
   tiles: {
     tileSize: 256,

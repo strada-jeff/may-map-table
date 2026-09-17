@@ -10,8 +10,8 @@ import { useDestinationPins } from "../hooks/useDestinationPins";
  * details panel is anchored to the left (see DetailsView), so centering the
  * active pin on the map's true center would put it halfway under the panel.
  * This shifts the target center left by half the panel's width so the pin
- * lands in the middle of the space that's actually still visible, at the
- * current zoom (no re-zooming).
+ * lands in the middle of the space that's actually still visible, at
+ * CONFIG.map.pinDetailZoomLevel.
  */
 export default function DetailsMapEffect({ space }: { space: MapSpace }) {
   const map = useMap();
@@ -22,7 +22,7 @@ export default function DetailsMapEffect({ space }: { space: MapSpace }) {
     const pin = pins.find((p) => p.id === activePinId);
     if (!pin) return;
 
-    const zoom = map.getZoom();
+    const zoom = CONFIG.map.pinDetailZoomLevel;
     const pinPoint = map.project(space.toLatLng(pin.position), zoom);
     const centerPoint = pinPoint.subtract([CONFIG.details.panelWidthPx / 2, 0]);
     map.flyTo(map.unproject(centerPoint, zoom), zoom);
