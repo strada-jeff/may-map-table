@@ -50,8 +50,11 @@ export default function DetailsView() {
 
   function showOnMap() {
     if (!pin) return;
+    // No explicit closeDetails() — DetailsProvider closes itself as soon
+    // as a route actually starts (see there), so this stays in sync with
+    // routeTo() being called from anywhere else too (e.g. a drawer card's
+    // locate button).
     routeTo(pin.id);
-    closeDetails();
   }
 
   return (

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "cat-1",
+    "file": "cat",
+    "position": [2600, 700],
+    "size": 220
+  },
+  {
+    "id": "cat-2",
+    "file": "cat-2",
+    "position": [1300, 1750],
+    "size": 220
+  }
+]

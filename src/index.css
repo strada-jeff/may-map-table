@@ -91,6 +91,19 @@ body {
   transform: translateY(-14px);
 }
 
+/* Fade-out-before-move: RouteEffects keeps the outgoing route mounted with
+   fadeOut=true for ROUTE_EXIT_FADE_MS (routePanes.ts) before swapping to
+   the next one (or clearing), so the pin visibly disappears first instead
+   of just cutting to the new route mid-fly. Duration here must match that
+   constant — Leaflet sets a Marker's opacity as a plain inline style on
+   prop changes, so this transition is what actually animates it.
+   (RouteDimOverlay and RouteLine — which now also draws the "you are
+   here" badge — fade themselves via their own inline `transition`, since
+   neither is a Leaflet-managed element.) */
+.active-destination-highlight {
+  transition: opacity 350ms ease;
+}
+
 /* Leaflet's own panes sit at z-index 200-700 (.leaflet-control is 800) —
    ZoomSlider lives inside the same <MapContainer>, so it needs to clear
    all of those to actually paint on top rather than under them. */

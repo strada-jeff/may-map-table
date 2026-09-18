@@ -35,6 +35,22 @@
     "title": "Costco",
     "location": "Midtown District",
     "description": "Warehouse retail just minutes from the community entrance.",
-    "iconOffset": { "x": 0, "y": -20 }
+    "iconOffset": { "x": 0, "y": 0 }
+  },
+  {
+    "id": "loc-mayfair-elementary-school",
+    "kind": "location",
+    "images": [
+      "https://picsum.photos/seed/loc-mayfair-elementary-school/600/600",
+      "https://picsum.photos/seed/loc-mayfair-elementary-school/600/600",
+      "https://picsum.photos/seed/loc-mayfair-elementary-school/600/600"
+    ],
+    "address": "5000 I-35 Frontage Rd, New Braunfels, TX",
+    "directionsUrl": "https://maps.google.com/?q=5000+I-35+Frontage+Rd+New+Braunfels+TX",
+    "categoryId": "schools",
+    "title": "Mayfair Elementary School",
+    "location": "The Middle",
+    "description": "Elementary school serving the Mayfair community.",
+    "iconOffset": { "x": 0, "y": 20 }
   }
 ]

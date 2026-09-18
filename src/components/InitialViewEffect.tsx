@@ -3,6 +3,7 @@ import { useMap } from "react-leaflet";
 import { CONFIG } from "../config";
 import { resolveMapPoint, type MapSpace } from "../routing";
 import { useWelcome } from "../hooks/WelcomeContext";
+import { useRoute } from "../hooks/RouteContext";
 
 /**
  * Lives inside <MapContainer> so it can reach Leaflet's map instance.
@@ -13,6 +14,7 @@ import { useWelcome } from "../hooks/WelcomeContext";
 export default function InitialViewEffect({ space }: { space: MapSpace }) {
   const map = useMap();
   const { isIdle, exploreCount } = useWelcome();
+  const { clearRoute } = useRoute();
   const isFirstIdleRun = useRef(true);
 
   const center = useMemo(
@@ -27,8 +29,12 @@ export default function InitialViewEffect({ space }: { space: MapSpace }) {
       return;
     }
     if (!isIdle) return;
+    // Standing idle back into the welcome screen should leave no trace of
+    // whatever the previous visitor was doing — clear any in-progress route
+    // along with flying back out to the idle view.
+    clearRoute();
     map.flyTo(center, idleZoom);
-  }, [isIdle, center, idleZoom, map]);
+  }, [isIdle, center, idleZoom, map, clearRoute]);
 
   useEffect(() => {
     if (exploreCount === 0) return;

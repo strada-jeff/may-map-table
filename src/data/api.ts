@@ -1,8 +1,10 @@
 import type { Builder, Category, Location, ModelHome } from "../types/pins";
+import type { LottieMarkerConfig } from "../types/lottie";
 import categoriesData from "./categories.json";
 import buildersData from "./builders.json";
 import modelHomesData from "./model-homes.json";
 import locationsData from "./locations.json";
+import lottieMarkersData from "./lottie-markers.json";
 
 const categories = categoriesData satisfies Category[];
 const builders = buildersData satisfies Builder[];
@@ -13,6 +15,7 @@ const builders = buildersData satisfies Builder[];
 // validator (e.g. zod) once a CMS is writing this data instead of us.
 const modelHomes = modelHomesData as ModelHome[];
 const locations = locationsData as Location[];
+const lottieMarkers = lottieMarkersData as LottieMarkerConfig[];
 
 /**
  * Static JSON today; swap each body for a `fetch()` against the CMS later.
@@ -33,4 +36,8 @@ export async function getModelHomes(): Promise<ModelHome[]> {
 
 export async function getLocations(): Promise<Location[]> {
   return locations;
+}
+
+export async function getLottieMarkers(): Promise<LottieMarkerConfig[]> {
+  return lottieMarkers;
 }

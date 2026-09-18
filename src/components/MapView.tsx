@@ -11,6 +11,7 @@ import { space } from "../mapSpace";
 import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import DestinationMarkers from "./DestinationMarkers";
+import LottieMarkers from "./LottieMarkers";
 import RouteEffects from "./RouteEffects";
 import FilterEffects from "./FilterEffects";
 import DetailsMapEffect from "./DetailsMapEffect";
@@ -44,6 +45,9 @@ function MapView({ rotated }: { rotated: boolean }) {
       minZoom={CONFIG.map.minZoom}
       maxZoom={CONFIG.map.maxZoom}
       zoomSnap={0}
+      // ZoomSlider is the app's only zoom control — Leaflet's built-in +/-
+      // control would just duplicate it.
+      zoomControl={false}
       scrollWheelZoom={false}
       smoothWheelZoom
       smoothSensitivity={1}
@@ -65,6 +69,7 @@ function MapView({ rotated }: { rotated: boolean }) {
       zoomAnimation={false}
     >
       <ArtworkTiles space={space} />
+      <LottieMarkers space={space} />
       <DestinationMarkers space={space} />
       <RouteEffects space={space} />
       <FilterEffects space={space} />
