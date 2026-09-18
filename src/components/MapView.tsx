@@ -52,6 +52,17 @@ function MapView({ rotated }: { rotated: boolean }) {
       // every one of those rapid, discrete zoom resets briefly fades the
       // tile layer out/in, which reads as flashing/flickering.
       fadeAnimation={false}
+      // Leaflet's default zoom animation (used by the built-in +/- control
+      // and double-click-zoom) is a CSS transition that scales the whole
+      // map pane between the start/end view as a flat image, rather than
+      // reprojecting content — every other zoom trigger in this app already
+      // avoids that path (ZoomSlider is animate:false, flyTo/flyToBounds
+      // drive real per-frame reprojection), specifically because a thick
+      // stroke like RouteLine's visibly balloons mid-scale. Disabling it
+      // here closes that gap for the two remaining triggers that still used
+      // it, at the cost of the zoom control/dblclick snapping instead of
+      // animating between levels.
+      zoomAnimation={false}
     >
       <ArtworkTiles space={space} />
       <DestinationMarkers space={space} />
