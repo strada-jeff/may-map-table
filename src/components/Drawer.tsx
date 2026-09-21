@@ -39,9 +39,9 @@ export default function Drawer() {
         transform: open ? "translateX(0)" : "translateX(calc(-100% + 10px))",
       }}
     >
-      <div className="flex h-full w-[456px] max-w-[85vw] flex-col bg-mayfair-navy shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]">
+      <div className="flex h-full w-[600px] max-w-[85vw] flex-col bg-mayfair-navy pl-4">
         <div className="relative flex-1 overflow-hidden">
-          <div className="drawer-scroll flex h-full flex-col gap-4 overflow-y-auto p-4 pr-3">
+          <div className="drawer-scroll flex h-full flex-col gap-4 overflow-y-auto p-4 pr-8 pb-16">
             {visiblePins.map((pin) => (
               <DrawerCard
                 key={pin.id}

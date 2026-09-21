@@ -53,7 +53,14 @@ body {
 .drawer-scroll {
   scrollbar-width: thin;
   scrollbar-color: white rgba(0, 0, 0, 0.15);
-  direction: rtl; /* force scrollbar to right side even in rtl locales */
+  direction: rtl; /* moves the scrollbar to the drawer's left (outer) edge */
+}
+
+.drawer-scroll > * {
+  /* `direction` inherits, so without this every flex/text layout inside a
+     card would also mirror (e.g. DrawerCard's learn-more/locate row) —
+     only the scrollbar's own side should flip, not card content. */
+  direction: ltr;
 }
 
 .drawer-scroll::-webkit-scrollbar {
@@ -114,7 +121,7 @@ body {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 6px;
+  width: 8px;
   height: 100%;
   transform: translateX(-50%);
   border-radius: 9999px;
@@ -131,5 +138,7 @@ body {
   transform: translate(-50%, -50%);
   border-radius: 9999px;
   background: var(--color-mayfair-navy);
+  border: 8px solid white;
   pointer-events: none;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
 }

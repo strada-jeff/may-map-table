@@ -28,7 +28,7 @@ export const CONFIG = {
     youAreHereBadgePoint: "main" as string | readonly [number, number],
   },
   details: {
-    panelWidthPx: 720, // kiosk screen is fixed, so this is a constant, not measured
+    panelWidthPx: 920, // kiosk screen is fixed, so this is a constant, not measured
   },
   signup: {
     heading: "Sign up to receive Mayfair news, event invitations, and more",
