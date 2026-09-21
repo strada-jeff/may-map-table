@@ -40,7 +40,7 @@ function MapView({ rotated }: { rotated: boolean }) {
       >
         <div className="relative" style={{ width: CONFIG.map.width, height: CONFIG.map.height }}>
           <img
-            src="/artwork.png"
+            src="/artwork.webp"
             alt=""
             draggable={false}
             className="absolute inset-0 size-full select-none"

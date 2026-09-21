@@ -30,6 +30,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "linkedom": "^0.18.13",
     "oxlint": "^1.81.0",
+    "sharp": "^0.35.4",
     "simplify-js": "^1.2.4",
     "svg-path-properties": "^2.1.0",
     "tsx": "^4.23.13",

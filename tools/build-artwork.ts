@@ -2,11 +2,12 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
+import sharp from "sharp";
 import { CONFIG } from "../src/config";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_SVG = resolve(root, "public/base.svg");
-const OUT_FILE = resolve(root, "public/artwork.png");
+const OUT_FILE = resolve(root, "public/artwork.webp");
 
 const { width: baseWidth, maxZoom } = CONFIG.map;
 
@@ -39,9 +40,15 @@ async function main(): Promise<void> {
 
   const rendered = resvg.render();
   const png = rendered.asPng();
-  writeFileSync(OUT_FILE, png);
+
+  // Lossless: same pixels as the PNG this replaced, just smaller on disk —
+  // this is flat vector illustration, not a photo, so WebP's predictor +
+  // entropy coding beats PNG's DEFLATE by a wide margin even losslessly.
+  const webp = await sharp(png, { limitInputPixels: false }).webp({ lossless: true }).toBuffer();
+  writeFileSync(OUT_FILE, webp);
   console.log(
-    `Wrote ${rendered.width}x${rendered.height}, ${(png.length / 1024 / 1024).toFixed(1)}MB -> ${OUT_FILE}`,
+    `Wrote ${rendered.width}x${rendered.height}, ${(webp.length / 1024 / 1024).toFixed(1)}MB ` +
+      `(from ${(png.length / 1024 / 1024).toFixed(1)}MB PNG) -> ${OUT_FILE}`,
   );
 }
 
