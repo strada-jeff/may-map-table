@@ -11,6 +11,7 @@ import { WelcomeProvider } from './hooks/WelcomeContext'
 import { SideModalProvider } from './hooks/SideModalContext'
 import MapView from './components/MapView'
 import WelcomeOverlay from './components/WelcomeOverlay'
+import IdleResetEffect from './components/IdleResetEffect'
 import Drawer from './components/Drawer'
 import DetailsView from './components/DetailsView'
 import SidePanel from './components/SidePanel'
@@ -71,6 +72,7 @@ function App() {
                     <RotateControl rotated={rotated} onToggle={() => setRotated((r) => !r)} />
                     <HelpCta />
                     <WelcomeOverlay />
+                    <IdleResetEffect />
                   </div>
                 </TransformWrapper>
               </SideModalProvider>

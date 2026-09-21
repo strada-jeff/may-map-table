@@ -94,13 +94,15 @@ body {
 
 /* ZoomSlider renders after <TransformComponent> in DOM order (see
    MapView), so it already paints on top of the map content without this —
-   kept as an explicit guarantee against anything else in the overlay
-   chrome stacking above it. */
+   kept as an explicit guarantee, matching the other floating controls'
+   z-40 (CompassControl/RotateControl/HelpCta/SignupCta). Must stay below
+   the Drawer (z-45) and modal-style overlays (WelcomeOverlay/DetailsView/
+   SidePanel, z-50) — it used to be z-index: 900, which beat all of those. */
 .zoom-slider-track {
   position: absolute;
   right: 36px;
   bottom: 160px;
-  z-index: 900;
+  z-index: 40;
   width: 40px;
   height: 400px;
   cursor: pointer;
