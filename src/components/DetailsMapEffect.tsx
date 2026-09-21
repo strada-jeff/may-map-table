@@ -8,9 +8,10 @@ import { useDestinationPins } from "../hooks/useDestinationPins";
 /**
  * The details panel is anchored to the left (see DetailsView), so centering
  * the active pin on the wrapper's true center would put it halfway under
- * the panel. Shifts the target center left by half the panel's width so
- * the pin lands in the middle of the space that's actually still visible,
- * at CONFIG.map.pinDetailZoomLevel.
+ * the panel. Shifts the target center right by half the panel's width so
+ * the pin lands in the middle of the space that's actually still visible
+ * (from the panel's right edge to the wrapper's right edge), at
+ * CONFIG.map.pinDetailZoomLevel.
  */
 export default function DetailsMapEffect() {
   const controls = useControls();
@@ -28,7 +29,7 @@ export default function DetailsMapEffect() {
       { width, height },
       pin.position,
       zoomToScale(CONFIG.map.pinDetailZoomLevel),
-      { x: -CONFIG.details.panelWidthPx / 2, y: 0 },
+      { x: CONFIG.details.panelWidthPx / 2, y: 0 },
     );
     tweenTransform(controls, target);
   }, [activePinId, pins, controls]);
