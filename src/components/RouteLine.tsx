@@ -1,11 +1,11 @@
 import { useLayoutEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import { useMap } from "react-leaflet";
+import { useControls } from "react-zoom-pan-pinch";
 import gsap from "gsap";
 import { CONFIG } from "../config";
-import { distance, resolveMapPoint, type MapSpace } from "../routing";
+import { distance, resolveMapPoint } from "../routing";
+import { fitTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
 import type { ActiveRoute } from "../types/routing";
-import { ROUTE_ACTIVE_PANE, ROUTE_EXIT_FADE_MS } from "./routePanes";
+import { ROUTE_EXIT_FADE_MS } from "./routePanes";
 import YouAreHerePinArtwork, {
   CIRCLE_CX as BADGE_CIRCLE_CX,
   CIRCLE_CY as BADGE_CIRCLE_CY,
@@ -13,9 +13,8 @@ import YouAreHerePinArtwork, {
 } from "./YouAreHerePinIcon";
 
 type RouteLineProps = {
-  space: MapSpace;
   route: ActiveRoute;
-  /** True while RouteEffects is fading this out ahead of a route change. */
+  /** True while RouteContext is fading this out ahead of a route change. */
   fadeOut: boolean;
 };
 
@@ -47,44 +46,41 @@ const MASK_STROKE_WIDTH = 12.5;
 const ARROW_SIZE = 18;
 
 // The "you are here" badge's on-screen circle radius. Drawing it here
-// (rather than as a separate Marker/<img>, which is how this used to work)
-// means its ring can reuse the line's own DASH_LENGTH/DASH_GAP/
-// SHADOW_STROKE_WIDTH/LINE_STROKE_WIDTH/sketch-filter constants directly —
-// one real definition instead of two files trying to independently arrive
-// at the same numbers. (An <img>-referenced external SVG turned out not to
-// reliably apply a sketch filter through Chrome's <img> pipeline either,
-// so inlining this also sidesteps that.)
+// (rather than as a separate marker) means its ring can reuse the line's
+// own DASH_LENGTH/DASH_GAP/SHADOW_STROKE_WIDTH/LINE_STROKE_WIDTH/sketch-
+// filter constants directly — one real definition instead of two files
+// trying to independently arrive at the same numbers.
 const BADGE_RADIUS_PX = 54;
 const BADGE_SCALE = BADGE_RADIUS_PX / BADGE_CIRCLE_RADIUS;
-// The badge's ring is drawn in the artwork's native (larger) coordinate
-// space, then shrunk by BADGE_SCALE along with the rest of the badge — so
-// every size-like value here is the line's real on-screen target divided
-// (or, for spatial frequency, multiplied) by that same factor, and comes
-// back out at the exact same real pixels once the shrink is applied.
 const BADGE_RING_STROKE_WIDTH = LINE_STROKE_WIDTH / BADGE_SCALE;
 const BADGE_RING_SHADOW_STROKE_WIDTH = SHADOW_STROKE_WIDTH / BADGE_SCALE;
 const BADGE_RING_DASH_ARRAY = `${DASH_LENGTH / BADGE_SCALE} ${DASH_GAP / BADGE_SCALE}`;
 const BADGE_SKETCH_BASE_FREQUENCY = SKETCH_BASE_FREQUENCY * BADGE_SCALE;
 const BADGE_SKETCH_DISPLACEMENT_SCALE = SKETCH_DISPLACEMENT_SCALE / BADGE_SCALE;
 
+// Generous margin beyond the artwork's own bounds so the mask's covering
+// rect can never clip a stroke sitting right at the edge.
+const MASK_MARGIN = 512;
+const MASK_X = -MASK_MARGIN;
+const MASK_Y = -MASK_MARGIN;
+const MASK_WIDTH = CONFIG.map.width + 2 * MASK_MARGIN;
+const MASK_HEIGHT = CONFIG.map.height + 2 * MASK_MARGIN;
+
 /**
- * Drawn as a plain SVG overlay in its own Leaflet pane, using layer-point
- * coordinates (map.latLngToLayerPoint) instead of react-leaflet's
- * <Polyline>. Every pane shares one ancestor (map._mapPane) that Leaflet
- * translates via CSS for a plain drag, so panning repositions this line for
- * free along with tiles/markers/everything else — no recompute needed on
- * 'move' at all, only on 'zoom'/'viewreset'/'resize', when the projection
- * itself actually changes.
+ * Drawn as plain children of the shared master <svg> (see MapView), in the
+ * same artwork-pixel coordinate space as the artwork and destination
+ * anchors — panning/zooming the whole scene repositions this for free via
+ * the shared transform, no per-frame recompute needed at all (contrast the
+ * old Leaflet version, which had to re-project onto layer points on every
+ * 'zoom'/'viewreset'/'resize').
  *
- * Also draws the "you are here" badge, in the same <svg> — see BADGE_*
- * above. That used to be a separate Leaflet Marker, which meant its ring
- * needed its own copy of the line's stroke/dash/filter numbers (scaled for
- * a totally different rendering context) kept in sync by hand, plus a
- * zIndexOffset hack to paint above the line and a second layerPoint
- * computation for the mask cutout below. Drawing it here instead means the
- * ring is *derived* from the line's own constants, "above the line" is
- * just paint order, and the cutout uses the exact same badgePoint that
- * positions the badge.
+ * `vectorEffect="non-scaling-stroke"` still matters here even without
+ * Leaflet: it keeps the stroke a constant screen width as the shared
+ * transform's CSS scale changes, rather than the stroke growing/shrinking
+ * along with the artwork the way an ordinary SVG stroke would.
+ *
+ * Also draws the "you are here" badge, in the same coordinate space — see
+ * BADGE_* above.
  *
  * The dashed look and the "draw in" animation are two separate layers on
  * purpose: an SVG <mask> containing a solid stroke whose strokeDashoffset
@@ -92,87 +88,43 @@ const BADGE_SKETCH_DISPLACEMENT_SCALE = SKETCH_DISPLACEMENT_SCALE / BADGE_SCALE;
  * solid line, and the actual dashed/dotted strokes are drawn underneath
  * that mask — so the dash pattern doesn't shift or "march" as it animates,
  * it just gets progressively uncovered.
- *
- * Leaflet's discrete, CSS-transition-driven zoom animation (e.g. the +/-
- * zoom control) scales _mapPane for the duration of the transition, and
- * every pane — including this one — inherits that scale. `vector-effect:
- * non-scaling-stroke` on every stroked polyline (mask included) keeps
- * stroke width constant in screen pixels through that, so it no longer
- * balloons mid-transition — it only ever affects the path's own geometry
- * (which should track the map), not how thick the line paints.
  */
-export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
-  const map = useMap();
-  const latLngs = useMemo(
-    () => space.toLatLngs(route.coordinates),
-    [space, route.coordinates],
+export default function RouteLine({ route, fadeOut }: RouteLineProps) {
+  const controls = useControls();
+  const points = useMemo<[number, number][]>(
+    () => route.coordinates.map(([x, y]) => [x, y]),
+    [route.coordinates],
   );
-  // CONFIG.routing.youAreHereBadgePoint, not the route's own originId —
-  // recomputed alongside `points` so the badge (and the cutout it drives)
-  // track through zoom/pan exactly like the line does.
-  const badgeLatLng = useMemo(
-    () => space.toLatLng(resolveMapPoint(CONFIG.routing.youAreHereBadgePoint)),
-    [space],
+  const badgePoint = useMemo<[number, number]>(
+    () => resolveMapPoint(CONFIG.routing.youAreHereBadgePoint) as [number, number],
+    [],
   );
-  const [points, setPoints] = useState<[number, number][]>([]);
-  const [badgePoint, setBadgePoint] = useState<[number, number] | null>(null);
   const [drawT, setDrawT] = useState(0);
   const [arrowT, setArrowT] = useState(0);
   const [badgeVisible, setBadgeVisible] = useState(false);
-  // Created (and z-indexed) by RouteEffects before this ever mounts — the
-  // fallback here only matters if RouteLine is ever used on its own.
-  const pane =
-    map.getPane(ROUTE_ACTIVE_PANE) ?? map.createPane(ROUTE_ACTIVE_PANE);
 
-  // useLayoutEffect, not useEffect, for both effects below: a route swap
-  // (picking a new destination while one's already displayed) re-renders
-  // this same RouteLine instance with new props but still-stale state from
-  // the previous route for one commit — plain useEffect defers running
-  // until *after* the browser paints, so that stale frame (old route's
-  // points, drawT/badgeVisible left at their finished values from before)
-  // was genuinely getting painted and shown as a visible flash before
-  // these effects caught up and reset it. useLayoutEffect runs before
-  // paint, so the reset lands in the same frame as the new props.
-  useLayoutEffect(() => {
-    function compute() {
-      setPoints(
-        latLngs.map((latLng) => {
-          const p = map.latLngToLayerPoint(latLng);
-          return [p.x, p.y];
-        }),
-      );
-      const bp = map.latLngToLayerPoint(badgeLatLng);
-      setBadgePoint([bp.x, bp.y]);
-    }
-    // 'zoom' can still fire once per frame during flyTo — rAF-coalesce so a
-    // fast transition can't queue more re-renders than the browser can
-    // paint, same as CompassControl.
-    let rafId = 0;
-    function update() {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(compute);
-    }
-    compute();
-    map.on("zoom viewreset resize", update);
-    return () => {
-      cancelAnimationFrame(rafId);
-      map.off("zoom viewreset resize", update);
-    };
-  }, [map, latLngs, badgeLatLng]);
-
-  // Plays once per route activation. Keyed on `route` itself — a fresh
-  // object every routeTo() call, even re-clicking the same destination —
-  // rather than on `points`, so it can't restart mid-draw on its own. It
-  // still waits for RouteEffects' flyToBounds to actually settle first
-  // (via 'moveend'), rather than starting immediately alongside it, so the
-  // line isn't drawing in — and the badge isn't fading in — while the
-  // viewport is still flying underneath them.
+  // Fits the route's bounds into view, then starts the draw-in animation
+  // once that settle finishes — mirrors the old flyToBounds-then-moveend
+  // sequencing, just driven by our own GSAP tween instead of Leaflet's.
   useLayoutEffect(() => {
     setDrawT(0);
     setArrowT(0);
     setBadgeVisible(false);
-    let timeline: gsap.core.Timeline | null = null;
 
+    const wrapper = controls.instance.wrapperComponent;
+    if (!wrapper) return;
+    const { width, height } = wrapper.getBoundingClientRect();
+    const padding = CONFIG.routing.fitPaddingPx;
+    const target = fitTransform(
+      { width: width - 2 * padding, height: height - 2 * padding },
+      points,
+      0,
+      zoomToScale(CONFIG.map.minZoom),
+      zoomToScale(CONFIG.map.maxZoom),
+    );
+    const fitTween = tweenTransform(controls, target);
+
+    let timeline: gsap.core.Timeline | null = null;
     function startDraw() {
       setBadgeVisible(true);
       const drawProxy = { t: 0 };
@@ -196,13 +148,14 @@ export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
           "-=0.05",
         );
     }
+    fitTween.eventCallback("onComplete", startDraw);
 
-    map.once("moveend", startDraw);
     return () => {
-      map.off("moveend", startDraw);
+      fitTween.kill();
       timeline?.kill();
     };
-  }, [map, route]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route, points]);
 
   if (points.length < 2) return null;
 
@@ -216,54 +169,25 @@ export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
   const [prevX, prevY] = points[points.length - 2]!;
   const arrowAngle = (Math.atan2(endY - prevY, endX - prevX) * 180) / Math.PI;
 
-  const size = map.getSize();
-
-  return createPortal(
-    // width/height give the svg a sane box matching the viewport (an <svg>
-    // with no explicit size defaults to a degenerate/inconsistent one) —
-    // but that box is pinned to the pane's local origin, and this pane
-    // isn't re-measured on pan (on purpose — see above), so the box itself
-    // drifts out of alignment with the route's actual layer-point
-    // coordinates as soon as the map moves. overflow: visible is what
-    // actually prevents clipping once that happens; it's not a z-index
-    // issue — an <svg> clips to its own box by default (UA stylesheet),
-    // and the polyline's own coordinates are already correct regardless of
-    // where that box sits.
-    <svg
-      className="pointer-events-none"
-      style={{
-        width: size.x,
-        height: size.y,
-        overflow: "visible",
-        opacity: fadeOut ? 0 : 1,
-        transition: `opacity ${ROUTE_EXIT_FADE_MS}ms ease`,
-      }}
-    >
+  return (
+    <g style={{ opacity: fadeOut ? 0 : 1, transition: `opacity ${ROUTE_EXIT_FADE_MS}ms ease` }}>
       <defs>
         {/* Both masks below get an explicit userSpaceOnUse region spanning
-            the whole canvas — masks default to objectBoundingBox with a
-            region computed from the *masked element's own geometry*, and a
-            polyline whose points happen to be perfectly horizontal or
-            vertical has a bounding box that's zero-width or zero-height in
-            that axis. 120% of zero is still zero, so the mask's effective
-            region collapses to nothing and hides everything it's applied
-            to — not just near the badge, the entire line. Fixed absolute
+            a generous area around the artwork — masks default to
+            objectBoundingBox with a region computed from the *masked
+            element's own geometry*, and a polyline whose points happen to
+            be perfectly horizontal or vertical has a bounding box that's
+            zero-width or zero-height in that axis. Fixed absolute
             coordinates sidestep that regardless of the path's own shape. */}
-        {/* Cuts a hole where the badge's own opaque circle sits, so the
-            line doesn't visibly poke out from behind it — the badge
-            already paints on top (it's simply drawn after, below), but its
-            own artwork has transparent padding around the circle for the
-            "YOU ARE HERE" arc, so overlap alone isn't quite enough right at
-            the badge's own edge. */}
         <mask
           id={BADGE_CUTOUT_MASK_ID}
           maskUnits="userSpaceOnUse"
-          x={0}
-          y={0}
-          width={size.x}
-          height={size.y}
+          x={MASK_X}
+          y={MASK_Y}
+          width={MASK_WIDTH}
+          height={MASK_HEIGHT}
         >
-          <rect x={0} y={0} width={size.x} height={size.y} fill="#fff" />
+          <rect x={MASK_X} y={MASK_Y} width={MASK_WIDTH} height={MASK_HEIGHT} fill="#fff" />
           {badgePoint && (
             <circle
               cx={badgePoint[0]}
@@ -276,10 +200,10 @@ export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
         <mask
           id={MASK_ID}
           maskUnits="userSpaceOnUse"
-          x={0}
-          y={0}
-          width={size.x}
-          height={size.y}
+          x={MASK_X}
+          y={MASK_Y}
+          width={MASK_WIDTH}
+          height={MASK_HEIGHT}
         >
           <polyline
             points={pointsAttr}
@@ -316,11 +240,7 @@ export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
           />
         </filter>
         {/* Same idea as the line's filter, tuned separately for the
-            arrowhead's much smaller size — a straight copy of the line's
-            own numbers (tuned for an 18px-wide stroke) was too subtle to
-            read as sketchy at all on a ~22px shape; a lower frequency with
-            more displacement gives it a visibly hand-drawn edge without
-            losing the arrow shape entirely. */}
+            arrowhead's much smaller size. */}
         <filter
           id={ARROW_SKETCH_FILTER_ID}
           x="-60%"
@@ -345,9 +265,7 @@ export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
         </filter>
         {/* Same filter technique again, pre-compensated by BADGE_SCALE (see
             above) since this one gets shrunk along with the rest of the
-            badge — a raw copy of the line's own filter would end up both
-            higher-frequency and lower-amplitude than intended once that
-            shrink applies. */}
+            badge. */}
         <filter
           id={BADGE_SKETCH_FILTER_ID}
           x="-40%"
@@ -440,7 +358,6 @@ export default function RouteLine({ space, route, fadeOut }: RouteLineProps) {
           />
         </g>
       )}
-    </svg>,
-    pane,
+    </g>
   );
 }

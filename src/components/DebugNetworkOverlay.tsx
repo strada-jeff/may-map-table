@@ -1,11 +1,9 @@
-import { CircleMarker, Polyline, Tooltip } from "react-leaflet";
-import { MapSpace, connectedComponents, type Point } from "../routing";
+import { connectedComponents, type Point } from "../routing";
 import { network } from "../routing/generated";
 
-const space = new MapSpace(network.bounds);
-const components = connectedComponents(network);
-
 const COMPONENT_COLOURS = ["#D6236A", "#F2A03D", "#7B5BD6", "#12A594", "#C4324B"];
+
+const components = connectedComponents(network);
 
 const componentOf = new Map<number, number>();
 components.forEach((component, index) => {
@@ -40,26 +38,30 @@ function chevronFor(geom: readonly Point[], size = 11, sweep = 0.6): Point[] | n
   return [barb(sweep), tip, barb(-sweep)];
 }
 
+const toPointsAttr = (points: readonly Point[]) => points.map(([x, y]) => `${x},${y}`).join(" ");
+
 /**
  * Renders the derived road graph over the artwork, gated behind `?debug=1`.
  * The only way to see what the extractor actually produced — a gap the merge
  * missed, a disconnected component, a road that never made it out of the SVG
- * are all obvious here and invisible everywhere else.
+ * are all obvious here and invisible everywhere else. Plain SVG children of
+ * the shared master <svg> (see MapView) — network coordinates are already
+ * in the same artwork-pixel space.
  */
 export default function DebugNetworkOverlay() {
   return (
     <>
       {network.edges.map((edge, id) => (
-        <Polyline
+        <polyline
           key={`edge-${id}`}
-          positions={space.toLatLngs(edge.geom)}
-          pathOptions={{
-            color: COMPONENT_COLOURS[(componentOf.get(edge.a) ?? 0) % COMPONENT_COLOURS.length],
-            weight: edge.kind === "bridge" ? 4 : 2,
-            opacity: 0.9,
-            dashArray: edge.kind === "bridge" ? "10 5" : undefined,
-            interactive: false,
-          }}
+          points={toPointsAttr(edge.geom)}
+          fill="none"
+          stroke={COMPONENT_COLOURS[(componentOf.get(edge.a) ?? 0) % COMPONENT_COLOURS.length]}
+          strokeWidth={edge.kind === "bridge" ? 4 : 2}
+          strokeOpacity={0.9}
+          strokeDasharray={edge.kind === "bridge" ? "10 5" : undefined}
+          vectorEffect="non-scaling-stroke"
+          style={{ pointerEvents: "none" }}
         />
       ))}
 
@@ -68,10 +70,15 @@ export default function DebugNetworkOverlay() {
         const chevron = chevronFor(edge.geom);
         if (!chevron) return null;
         return (
-          <Polyline
+          <polyline
             key={`chevron-${id}`}
-            positions={space.toLatLngs(chevron)}
-            pathOptions={{ color: "#111827", weight: 2, opacity: 0.9, interactive: false }}
+            points={toPointsAttr(chevron)}
+            fill="none"
+            stroke="#111827"
+            strokeWidth={2}
+            strokeOpacity={0.9}
+            vectorEffect="non-scaling-stroke"
+            style={{ pointerEvents: "none" }}
           />
         );
       })}
@@ -80,19 +87,19 @@ export default function DebugNetworkOverlay() {
         const count = degree.get(id) ?? 0;
         const isDeadEnd = count === 1;
         return (
-          <CircleMarker
+          <circle
             key={`node-${id}`}
-            center={space.toLatLng(point)}
-            radius={isDeadEnd ? 6 : 4}
-            pathOptions={{
-              color: isDeadEnd ? "#E11D48" : "#111827",
-              fillColor: isDeadEnd ? "#E11D48" : "#FFFFFF",
-              fillOpacity: 1,
-              weight: 2,
-            }}
+            cx={point[0]}
+            cy={point[1]}
+            r={isDeadEnd ? 6 : 4}
+            stroke={isDeadEnd ? "#E11D48" : "#111827"}
+            fill={isDeadEnd ? "#E11D48" : "#FFFFFF"}
+            fillOpacity={1}
+            strokeWidth={2}
+            vectorEffect="non-scaling-stroke"
           >
-            <Tooltip direction="top">{`node ${id} · degree ${count}`}</Tooltip>
-          </CircleMarker>
+            <title>{`node ${id} · degree ${count}`}</title>
+          </circle>
         );
       })}
     </>

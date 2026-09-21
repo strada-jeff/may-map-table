@@ -1,19 +1,17 @@
 import { useEffect, useRef } from "react";
-import { useMap } from "react-leaflet";
-import L from "leaflet";
+import { useControls } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
-import type { MapSpace } from "../routing";
+import { fitTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
 import { useFilter } from "../hooks/FilterContext";
 import { useDestinationPins } from "../hooks/useDestinationPins";
 
 /**
- * Lives inside <MapContainer> so it can reach Leaflet's map instance. Fits
- * the viewport to whichever pins the active filter leaves visible, so
+ * Fits the viewport to whichever pins the active filter leaves visible, so
  * picking a category also brings its markers into view rather than leaving
  * them wherever the map already happened to be looking.
  */
-export default function FilterEffects({ space }: { space: MapSpace }) {
-  const map = useMap();
+export default function FilterEffects() {
+  const controls = useControls();
   const { activeCategoryId } = useFilter();
   const { pins } = useDestinationPins();
   // Skips the initial mount (activeCategoryId starts null with nothing to
@@ -35,10 +33,19 @@ export default function FilterEffects({ space }: { space: MapSpace }) {
       activeCategoryId === null ? pins : pins.filter((pin) => pin.categoryId === activeCategoryId);
     if (visible.length === 0) return;
 
-    const bounds = L.latLngBounds(visible.map((pin) => space.toLatLng(pin.position)));
+    const wrapper = controls.instance.wrapperComponent;
+    if (!wrapper) return;
+    const { width, height } = wrapper.getBoundingClientRect();
     const padding = CONFIG.routing.fitPaddingPx;
-    map.flyToBounds(bounds, { padding: [padding, padding] });
-  }, [activeCategoryId, pins, map, space]);
+    const target = fitTransform(
+      { width, height },
+      visible.map((pin) => pin.position),
+      padding,
+      zoomToScale(CONFIG.map.minZoom),
+      zoomToScale(CONFIG.map.maxZoom),
+    );
+    tweenTransform(controls, target);
+  }, [activeCategoryId, pins, controls]);
 
   return null;
 }

@@ -6,4 +6,4 @@ export { buildGraph, dijkstraFrom, pathTo } from "./graph";
 export type { Snap, Projection } from "./snap";
 export { SnapIndex, projectPointOnSegment, splitEdgeAt } from "./snap";
 export { connectedComponents } from "./components";
-export { MapSpace, resolveMapPoint } from "./coords";
+export { resolveMapPoint } from "./coords";

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import type L from "leaflet";
+import { useState } from "react";
+import { useControls, useTransformEffect, type ReactZoomPanPinchContentRef } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
-import { space } from "../mapSpace";
-import { useMapInstance } from "../hooks/MapInstanceContext";
 import compassPoints from "../assets/icons/compass-points.svg";
 import youAreHereIcon from "../assets/icons/compass-you-are-here.svg";
 
@@ -37,55 +35,41 @@ function toFramePercent(fraction: number, offset: number, visible: number): numb
   return ((fraction - offset) / visible) * 100;
 }
 
-/** Main map's current viewport/center, as fractions (0-1) of the full artwork. */
-function readView(mainMap: L.Map): View {
-  const bounds = mainMap.getBounds();
-  const [minX, minY] = space.fromLatLng(bounds.getNorthWest());
-  const [maxX, maxY] = space.fromLatLng(bounds.getSouthEast());
-  const [centerX, centerY] = space.fromLatLng(mainMap.getCenter());
+function readView(controls: ReactZoomPanPinchContentRef): View | null {
+  const wrapper = controls.instance.wrapperComponent;
+  if (!wrapper) return null;
+  const rect = wrapper.getBoundingClientRect();
+  const topLeft = controls.clientToContent(rect.left, rect.top);
+  const bottomRight = controls.clientToContent(rect.right, rect.bottom);
+  const center = controls.clientToContent(rect.left + rect.width / 2, rect.top + rect.height / 2);
   const { width, height } = CONFIG.map;
 
   return {
-    rectLeft: clamp01(minX / width),
-    rectTop: clamp01(minY / height),
-    rectWidth: clamp01((maxX - minX) / width),
-    rectHeight: clamp01((maxY - minY) / height),
-    centerX: clamp01(centerX / width),
-    centerY: clamp01(centerY / height),
+    rectLeft: clamp01(topLeft.x / width),
+    rectTop: clamp01(topLeft.y / height),
+    rectWidth: clamp01((bottomRight.x - topLeft.x) / width),
+    rectHeight: clamp01((bottomRight.y - topLeft.y) / height),
+    centerX: clamp01(center.x / width),
+    centerY: clamp01(center.y / height),
   };
 }
 
 /**
  * A static overview image (public/overview.jpg — a small, manually-exported
- * version of the artwork; NOT the full-resolution base.jpg, which was
- * decoding/compositing a 132-megapixel image on every pan of the main map)
- * plus a live rectangle + dot, positioned by plain percentage math rather
- * than a second Leaflet map. The raster tile pyramid's lowest zoom is still
- * much bigger than this circle, so getting a real Leaflet instance to show
- * the *whole* artwork here would mean CSS-scaling the whole map down —
- * which shrinks every marker/stroke back to invisible along with it.
+ * version of the artwork) plus a live rectangle + dot, positioned by plain
+ * percentage math rather than a second map instance — this never needed
+ * Leaflet's own mapping features to begin with, just its current
+ * viewport/center, which react-zoom-pan-pinch exposes just as directly.
  */
 export default function CompassControl() {
-  const { map: mainMap } = useMapInstance();
-  const [view, setView] = useState<View | null>(() => (mainMap ? readView(mainMap) : null));
+  const controls = useControls();
+  // Read once synchronously at first render (App.tsx's onInit already set
+  // the real transform by the time this mounts) rather than starting at
+  // null and waiting for the first onChange, which wouldn't fire until the
+  // user's first pan/zoom.
+  const [view, setView] = useState<View | null>(() => readView(controls));
 
-  useEffect(() => {
-    if (!mainMap) return;
-    // "move" fires on every animation frame of a drag/flyTo — rAF-coalesce
-    // so a fast drag can't queue more state updates than the browser can
-    // paint.
-    let rafId = 0;
-    const update = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => setView(readView(mainMap)));
-    };
-    update();
-    mainMap.on("move zoom", update);
-    return () => {
-      cancelAnimationFrame(rafId);
-      mainMap.off("move zoom", update);
-    };
-  }, [mainMap]);
+  useTransformEffect(() => setView(readView(controls)));
 
   return (
     <div className="compass-control pointer-events-none absolute right-18 top-18 z-40">

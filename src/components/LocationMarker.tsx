@@ -1,8 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { Marker } from "react-leaflet";
-import L from "leaflet";
-import type { MapSpace } from "../routing";
+import { KeepScale } from "react-zoom-pan-pinch";
 import type { DestinationPin } from "../hooks/useDestinationPins";
 import { usePinClick } from "../hooks/usePinClick";
 import DestinationFlagIcon from "./DestinationFlagIcon";
@@ -17,53 +13,46 @@ const ANCHOR_X = 14;
 const ANCHOR_Y = 213;
 const DISPLAY_HEIGHT = 70;
 const DISPLAY_WIDTH = Math.round((DISPLAY_HEIGHT * NATURAL_WIDTH) / NATURAL_HEIGHT);
+const ANCHOR_LEFT_PX = Math.round((DISPLAY_WIDTH * ANCHOR_X) / NATURAL_WIDTH);
+const ANCHOR_TOP_PX = Math.round((DISPLAY_HEIGHT * ANCHOR_Y) / NATURAL_HEIGHT);
 
 // Fallback if a location's category has no color set, so a data gap shows
 // up as an odd-colored flag rather than a crash.
 const FALLBACK_COLOR = "#82b1dd";
 
 type LocationMarkerProps = {
-  space: MapSpace;
   pin: Extract<DestinationPin, { kind: "location" }>;
   /** Whether this pin currently matches the active filter. */
   visible: boolean;
 };
 
-export default function LocationMarker({ space, pin, visible }: LocationMarkerProps) {
+export default function LocationMarker({ pin, visible }: LocationMarkerProps) {
   const onClick = usePinClick(pin.id);
-  const markerRef = useRef<L.Marker | null>(null);
-  // Captured once so the icon's initial class matches the filter state it
-  // mounts under — later changes are applied straight to the marker's DOM
-  // element (see effect below) so the CSS transition has something to animate from.
-  const [initialVisible] = useState(visible);
-  const icon = useMemo(
-    () =>
-      L.divIcon({
-        className: initialVisible ? "destination-marker" : "destination-marker marker-hidden",
-        html: renderToStaticMarkup(
-          <div className="destination-marker-inner size-full">
-            <DestinationFlagIcon color={pin.markerColor ?? FALLBACK_COLOR} className="size-full" />
-          </div>,
-        ),
-        iconSize: [DISPLAY_WIDTH, DISPLAY_HEIGHT],
-        iconAnchor: [
-          Math.round((DISPLAY_WIDTH * ANCHOR_X) / NATURAL_WIDTH),
-          Math.round((DISPLAY_HEIGHT * ANCHOR_Y) / NATURAL_HEIGHT),
-        ],
-      }),
-    [pin.markerColor, initialVisible],
-  );
-
-  useEffect(() => {
-    markerRef.current?.getElement()?.classList.toggle("marker-hidden", !visible);
-  }, [visible]);
+  const [x, y] = pin.position;
 
   return (
-    <Marker
-      ref={markerRef}
-      position={space.toLatLng(pin.position)}
-      icon={icon}
-      eventHandlers={{ click: onClick }}
-    />
+    <div className="absolute z-20" style={{ left: x, top: y }}>
+      <KeepScale>
+        {/* Pure anchor placement — kept separate from .destination-marker
+            below so its own inline transform doesn't fight that class's
+            CSS-driven show/hide transform on .destination-marker-inner. */}
+        <div
+          style={{
+            width: DISPLAY_WIDTH,
+            height: DISPLAY_HEIGHT,
+            transform: `translate(${-ANCHOR_LEFT_PX}px, ${-ANCHOR_TOP_PX}px)`,
+          }}
+        >
+          <div
+            className={`destination-marker size-full ${visible ? "" : "marker-hidden"}`}
+            onClick={onClick}
+          >
+            <div className="destination-marker-inner size-full">
+              <DestinationFlagIcon color={pin.markerColor ?? FALLBACK_COLOR} className="size-full" />
+            </div>
+          </div>
+        </div>
+      </KeepScale>
+    </div>
   );
 }

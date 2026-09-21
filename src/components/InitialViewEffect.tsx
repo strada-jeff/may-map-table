@@ -1,27 +1,31 @@
-import { useEffect, useMemo, useRef } from "react";
-import { useMap } from "react-leaflet";
+import { useEffect, useRef } from "react";
+import { useControls } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
-import { resolveMapPoint, type MapSpace } from "../routing";
+import { resolveMapPoint } from "../routing";
+import { centeredTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
 import { useWelcome } from "../hooks/WelcomeContext";
 import { useRoute } from "../hooks/RouteContext";
 
 /**
- * Lives inside <MapContainer> so it can reach Leaflet's map instance.
- * MapView's own initial center/zoom already render the idle (zoomed-out)
+ * App.tsx's TransformWrapper onInit already renders the idle (zoomed-out)
  * view on first mount — this only handles the transitions after that:
  * flying back out on returning to idle, and flying in on Explore.
  */
-export default function InitialViewEffect({ space }: { space: MapSpace }) {
-  const map = useMap();
+export default function InitialViewEffect() {
+  const controls = useControls();
   const { isIdle, exploreCount } = useWelcome();
   const { clearRoute } = useRoute();
   const isFirstIdleRun = useRef(true);
 
-  const center = useMemo(
-    () => space.toLatLng(resolveMapPoint(CONFIG.map.initialCenter)),
-    [space],
-  );
-  const idleZoom = CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset;
+  const center = resolveMapPoint(CONFIG.map.initialCenter);
+  const idleScale = zoomToScale(CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset);
+
+  function targetTransform(scale: number) {
+    const wrapper = controls.instance.wrapperComponent;
+    if (!wrapper) return null;
+    const { width, height } = wrapper.getBoundingClientRect();
+    return centeredTransform({ width, height }, center, scale);
+  }
 
   useEffect(() => {
     if (isFirstIdleRun.current) {
@@ -33,13 +37,17 @@ export default function InitialViewEffect({ space }: { space: MapSpace }) {
     // whatever the previous visitor was doing — clear any in-progress route
     // along with flying back out to the idle view.
     clearRoute();
-    map.flyTo(center, idleZoom);
-  }, [isIdle, center, idleZoom, map, clearRoute]);
+    const target = targetTransform(idleScale);
+    if (target) tweenTransform(controls, target);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isIdle]);
 
   useEffect(() => {
     if (exploreCount === 0) return;
-    map.flyTo(center, CONFIG.map.initialZoom);
-  }, [exploreCount, center, map]);
+    const target = targetTransform(zoomToScale(CONFIG.map.initialZoom));
+    if (target) tweenTransform(controls, target);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exploreCount]);
 
   return null;
 }

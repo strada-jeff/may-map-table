@@ -1,84 +1,60 @@
-import { MapContainer } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "../leaflet/smoothWheelZoom";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { TransformComponent } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
-import { resolveMapPoint } from "../routing";
-import { space } from "../mapSpace";
-import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import DestinationMarkers from "./DestinationMarkers";
 import LottieMarkers from "./LottieMarkers";
-import RouteEffects from "./RouteEffects";
+import RouteSvgLayer from "./RouteSvgLayer";
+import RouteHighlightMarker from "./RouteHighlightMarker";
 import FilterEffects from "./FilterEffects";
 import DetailsMapEffect from "./DetailsMapEffect";
 import InitialViewEffect from "./InitialViewEffect";
-import PublishMapInstance from "./PublishMapInstance";
 import ZoomSlider from "./ZoomSlider";
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+const isDebug = new URLSearchParams(window.location.search).get("debug") === "1";
 
-// The welcome screen is up on first paint, so the map should already be
-// showing its idle (zoomed-out) view rather than fitting the whole artwork
-// — see InitialViewEffect for the transitions after this initial render.
-const initialCenter = space.toLatLng(resolveMapPoint(CONFIG.map.initialCenter));
-const initialZoom = CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset;
-
-const isDebug =
-  new URLSearchParams(window.location.search).get("debug") === "1";
-
+/**
+ * The pannable/zoomable scene is one plain div sized exactly to the
+ * artwork's native pixel dimensions — artwork, routes, and markers all
+ * live as real children in that same coordinate space, so panning/zooming
+ * (react-zoom-pan-pinch's shared transform on the wrapping div, see
+ * App.tsx) repositions everything for free. No per-frame recompute, no
+ * tile pyramid, no map-unit-to-screen-pixel conversion layer.
+ *
+ * Route/debug content is real SVG (masks, filters, dash-draw-in animation
+ * need it); destination/Lottie markers are plain positioned HTML, since
+ * that's what they already were as react-leaflet divIcons/markers.
+ */
 function MapView({ rotated }: { rotated: boolean }) {
   return (
-    <MapContainer
-      className="h-full w-full bg-[#f2f0ee]! z-40"
-      crs={L.CRS.Simple}
-      center={initialCenter}
-      zoom={initialZoom}
-      maxBounds={space.latLngBounds}
-      minZoom={CONFIG.map.minZoom}
-      maxZoom={CONFIG.map.maxZoom}
-      zoomSnap={0}
-      // ZoomSlider is the app's only zoom control — Leaflet's built-in +/-
-      // control would just duplicate it.
-      zoomControl={false}
-      scrollWheelZoom={false}
-      smoothWheelZoom
-      smoothSensitivity={1}
-      // ZoomSlider changes zoom with animate:false so a drag doesn't fight
-      // its own transitions (see ZoomSlider) — with fade animation on,
-      // every one of those rapid, discrete zoom resets briefly fades the
-      // tile layer out/in, which reads as flashing/flickering.
-      fadeAnimation={false}
-      // Leaflet's default zoom animation (used by the built-in +/- control
-      // and double-click-zoom) is a CSS transition that scales the whole
-      // map pane between the start/end view as a flat image, rather than
-      // reprojecting content — every other zoom trigger in this app already
-      // avoids that path (ZoomSlider is animate:false, flyTo/flyToBounds
-      // drive real per-frame reprojection), specifically because a thick
-      // stroke like RouteLine's visibly balloons mid-scale. Disabling it
-      // here closes that gap for the two remaining triggers that still used
-      // it, at the cost of the zoom control/dblclick snapping instead of
-      // animating between levels.
-      zoomAnimation={false}
-    >
-      <ArtworkTiles space={space} />
-      <LottieMarkers space={space} />
-      <DestinationMarkers space={space} />
-      <RouteEffects space={space} />
-      <FilterEffects space={space} />
-      <DetailsMapEffect space={space} />
-      <InitialViewEffect space={space} />
-      <PublishMapInstance />
+    <>
+      <TransformComponent
+        wrapperClass="!h-full !w-full !bg-[#f2f0ee] !z-40"
+        contentStyle={{ width: CONFIG.map.width, height: CONFIG.map.height }}
+      >
+        <div className="relative" style={{ width: CONFIG.map.width, height: CONFIG.map.height }}>
+          <img
+            src="/artwork.png"
+            alt=""
+            draggable={false}
+            className="absolute inset-0 size-full select-none"
+          />
+          <svg
+            className="pointer-events-none absolute inset-0 size-full"
+            viewBox={`0 0 ${CONFIG.map.width} ${CONFIG.map.height}`}
+          >
+            <RouteSvgLayer />
+            {isDebug && <DebugNetworkOverlay />}
+          </svg>
+          <DestinationMarkers />
+          <LottieMarkers />
+          <RouteHighlightMarker />
+        </div>
+      </TransformComponent>
+      <FilterEffects />
+      <DetailsMapEffect />
+      <InitialViewEffect />
       <ZoomSlider rotated={rotated} />
-      {isDebug && <DebugNetworkOverlay />}
-    </MapContainer>
+    </>
   );
 }
 

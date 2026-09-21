@@ -17,10 +17,10 @@ body,
   margin: 0;
   height: 100%;
   background-color: #f2f0ee;
-  /* Leaflet already claims touch-action: none on .leaflet-container for its
-     own pan/zoom gestures. This blocks pinch-zoom, double-tap-zoom, and
+  /* react-zoom-pan-pinch's own wrapper claims touch-action: none for its
+     pan/pinch gestures. This blocks pinch-zoom, double-tap-zoom, and
      swipe-triggered overscroll everywhere else in the kiosk UI (drawer,
-     toolbar, background) that Leaflet doesn't own. */
+     toolbar, background) that it doesn't own. */
   touch-action: none;
   overscroll-behavior: none;
   /* Drawer/SidePanel sit off-canvas via `transform: translateX(...)` rather
@@ -69,10 +69,11 @@ body {
   border-radius: 40px;
 }
 
-/* Leaflet sets its own inline transform on .leaflet-marker-icon for
-   positioning, so the y-axis move has to animate on an inner wrapper
-   instead — animating transform on the marker icon itself would fight
-   Leaflet's inline style. */
+/* LocationMarker/ModelHomeMarker apply the anchor-offset placement
+   transform on a wrapper div of their own, separate from these two classes
+   — this class's own show/hide transform on .destination-marker-inner
+   would otherwise collide with that inline transform if they shared an
+   element. */
 .destination-marker {
   transition: opacity 260ms ease;
 }
@@ -91,22 +92,23 @@ body {
   transform: translateY(-14px);
 }
 
-/* Fade-out-before-move: RouteEffects keeps the outgoing route mounted with
-   fadeOut=true for ROUTE_EXIT_FADE_MS (routePanes.ts) before swapping to
-   the next one (or clearing), so the pin visibly disappears first instead
-   of just cutting to the new route mid-fly. Duration here must match that
-   constant — Leaflet sets a Marker's opacity as a plain inline style on
-   prop changes, so this transition is what actually animates it.
-   (RouteDimOverlay and RouteLine — which now also draws the "you are
-   here" badge — fade themselves via their own inline `transition`, since
-   neither is a Leaflet-managed element.) */
+/* Fade-out-before-move: RouteContext keeps the outgoing route's
+   displayedRoute mounted with exiting=true for ROUTE_EXIT_FADE_MS
+   (routePanes.ts) before swapping to the next one (or clearing), so the
+   pin visibly disappears first instead of just cutting to the new route
+   mid-fly. Duration here must match that constant — this component sets
+   its own opacity as a plain inline style on prop changes, so this
+   transition is what actually animates it. (RouteDimOverlay and
+   RouteLine — which also draws the "you are here" badge — fade themselves
+   via their own inline `transition`.) */
 .active-destination-highlight {
   transition: opacity 350ms ease;
 }
 
-/* Leaflet's own panes sit at z-index 200-700 (.leaflet-control is 800) —
-   ZoomSlider lives inside the same <MapContainer>, so it needs to clear
-   all of those to actually paint on top rather than under them. */
+/* ZoomSlider renders after <TransformComponent> in DOM order (see
+   MapView), so it already paints on top of the map content without this —
+   kept as an explicit guarantee against anything else in the overlay
+   chrome stacking above it. */
 .zoom-slider-track {
   position: absolute;
   right: 36px;
@@ -140,13 +142,4 @@ body {
   border-radius: 9999px;
   background: var(--color-mayfair-navy);
   pointer-events: none;
-}
-
-/* zoomSnap={0} allows fractional zoom (needed for smooth wheel-zoom), which
-   scales each tile by a non-integer factor. Adjacent tiles then round to
-   the nearest device pixel slightly differently, leaving hairline gaps at
-   some zoom levels — this bleeds each tile's paint 1px past its own edge to
-   cover that rounding gap. Purely cosmetic; doesn't affect tile layout. */
-.leaflet-tile {
-  outline: 1px solid transparent;
 }

@@ -1,13 +1,7 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
-} from "react";
-import { useMap, useMapEvent } from "react-leaflet";
-import L from "leaflet";
+import { useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { useControls, useTransformEffect } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
+import { centeredTransform, contentCenter, scaleToZoom, zoomToScale } from "../hooks/mapTransform";
 
 const STEP = 0.05;
 
@@ -16,37 +10,27 @@ const clamp = (n: number, min: number, max: number) =>
 const round = (n: number) => Math.round(n / STEP) * STEP;
 
 /**
- * Lives inside <MapContainer> so it can reach Leaflet's map instance. This
- * is a plain div driven by our own pointer handlers, not a native
+ * A plain div driven by our own pointer handlers, not a native
  * `<input type=range>` rotated or writing-mode'd vertical — both of those
  * paint correctly but (at least in this Chromium build) silently eat mouse
  * clicks/drags on the track, since the native control's hit-testing isn't
  * reliably reoriented along with the paint. Handling pointer position
  * ourselves sidesteps that entirely. Styling lives in index.css
  * (.zoom-slider-track/-rail/-thumb).
+ *
+ * Renders as a sibling of <TransformComponent> (see MapView/App), not a
+ * descendant of it — react-zoom-pan-pinch's gesture listeners only attach
+ * to TransformComponent's own wrapper element, so unlike the old Leaflet
+ * version there's no pointer-event bubbling into the pannable map to guard
+ * against here.
  */
 export default function ZoomSlider({ rotated }: { rotated: boolean }) {
-  const map = useMap();
-  const [zoom, setZoom] = useState(map.getZoom());
-  const trackRef = useRef<HTMLDivElement | null>(null);
+  const controls = useControls();
+  const [zoom, setZoom] = useState(() => scaleToZoom(controls.instance.state.scale));
   const draggingRef = useRef(false);
   const { minZoom, maxZoom } = CONFIG.map;
 
-  useMapEvent("zoom", () => setZoom(map.getZoom()));
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    // Without this, a pointerdown/move on the track still bubbles up
-    // through the DOM to the Leaflet container underneath (it's a
-    // descendant, rendered inside <MapContainer>) and gets read as a map
-    // drag — the map pans toward the cursor at the same time we're
-    // changing zoom, which looks like the zoom recentring on the mouse.
-    // Same trick Leaflet's own built-in controls use to sit on the map
-    // without dragging it.
-    L.DomEvent.disableClickPropagation(el);
-    L.DomEvent.disableScrollPropagation(el);
-  }, []);
+  useTransformEffect(({ state }) => setZoom(scaleToZoom(state.scale)));
 
   function zoomFromPointer(e: ReactPointerEvent<HTMLDivElement>): number {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -55,35 +39,26 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
     return round(maxZoom - fraction * (maxZoom - minZoom));
   }
 
-  // Dragging jumps zoom to an absolute position under the pointer, so a
-  // single fast drag can sweep across this map's whole zoom range (only 4
-  // integer levels, -1..2) in a couple hundred ms. map.setZoom() runs
-  // through the public setView() path, which treats *every* call as its
-  // own complete gesture — movestart/zoomstart/zoom/moveend/zoomend all
-  // fire each time — so each pointermove made Leaflet's tile GridLayer
-  // tear down and re-prune its tiles from scratch, and the network/decode
-  // time for the next level's tiles couldn't keep up, which read as
-  // flashing. Leaflet's own TouchZoom handler (pinch-zoom) has the same
-  // "continuous absolute zoom" shape and avoids this by driving the map
-  // through the private _move() with a {pinch: true} flag: GridLayer
-  // special-cases that flag to skip its teardown/reload except when the
-  // rounded tile zoom actually changes, then does one real, unsuppressed
-  // settle via _resetView() once the gesture ends. Mirroring that here
-  // (same private-API reliance smoothWheelZoom.ts already leans on)
-  // keeps each of the (at most 3) real level crossings but drops the
-  // redundant reset on every other pointermove in between.
+  // Zooms around whatever content point currently sits at the wrapper's
+  // screen center, so the view doesn't recenter on some other point while
+  // dragging — the same "zoom in place" feel the old center-anchored
+  // Leaflet call had. setTransform is public API, safe to call on every
+  // pointermove; there's no tile layer to tear down and re-fetch anymore,
+  // so the old "wait for tiles to finish loading before the real settle"
+  // dance (see git history) is no longer needed at all.
   function moveZoomTo(targetZoom: number) {
-    (map as any)._move(map.getCenter(), targetZoom, {
-      pinch: true,
-      round: false,
-    });
+    const center = contentCenter(controls);
+    if (!center) return;
+    const wrapper = controls.instance.wrapperComponent;
+    if (!wrapper) return;
+    const { width, height } = wrapper.getBoundingClientRect();
+    const target = centeredTransform({ width, height }, center, zoomToScale(targetZoom));
+    controls.setTransform(target.x, target.y, target.scale, 0);
   }
 
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     e.currentTarget.setPointerCapture(e.pointerId);
-    map._stop();
     draggingRef.current = true;
-    (map as any)._moveStart(true, false);
     moveZoomTo(zoomFromPointer(e));
   }
 
@@ -93,16 +68,14 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
   }
 
   function endDrag() {
-    if (!draggingRef.current) return;
     draggingRef.current = false;
-    (map as any)._resetView(map.getCenter(), (map as any)._limitZoom(map.getZoom()));
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === "ArrowUp" || e.key === "ArrowRight")
-      map.setZoom(clamp(zoom + STEP, minZoom, maxZoom));
+      moveZoomTo(clamp(zoom + STEP, minZoom, maxZoom));
     else if (e.key === "ArrowDown" || e.key === "ArrowLeft")
-      map.setZoom(clamp(zoom - STEP, minZoom, maxZoom));
+      moveZoomTo(clamp(zoom - STEP, minZoom, maxZoom));
   }
 
   // `top: X%` is authored assuming this element renders in normal, upright
@@ -119,7 +92,6 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
 
   return (
     <div
-      ref={trackRef}
       role="slider"
       tabIndex={0}
       aria-label="Map zoom"

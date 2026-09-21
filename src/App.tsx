@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { TransformWrapper } from 'react-zoom-pan-pinch'
+import { CONFIG } from './config'
+import { resolveMapPoint } from './routing'
+import { centeredTransform, zoomToScale } from './hooks/mapTransform'
 import { RouteProvider } from './hooks/RouteContext'
 import { FilterProvider } from './hooks/FilterContext'
 import { DrawerProvider } from './hooks/DrawerContext'
 import { DetailsProvider } from './hooks/DetailsContext'
 import { WelcomeProvider } from './hooks/WelcomeContext'
 import { SideModalProvider } from './hooks/SideModalContext'
-import { MapInstanceProvider } from './hooks/MapInstanceContext'
 import MapView from './components/MapView'
 import WelcomeOverlay from './components/WelcomeOverlay'
 import Drawer from './components/Drawer'
@@ -28,7 +31,33 @@ function App() {
           <DetailsProvider>
             <WelcomeProvider>
               <SideModalProvider>
-                <MapInstanceProvider>
+                <TransformWrapper
+                  minScale={zoomToScale(CONFIG.map.minZoom)}
+                  maxScale={zoomToScale(CONFIG.map.maxZoom)}
+                  initialScale={zoomToScale(CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset)}
+                  limitToBounds
+                  centerOnInit={false}
+                  doubleClick={{ disabled: true }}
+                  velocityAnimation={{ sensitivityTouch: 1.5, sensitivityMouse: 1.5 }}
+                  // The welcome screen is up on first paint, so the map should
+                  // already be showing its idle (zoomed-out) view rather than
+                  // fitting the whole artwork — onInit fires once the wrapper's
+                  // real size is measured, so this lands exactly centered
+                  // rather than guessed from window size. See
+                  // InitialViewEffect for the transitions after this.
+                  onInit={(ref) => {
+                    const wrapper = ref.instance.wrapperComponent;
+                    if (!wrapper) return;
+                    const { width, height } = wrapper.getBoundingClientRect();
+                    const scale = zoomToScale(CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset);
+                    const target = centeredTransform(
+                      { width, height },
+                      resolveMapPoint(CONFIG.map.initialCenter),
+                      scale,
+                    );
+                    ref.setTransform(target.x, target.y, target.scale, 0);
+                  }}
+                >
                   <div
                     className="relative h-full w-full transition-transform duration-500 ease-in-out"
                     style={{ transform: rotated ? 'rotate(180deg)' : 'rotate(0deg)' }}
@@ -43,7 +72,7 @@ function App() {
                     <HelpCta />
                     <WelcomeOverlay />
                   </div>
-                </MapInstanceProvider>
+                </TransformWrapper>
               </SideModalProvider>
             </WelcomeProvider>
           </DetailsProvider>
