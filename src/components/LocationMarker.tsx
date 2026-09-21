@@ -32,7 +32,11 @@ export default function LocationMarker({ pin, visible }: LocationMarkerProps) {
 
   return (
     <div className="absolute z-20" style={{ left: x, top: y }}>
-      <KeepScale>
+      {/* transformOrigin "0 0" is required: KeepScale's own counter-scale
+          otherwise pivots around its box's center, dragging the anchor
+          below away from (x, y) as the map's zoom scale changes instead of
+          keeping it pinned in place. */}
+      <KeepScale style={{ transformOrigin: "0 0" }}>
         {/* Pure anchor placement — kept separate from .destination-marker
             below so its own inline transform doesn't fight that class's
             CSS-driven show/hide transform on .destination-marker-inner. */}

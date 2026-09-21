@@ -49,7 +49,9 @@ export default function ActiveDestinationHighlight({
       className="active-destination-highlight pointer-events-none absolute z-30"
       style={{ left: x, top: y, opacity: fadeOut ? 0 : 1 }}
     >
-      <KeepScale>
+      {/* transformOrigin "0 0" — see LocationMarker for why KeepScale needs
+          this to keep the anchor pinned to (x, y) across zoom levels. */}
+      <KeepScale style={{ transformOrigin: "0 0" }}>
         {pin.kind === "model-home" ? (
           <div
             className="flex -translate-x-1/2 -translate-y-full items-end gap-3"

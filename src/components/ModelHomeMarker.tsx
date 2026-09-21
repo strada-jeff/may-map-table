@@ -27,7 +27,9 @@ export default function ModelHomeMarker({ pin, visible }: ModelHomeMarkerProps) 
 
   return (
     <div className="absolute z-20" style={{ left: x, top: y }}>
-      <KeepScale>
+      {/* transformOrigin "0 0" — see LocationMarker for why KeepScale needs
+          this to keep the anchor pinned to (x, y) across zoom levels. */}
+      <KeepScale style={{ transformOrigin: "0 0" }}>
         {/* Pure anchor placement — see LocationMarker for why this stays
             separate from .destination-marker's own CSS-driven transform. */}
         <div
