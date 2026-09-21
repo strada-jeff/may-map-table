@@ -47,7 +47,7 @@ function MapView({ rotated }: { rotated: boolean }) {
           <DestinationMarkers />
           <LottieMarkers />
           <svg
-            className="pointer-events-none absolute inset-0 size-full"
+            className="pointer-events-none absolute inset-0 size-full overflow-visible"
             viewBox={`0 0 ${CONFIG.map.width} ${CONFIG.map.height}`}
           >
             <RouteSvgLayer />
