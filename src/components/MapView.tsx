@@ -7,6 +7,7 @@ import RouteSvgLayer from "./RouteSvgLayer";
 import FilterEffects from "./FilterEffects";
 import DetailsMapEffect from "./DetailsMapEffect";
 import InitialViewEffect from "./InitialViewEffect";
+import ZoomWarmupEffect from "./ZoomWarmupEffect";
 import ZoomSlider from "./ZoomSlider";
 
 const isDebug = new URLSearchParams(window.location.search).get("debug") === "1";
@@ -58,6 +59,7 @@ function MapView({ rotated }: { rotated: boolean }) {
       <FilterEffects />
       <DetailsMapEffect />
       <InitialViewEffect />
+      <ZoomWarmupEffect />
       <ZoomSlider rotated={rotated} />
     </>
   );

@@ -17,7 +17,7 @@ export default function WelcomeOverlay() {
 
   return (
     <div
-      className={`absolute inset-0 z-50 flex flex-col items-center justify-center gap-10 bg-mayfair-navy/92 px-6 text-center transition-opacity duration-700 ${
+      className={`absolute inset-0 z-50 flex flex-col items-center justify-center gap-20 bg-mayfair-navy/92 px-6 text-center transition-opacity duration-700 ${
         isIdle ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
       onPointerDown={stopBubble}

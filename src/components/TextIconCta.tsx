@@ -9,12 +9,17 @@ type TextIconCtaProps = {
   onClick: () => void;
 };
 
-export default function TextIconCta({ text, icon, color, onClick }: TextIconCtaProps) {
+export default function TextIconCta({
+  text,
+  icon,
+  color,
+  onClick,
+}: TextIconCtaProps) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-3 whitespace-nowrap border-[3.5px] border-mayfair-blue px-6 py-3 text-white"
+      className="flex items-center gap-3 whitespace-nowrap border-[3.5px] border-mayfair-blue px-4 py-2 text-white"
     >
       <span className="font-vision text-[15px] font-extrabold uppercase tracking-[0.1em]">
         {text}

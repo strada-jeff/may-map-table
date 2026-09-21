@@ -53,6 +53,7 @@ body {
 .drawer-scroll {
   scrollbar-width: thin;
   scrollbar-color: white rgba(0, 0, 0, 0.15);
+  direction: rtl; /* force scrollbar to right side even in rtl locales */
 }
 
 .drawer-scroll::-webkit-scrollbar {
@@ -101,7 +102,7 @@ body {
 .zoom-slider-track {
   position: absolute;
   right: 36px;
-  bottom: 160px;
+  bottom: 200px;
   z-index: 40;
   width: 40px;
   height: 400px;

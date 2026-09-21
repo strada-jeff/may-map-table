@@ -19,8 +19,14 @@ export default function Drawer() {
   const builders = useBuilders();
   const { activeCategoryId, setActiveCategoryId } = useFilter();
 
-  const builderNameById = useMemo(() => new Map(builders.map((b) => [b.id, b.name])), [builders]);
-  const categoryById = useMemo(() => new Map(categories.map((c) => [c.id, c])), [categories]);
+  const builderNameById = useMemo(
+    () => new Map(builders.map((b) => [b.id, b.name])),
+    [builders],
+  );
+  const categoryById = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories],
+  );
 
   const visiblePins = activeCategoryId
     ? pins.filter((pin) => pin.categoryId === activeCategoryId)
@@ -29,7 +35,9 @@ export default function Drawer() {
   return (
     <div
       className="absolute left-0 top-0 z-[45] h-full transition-transform duration-300 ease-out"
-      style={{ transform: open ? "translateX(0)" : "translateX(-100%)" }}
+      style={{
+        transform: open ? "translateX(0)" : "translateX(calc(-100% + 10px))",
+      }}
     >
       <div className="flex h-full w-[456px] max-w-[85vw] flex-col bg-mayfair-navy shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]">
         <div className="relative flex-1 overflow-hidden">
@@ -39,7 +47,11 @@ export default function Drawer() {
                 key={pin.id}
                 pin={pin}
                 category={categoryById.get(pin.categoryId)}
-                builderName={pin.kind === "model-home" ? builderNameById.get(pin.builderId) : undefined}
+                builderName={
+                  pin.kind === "model-home"
+                    ? builderNameById.get(pin.builderId)
+                    : undefined
+                }
               />
             ))}
           </div>
@@ -69,14 +81,14 @@ export default function Drawer() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="absolute left-full top-1/2 flex h-[130px] w-14 -translate-y-1/2 items-center justify-center rounded-r-[40px] bg-mayfair-navy shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
+        className="absolute left-full top-1/2 flex h-[130px] w-7 -translate-y-1/2 items-center justify-start rounded-r-[40px] bg-mayfair-navy shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
       >
-        <span className="flex flex-col items-center gap-2">
-          <span aria-hidden="true" className="text-lg text-white">
-            {open ? "«" : "»"}
-          </span>
+        <span className="flex flex-col items-center">
           <span className="font-vision text-sm font-extrabold uppercase tracking-[0.15em] text-white [writing-mode:vertical-rl]">
             {open ? "hide" : "show"}
+          </span>
+          <span aria-hidden="true" className="text-lg text-white">
+            {open ? "«" : "»"}
           </span>
         </span>
       </button>
