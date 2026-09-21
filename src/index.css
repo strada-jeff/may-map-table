@@ -92,19 +92,6 @@ body {
   transform: translateY(-14px);
 }
 
-/* Fade-out-before-move: RouteContext keeps the outgoing route's
-   displayedRoute mounted with exiting=true for ROUTE_EXIT_FADE_MS
-   (routePanes.ts) before swapping to the next one (or clearing), so the
-   pin visibly disappears first instead of just cutting to the new route
-   mid-fly. Duration here must match that constant — this component sets
-   its own opacity as a plain inline style on prop changes, so this
-   transition is what actually animates it. (RouteDimOverlay and
-   RouteLine — which also draws the "you are here" badge — fade themselves
-   via their own inline `transition`.) */
-.active-destination-highlight {
-  transition: opacity 350ms ease;
-}
-
 /* ZoomSlider renders after <TransformComponent> in DOM order (see
    MapView), so it already paints on top of the map content without this —
    kept as an explicit guarantee against anything else in the overlay

@@ -4,7 +4,6 @@ import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import DestinationMarkers from "./DestinationMarkers";
 import LottieMarkers from "./LottieMarkers";
 import RouteSvgLayer from "./RouteSvgLayer";
-import RouteHighlightMarker from "./RouteHighlightMarker";
 import FilterEffects from "./FilterEffects";
 import DetailsMapEffect from "./DetailsMapEffect";
 import InitialViewEffect from "./InitialViewEffect";
@@ -23,6 +22,13 @@ const isDebug = new URLSearchParams(window.location.search).get("debug") === "1"
  * Route/debug content is real SVG (masks, filters, dash-draw-in animation
  * need it); destination/Lottie markers are plain positioned HTML, since
  * that's what they already were as react-leaflet divIcons/markers.
+ *
+ * Markers render *before* the route SVG in DOM order on purpose: with no
+ * explicit z-index on the markers, plain stacking order puts the dim
+ * overlay/route/badge above every pin while directions are active — the
+ * active pin re-asserts itself above that via its own z-index (see
+ * LocationMarker/ModelHomeMarker's `active` prop) rather than a second,
+ * disposable marker.
  */
 function MapView({ rotated }: { rotated: boolean }) {
   return (
@@ -38,6 +44,8 @@ function MapView({ rotated }: { rotated: boolean }) {
             draggable={false}
             className="absolute inset-0 size-full select-none"
           />
+          <DestinationMarkers />
+          <LottieMarkers />
           <svg
             className="pointer-events-none absolute inset-0 size-full"
             viewBox={`0 0 ${CONFIG.map.width} ${CONFIG.map.height}`}
@@ -45,9 +53,6 @@ function MapView({ rotated }: { rotated: boolean }) {
             <RouteSvgLayer />
             {isDebug && <DebugNetworkOverlay />}
           </svg>
-          <DestinationMarkers />
-          <LottieMarkers />
-          <RouteHighlightMarker />
         </div>
       </TransformComponent>
       <FilterEffects />

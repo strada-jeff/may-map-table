@@ -6,9 +6,9 @@ import RouteLine from "./RouteLine";
  * Rendered as a child of the shared master <svg> (see MapView) — the two
  * pieces of the directions-active presentation that are genuinely vector
  * content (the dim overlay and the drawn route). The active destination's
- * highlighted pin is a separate DOM marker (see RouteHighlightMarker),
- * since ordinary destination markers are DOM too and it needs to sit above
- * them in normal document order, not inside this SVG.
+ * pin stays a normal DOM marker (LocationMarker/ModelHomeMarker's `active`
+ * prop) — it elevates itself above this SVG with its own z-index rather
+ * than rendering as a second, disposable marker.
  */
 export default function RouteSvgLayer() {
   const { displayedRoute, exiting } = useRoute();
