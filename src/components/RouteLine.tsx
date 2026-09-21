@@ -121,9 +121,9 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
     const { width, height } = wrapper.getBoundingClientRect();
     const padding = CONFIG.routing.fitPaddingPx;
     const target = fitTransform(
-      { width: width - 2 * padding, height: height - 2 * padding },
+      { width, height },
       points,
-      0,
+      padding,
       zoomToScale(CONFIG.map.minZoom),
       zoomToScale(CONFIG.map.maxZoom),
     );
