@@ -30,4 +30,9 @@ export const CONFIG = {
   details: {
     panelWidthPx: 720, // kiosk screen is fixed, so this is a constant, not measured
   },
+  signup: {
+    heading: "Sign up to receive Mayfair news, event invitations, and more",
+    // TODO: replace with the real sign-up destination.
+    qrValue: "https://example.com/signup",
+  },
 } as const;

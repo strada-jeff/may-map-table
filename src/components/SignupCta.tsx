@@ -1,7 +1,7 @@
 import signupBadge from "../assets/icons/signup-badge.svg";
 import { useSideModal } from "../hooks/SideModalContext";
 
-/** Corner ribbon badge, top-right — opens the (placeholder) signup panel. */
+/** Corner ribbon badge, top-right — opens the sign-up overlay. */
 export default function SignupCta() {
   const { open } = useSideModal();
 
