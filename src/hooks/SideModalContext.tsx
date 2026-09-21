@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 
-export type SideModalKey = "signup" | "help";
+export type SideModalKey = "signup" | "help" | "rotate";
 
 type SideModalContextValue = {
   /** null means no side modal is open. */

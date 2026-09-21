@@ -2,7 +2,9 @@ import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { CONFIG } from "../config";
 import exploreMark from "../assets/icons/explore-mark.svg";
+import RotateArrowsIcon from "./RotateArrowsIcon";
 import { useSideModal, type SideModalKey } from "../hooks/SideModalContext";
+import { useRotation } from "../hooks/RotationContext";
 
 const QR_SIZE_PX = 517;
 
@@ -25,13 +27,15 @@ function CloseIcon() {
  * Full-screen overlay, same slot and translucent-navy treatment as
  * WelcomeOverlay — a deliberate interruption of the map, not a sidebar.
  * Help is still a placeholder (per the ask): just the word, content to
- * come later. Signup is the one real case so far: a pitch line and a
- * live-generated QR (qrcode.react, same library DetailsView uses for
- * directions) instead of a fixed image, so its target lives in
- * CONFIG.signup instead of a baked-in asset.
+ * come later. Signup is a pitch line and a live-generated QR (qrcode.react,
+ * same library DetailsView uses for directions) instead of a fixed image,
+ * so its target lives in CONFIG.signup instead of a baked-in asset. Rotate
+ * is a confirm step for RotateControl — its CTA is what actually calls
+ * RotationContext's `toggle`, not the corner button itself.
  */
 export default function SidePanel() {
   const { activeModal, close } = useSideModal();
+  const { toggle } = useRotation();
   const isOpen = activeModal !== null;
 
   // Kept across activeModal -> null so the overlay still has content to
@@ -73,6 +77,24 @@ export default function SidePanel() {
           />
 
           <img src={exploreMark} alt="" className="side-panel-mark h-[150px] w-auto" />
+        </>
+      ) : lastModal === "rotate" ? (
+        <>
+          <p className="side-panel-heading max-w-[700px] font-vision text-[80px] leading-[84px] text-white">
+            This will rotate the screen view 180º, continue?
+          </p>
+
+          <button
+            type="button"
+            onClick={() => {
+              toggle();
+              close();
+            }}
+            aria-label="Confirm rotation"
+            className="side-panel-rotate-confirm flex size-[181px] items-center justify-center rounded-full border-[3.5px] border-mayfair-blue"
+          >
+            <RotateArrowsIcon color="#ffffff" className="h-9 w-auto" />
+          </button>
         </>
       ) : (
         <p className="side-panel-body font-vision text-4xl capitalize text-white">{lastModal}</p>
