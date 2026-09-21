@@ -3,7 +3,11 @@ import { useControls } from "react-zoom-pan-pinch";
 import gsap from "gsap";
 import { CONFIG } from "../config";
 import { distance, resolveMapPoint } from "../routing";
-import { fitTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
+import {
+  fitTransform,
+  tweenTransform,
+  zoomToScale,
+} from "../hooks/mapTransform";
 import type { ActiveRoute } from "../types/routing";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
 import YouAreHerePinArtwork, {
@@ -28,29 +32,29 @@ const BADGE_SKETCH_FILTER_ID = "route-line-badge-sketch-filter";
 const DRAW_DURATION_S = 3;
 const ARROW_POP_DURATION_S = 0.35;
 // 25% shorter than the original "36 22".
-const DASH_LENGTH = 27;
-const DASH_GAP = 16.5;
+const DASH_LENGTH = 8;
+const DASH_GAP = 6;
 const DASH_ARRAY = `${DASH_LENGTH} ${DASH_GAP}`;
 // Figma's own filter on the comp's path (fractal-noise feTurbulence run
 // through feDisplacementMap), tuned for the line's actual stroke width.
-const SKETCH_BASE_FREQUENCY = 0.25;
-const SKETCH_DISPLACEMENT_SCALE = 10;
+const SKETCH_BASE_FREQUENCY = 0.6;
+const SKETCH_DISPLACEMENT_SCALE = 4;
 // 25% narrower than the originals (18/12/26) — kept proportional so the
 // mask's reveal corridor still comfortably covers the widest visible
 // stroke plus its rounded caps.
-const SHADOW_STROKE_WIDTH = 10.5;
-const LINE_STROKE_WIDTH = 8;
-const MASK_STROKE_WIDTH = 12.5;
+const SHADOW_STROKE_WIDTH = 3.5;
+const LINE_STROKE_WIDTH = 3;
+const MASK_STROKE_WIDTH = 3.5;
 // Local-space triangle, tip at (+size, 0) — rotated to the final segment's
 // angle at render time, so 0deg here means "pointing along +x".
-const ARROW_SIZE = 18;
+const ARROW_SIZE = 4;
 
 // The "you are here" badge's on-screen circle radius. Drawing it here
 // (rather than as a separate marker) means its ring can reuse the line's
 // own DASH_LENGTH/DASH_GAP/SHADOW_STROKE_WIDTH/LINE_STROKE_WIDTH/sketch-
 // filter constants directly — one real definition instead of two files
 // trying to independently arrive at the same numbers.
-const BADGE_RADIUS_PX = 54;
+const BADGE_RADIUS_PX = 24;
 const BADGE_SCALE = BADGE_RADIUS_PX / BADGE_CIRCLE_RADIUS;
 const BADGE_RING_STROKE_WIDTH = LINE_STROKE_WIDTH / BADGE_SCALE;
 const BADGE_RING_SHADOW_STROKE_WIDTH = SHADOW_STROKE_WIDTH / BADGE_SCALE;
@@ -96,7 +100,8 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
     [route.coordinates],
   );
   const badgePoint = useMemo<[number, number]>(
-    () => resolveMapPoint(CONFIG.routing.youAreHereBadgePoint) as [number, number],
+    () =>
+      resolveMapPoint(CONFIG.routing.youAreHereBadgePoint) as [number, number],
     [],
   );
   const [drawT, setDrawT] = useState(0);
@@ -170,7 +175,12 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
   const arrowAngle = (Math.atan2(endY - prevY, endX - prevX) * 180) / Math.PI;
 
   return (
-    <g style={{ opacity: fadeOut ? 0 : 1, transition: `opacity ${ROUTE_EXIT_FADE_MS}ms ease` }}>
+    <g
+      style={{
+        opacity: fadeOut ? 0 : 1,
+        transition: `opacity ${ROUTE_EXIT_FADE_MS}ms ease`,
+      }}
+    >
       <defs>
         {/* Both masks below get an explicit userSpaceOnUse region spanning
             a generous area around the artwork — masks default to
@@ -187,7 +197,13 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
           width={MASK_WIDTH}
           height={MASK_HEIGHT}
         >
-          <rect x={MASK_X} y={MASK_Y} width={MASK_WIDTH} height={MASK_HEIGHT} fill="#fff" />
+          <rect
+            x={MASK_X}
+            y={MASK_Y}
+            width={MASK_WIDTH}
+            height={MASK_HEIGHT}
+            fill="#fff"
+          />
           {badgePoint && (
             <circle
               cx={badgePoint[0]}
