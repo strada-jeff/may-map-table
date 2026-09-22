@@ -17,7 +17,7 @@ export default function WelcomeOverlay() {
 
   return (
     <div
-      className={`absolute inset-0 z-50 flex flex-col items-center justify-center gap-20 bg-mayfair-navy/92 px-6 text-center transition-opacity duration-700 ${
+      className={`absolute inset-0 z-50 flex flex-col items-center bg-mayfair-navy/92 px-6 pt-[482px] text-center transition-opacity duration-700 ${
         isIdle ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
       onPointerDown={stopBubble}
@@ -28,10 +28,10 @@ export default function WelcomeOverlay() {
       <img
         src={welcomeTitle}
         alt="Welcome to Mayfair"
-        className="h-auto w-[clamp(320px,47vw,900px)]"
+        className="h-[568px] w-[1810px]"
       />
 
-      <div className="flex flex-wrap items-center justify-center gap-4">
+      <div className="mt-[214px] flex flex-wrap items-center justify-center gap-[30px]">
         {categories.map((category) => (
           <TextIconCta
             key={category.id}
@@ -46,7 +46,9 @@ export default function WelcomeOverlay() {
         ))}
       </div>
 
-      <ExploreCta onClick={explore} />
+      <div className="mt-[157px]">
+        <ExploreCta onClick={explore} />
+      </div>
     </div>
   );
 }

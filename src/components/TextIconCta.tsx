@@ -19,16 +19,20 @@ export default function TextIconCta({
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-3 whitespace-nowrap border-[3.5px] border-mayfair-blue px-4 py-2 text-white"
+      className="flex h-[78px] items-center gap-[18px] whitespace-nowrap border-[3.5px] border-mayfair-blue pl-[44px] pr-[7.5px] text-white"
     >
-      <span className="font-vision text-[15px] font-extrabold uppercase tracking-[0.1em]">
+      <span className="font-vision text-[26px] font-extrabold uppercase leading-none tracking-[0.1em]">
         {text}
       </span>
-      {color ? (
-        <ButtonFlagIcon color={color} className="h-8 w-auto shrink-0" />
-      ) : (
-        <img src={icon} alt="" className="h-8 w-auto shrink-0" />
-      )}
+      {/* Fixed 96x66 slot (the flag artwork's own box) so the balloon glyph
+          lines up with the flags instead of shrinking the button. */}
+      <span className="flex h-[66px] w-[96px] shrink-0 items-center justify-center">
+        {color ? (
+          <ButtonFlagIcon color={color} className="size-full" />
+        ) : (
+          <img src={icon} alt="" className="h-[60px] w-[31px]" />
+        )}
+      </span>
     </button>
   );
 }
