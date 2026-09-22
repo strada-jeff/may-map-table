@@ -1,5 +1,6 @@
 import { TransformComponent } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
+import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import DestinationMarkers from "./DestinationMarkers";
 import LottieMarkers from "./LottieMarkers";
@@ -39,12 +40,7 @@ function MapView({ rotated }: { rotated: boolean }) {
         contentStyle={{ width: CONFIG.map.width, height: CONFIG.map.height }}
       >
         <div className="relative" style={{ width: CONFIG.map.width, height: CONFIG.map.height }}>
-          <img
-            src="/artwork.webp"
-            alt=""
-            draggable={false}
-            className="absolute inset-0 size-full select-none"
-          />
+          <ArtworkTiles />
           <DestinationMarkers />
           <LottieMarkers />
           <svg
