@@ -5,10 +5,10 @@ export const CONFIG = {
   map: {
     width: 3840, // pixel dimension of base artwork
     height: 2160,
-    minZoom: -1, // furthest the map controls can zoom out; build:tiles matches this
+    minZoom: 0, // furthest the map controls can zoom out; 0 = the 3840px artwork exactly fills the 4K viewport
     maxZoom: 2, // furthest the map controls can zoom in; build:tiles matches this
     initialCenter: "main" as string | readonly [number, number], // anchor id or [x, y] point
-    initialZoom: 1.4, // zoom once the welcome screen is dismissed
+    initialZoom: 1.4, // zoom once the welcome screen is dismissed; Figma's 4K comps draw the map at ~1.43 (scale ~2.69)
     idleZoomOffset: 1, // idle view is initialZoom minus this, zoomed further out
     pinDetailZoomLevel: 2, // zoom the map flies to when a pin's details open
   },
@@ -16,7 +16,7 @@ export const CONFIG = {
     tileSize: 256,
   },
   routing: {
-    fitPaddingPx: 200, // Screen-pixel padding when the map fits to a newly-activated route.
+    fitPaddingPx: 400, // Screen-pixel padding when the map fits to a newly-activated route (doubled for the 4K canvas).
     // Where each origin's "you are here" badge is drawn — independent of
     // that #origins anchor itself, which network.svg pins onto the road
     // network for snapping/routing and shouldn't be nudged just to make the
