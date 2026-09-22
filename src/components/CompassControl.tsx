@@ -4,8 +4,12 @@ import { CONFIG } from "../config";
 import compassPoints from "../assets/icons/compass-points.svg";
 import youAreHereIcon from "../assets/icons/compass-you-are-here.svg";
 
-const SIZE_PX = 200;
-const DOT_PX = 22;
+const SIZE_PX = 400;
+// compass-you-are-here.svg is 66px: the 46px dot plus its drop-shadow
+// margin, with the dot's centre at (33, 29) rather than the file's centre.
+const DOT_FILE_PX = 66;
+const DOT_CENTER_X = 33;
+const DOT_CENTER_Y = 29;
 
 type View = {
   rectLeft: number;
@@ -72,14 +76,14 @@ export default function CompassControl() {
   useTransformEffect(() => setView(readView(controls)));
 
   return (
-    <div className="compass-control pointer-events-none absolute right-18 top-18 z-40">
+    <div className="compass-control pointer-events-none absolute right-[82px] top-[78px] z-40">
       <img
         src={compassPoints}
         alt=""
-        className="compass-control-points pointer-events-none absolute -left-10 -top-10 size-24"
+        className="compass-control-points pointer-events-none absolute left-[-73px] top-[-70px] size-[231px]"
       />
       <div
-        className="compass-control-frame relative overflow-hidden rounded-full border-[6px] border-white bg-[#f1f0ee] shadow-[0_4px_10px_0_rgba(0,0,0,0.2)]"
+        className="compass-control-frame relative overflow-hidden rounded-full border-[9px] border-white bg-[#f1f0ee] shadow-[0_4px_10px_0_rgba(0,0,0,0.2)]"
         style={{ width: SIZE_PX, height: SIZE_PX }}
       >
         <img
@@ -91,7 +95,7 @@ export default function CompassControl() {
         {view && (
           <>
             <div
-              className="compass-control-viewport pointer-events-none absolute border-2 border-mayfair-navy/70 bg-mayfair-navy/10"
+              className="compass-control-viewport pointer-events-none absolute border-4 border-mayfair-navy/70 bg-mayfair-navy/10"
               style={{
                 left: `${toFramePercent(view.rectLeft, CROP.xOffset, CROP.xVisible)}%`,
                 top: `${toFramePercent(view.rectTop, CROP.yOffset, CROP.yVisible)}%`,
@@ -102,12 +106,13 @@ export default function CompassControl() {
             <img
               src={youAreHereIcon}
               alt=""
-              className="compass-control-dot pointer-events-none absolute -translate-x-1/2 -translate-y-1/2"
+              className="compass-control-dot pointer-events-none absolute max-w-none"
               style={{
                 left: `${toFramePercent(view.centerX, CROP.xOffset, CROP.xVisible)}%`,
                 top: `${toFramePercent(view.centerY, CROP.yOffset, CROP.yVisible)}%`,
-                width: DOT_PX,
-                height: DOT_PX,
+                width: DOT_FILE_PX,
+                height: DOT_FILE_PX,
+                transform: `translate(${-DOT_CENTER_X}px, ${-DOT_CENTER_Y}px)`,
               }}
             />
           </>

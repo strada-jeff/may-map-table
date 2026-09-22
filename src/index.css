@@ -113,11 +113,11 @@ body {
    SidePanel, z-50) — it used to be z-index: 900, which beat all of those. */
 .zoom-slider-track {
   position: absolute;
-  right: 36px;
-  bottom: 200px;
+  right: 65px;
+  top: 478px;
   z-index: 40;
-  width: 40px;
-  height: 400px;
+  width: 62px;
+  height: 1412px;
   cursor: pointer;
   touch-action: none;
 }
@@ -126,24 +126,24 @@ body {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 8px;
+  width: 32px;
   height: 100%;
   transform: translateX(-50%);
   border-radius: 9999px;
   background: white;
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
   pointer-events: none;
 }
 
 .zoom-slider-thumb {
   position: absolute;
   left: 50%;
-  width: 28px;
-  height: 28px;
+  width: 62px;
+  height: 62px;
   transform: translate(-50%, -50%);
   border-radius: 9999px;
   background: var(--color-mayfair-navy);
-  border: 8px solid white;
+  border: 20px solid white; /* leaves Figma's 22px navy centre dot */
   pointer-events: none;
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
 }

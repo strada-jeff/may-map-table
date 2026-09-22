@@ -10,9 +10,10 @@ export default function SignupCta() {
       type="button"
       onClick={() => open("signup")}
       aria-label="Sign up"
-      className="signup-cta absolute right-0 top-0 z-40 size-[120px]"
+      className="signup-cta absolute right-0 top-0 z-40 size-[155px]"
     >
-      <img src={signupBadge} alt="" className="size-full" />
+      {/* 175px export = the 155px badge plus its drop-shadow margin. */}
+      <img src={signupBadge} alt="" className="signup-cta-icon pointer-events-none absolute left-[-10px] top-[-6px] h-[175px] w-[175px] max-w-none" />
     </button>
   );
 }
