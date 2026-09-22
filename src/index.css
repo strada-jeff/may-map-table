@@ -44,7 +44,7 @@ body {
 }
 
 .drawer-scroll,
-.details-view-card {
+.details-view-body {
   /* Re-enable single-finger vertical scroll only; still no pinch-zoom or
      horizontal swipe-nav here. */
   touch-action: pan-y;

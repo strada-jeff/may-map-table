@@ -28,7 +28,7 @@ export const CONFIG = {
     youAreHereBadgePoints: {} as Record<string, string | readonly [number, number]>,
   },
   details: {
-    panelWidthPx: 920, // kiosk screen is fixed, so this is a constant, not measured
+    panelWidthPx: 2160, // Figma Info_card_overlay; kiosk screen is fixed, so this is a constant, not measured
   },
   signup: {
     heading: "Sign up to receive Mayfair news, event invitations, and more",

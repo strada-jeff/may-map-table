@@ -58,7 +58,10 @@ export type Location = BasePin & {
   categoryId: Category["id"];
   title: string;
   location: string;
+  /** Blank-line-separated paragraphs; each renders as its own <p>. */
   description: string;
+  /** Optional artwork for the details view's right column (e.g. the swim club's pool); falls back to the category flag. */
+  illustration?: string;
 };
 
 export type MapPin = ModelHome | Location;
