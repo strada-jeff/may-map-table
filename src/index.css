@@ -51,8 +51,9 @@ body {
 }
 
 .drawer-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: white rgba(0, 0, 0, 0.15);
+  /* No scrollbar-width/scrollbar-color here: when either is set, Chrome
+     ignores the ::-webkit-scrollbar rules below, which are needed for
+     Figma's 13px track with its inset 8px thumb. */
   direction: rtl; /* moves the scrollbar to the drawer's left (outer) edge */
 }
 
@@ -64,16 +65,20 @@ body {
 }
 
 .drawer-scroll::-webkit-scrollbar {
-  width: 4px;
+  width: 13px;
 }
 
 .drawer-scroll::-webkit-scrollbar-track {
+  margin-top: 43px; /* bottom end meets the fade, above the chips */
   background: rgba(0, 0, 0, 0.15);
   border-radius: 40px;
 }
 
 .drawer-scroll::-webkit-scrollbar-thumb {
-  background: white;
+  /* Transparent border + padding-box clip insets the white thumb inside
+     the track rather than filling it edge to edge. */
+  border: 2.5px solid transparent;
+  background: white padding-box;
   border-radius: 40px;
 }
 

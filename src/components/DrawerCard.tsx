@@ -2,7 +2,8 @@ import type { DestinationPin } from "../hooks/useDestinationPins";
 import type { Category } from "../types/pins";
 import { useRoute } from "../hooks/RouteContext";
 import { useDetails } from "../hooks/DetailsContext";
-import ButtonFlagIcon from "./ButtonFlagIcon";
+import LocateFlagIcon from "./LocateFlagIcon";
+import iconLearnMoreArrow from "../assets/icons/learn-more-arrow.svg";
 
 const FALLBACK_FLAG_COLOR = "#82b1dd";
 
@@ -39,17 +40,17 @@ export default function DrawerCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") showDetails();
       }}
-      className="flex w-full shrink-0 cursor-pointer items-stretch gap-4 rounded-[10px] bg-white p-3 text-left shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
+      className="flex w-full shrink-0 cursor-pointer items-stretch gap-[36px] rounded-[10px] bg-white p-[18px] text-left shadow-[0_4px_5px_0_rgba(0,0,0,0.2)]"
     >
-      <div className="aspect-square flex-1 shrink-0 overflow-hidden bg-mayfair-blue/20">
+      <div className="h-[323px] w-[322px] shrink-0 overflow-hidden bg-mayfair-blue/20">
         {image && <img src={image} alt="" className="size-full object-cover" />}
       </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
-        <div className="flex flex-col gap-1">
-          <p className="font-vision text-4xl leading-tight text-mayfair-navy">
+      <div className="flex min-w-0 flex-1 flex-col justify-between pb-[18px] pr-[22px] pt-[18px]">
+        <div className="flex flex-col gap-[14px]">
+          <p className="font-vision text-[50px] leading-[52px] text-mayfair-navy">
             {title}
           </p>
-          <p className="truncate font-vision text-l font-extrabold uppercase tracking-[0.05em] text-mayfair-navy">
+          <p className="truncate font-vision text-[20px] font-extrabold uppercase leading-none tracking-[0.05em] text-mayfair-navy">
             {subtitle}
           </p>
         </div>
@@ -61,10 +62,10 @@ export default function DrawerCard({
               e.stopPropagation();
               showDetails();
             }}
-            className="flex items-center gap-2 border-[1.5px] border-mayfair-blue px-4 pb-2 pt-3 font-vision text-xs font-extrabold uppercase tracking-[0.1em] text-mayfair-navy"
+            className="flex h-[42px] items-center gap-[6px] border-[1.5px] border-mayfair-blue pl-[24.5px] pr-[21.5px] font-vision text-[16px] font-extrabold uppercase leading-none tracking-[0.1em] text-mayfair-navy"
           >
             learn more
-            <span aria-hidden="true">&rarr;</span>
+            <img src={iconLearnMoreArrow} alt="" className="h-[11px] w-[13.75px] shrink-0" />
           </button>
 
           <button
@@ -74,15 +75,18 @@ export default function DrawerCard({
               e.stopPropagation();
               routeTo(pin.id);
             }}
-            className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-mayfair-blue bg-white"
+            // LocateFlagIcon draws its own ring; the balloon fallback needs one.
+            className={`flex size-[50px] shrink-0 items-center justify-center rounded-full bg-white ${
+              category?.color ? "" : "border-[1.5px] border-mayfair-blue"
+            }`}
           >
             {category?.color ? (
-              <ButtonFlagIcon
+              <LocateFlagIcon
                 color={category.color ?? FALLBACK_FLAG_COLOR}
-                className="h-7 w-auto"
+                className="size-full"
               />
             ) : (
-              <img src={category?.icon} alt="" className="h-8 w-auto" />
+              <img src={category?.icon} alt="" className="h-[32px] w-[16.4px]" />
             )}
           </button>
         </div>
