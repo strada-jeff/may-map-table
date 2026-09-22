@@ -101,8 +101,10 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
   );
   const badgePoint = useMemo<[number, number]>(
     () =>
-      resolveMapPoint(CONFIG.routing.youAreHereBadgePoint) as [number, number],
-    [],
+      resolveMapPoint(
+        CONFIG.routing.youAreHereBadgePoints[route.originId] ?? route.originId,
+      ) as [number, number],
+    [route.originId],
   );
   const [drawT, setDrawT] = useState(0);
   const [arrowT, setArrowT] = useState(0);

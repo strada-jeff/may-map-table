@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
-import lottie from "lottie-web";
+// Light build: no AE expressions interpreter (this project's animations
+// don't use them), which also drops the `eval()` the full build ships for it.
+import lottie from "lottie-web/build/player/lottie_light";
 import { LOTTIE_ANIMATIONS } from "../data/lottie";
 import type { LottieMarkerConfig } from "../types/lottie";
 

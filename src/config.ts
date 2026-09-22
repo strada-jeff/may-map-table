@@ -16,16 +16,16 @@ export const CONFIG = {
     tileSize: 256,
   },
   routing: {
-    activeOriginId: "main", // Which #origins anchor in network.svg routes are precomputed from.
     fitPaddingPx: 200, // Screen-pixel padding when the map fits to a newly-activated route.
-    // Where the "you are here" badge is drawn — independent of
-    // activeOriginId's #origins anchor, which network.svg pins onto the
-    // road network for snapping/routing and shouldn't be nudged just to
-    // make the badge look right. Anchor id or a raw [x, y] map-space point;
-    // defaults to the same anchor, override with a point if the badge
+    // Where each origin's "you are here" badge is drawn — independent of
+    // that #origins anchor itself, which network.svg pins onto the road
+    // network for snapping/routing and shouldn't be nudged just to make the
+    // badge look right. Keyed by origin id (which network the active route
+    // came from — see RouteContext/RouteLine); an origin absent here just
+    // uses its own anchor point. Override with a point only if the badge
     // needs to sit somewhere visually different (e.g. centered on the
-    // "home" artwork) than where routes actually originate.
-    youAreHereBadgePoint: "main" as string | readonly [number, number],
+    // "home" artwork) than where that origin's routes actually start.
+    youAreHereBadgePoints: {} as Record<string, string | readonly [number, number]>,
   },
   details: {
     panelWidthPx: 920, // kiosk screen is fixed, so this is a constant, not measured
@@ -33,6 +33,6 @@ export const CONFIG = {
   signup: {
     heading: "Sign up to receive Mayfair news, event invitations, and more",
     // TODO: replace with the real sign-up destination.
-    qrValue: "https://example.com/signup",
+    qrValue: "https://mayfairtx.com/",
   },
 } as const;

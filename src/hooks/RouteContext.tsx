@@ -7,8 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { CONFIG } from "../config";
-import { routes } from "../routing/generated";
+import { anchors, routes } from "../routing/generated";
 import type { ActiveRoute } from "../types/routing";
 import { ROUTE_EXIT_FADE_MS } from "../components/routePanes";
 
@@ -65,12 +64,12 @@ export function RouteProvider({ children }: { children: ReactNode }) {
   }, [activeRoute]);
 
   const routeTo = useCallback((destinationId: string) => {
-    const originId: string = CONFIG.routing.activeOriginId;
-    const route = routes[originId]?.[destinationId];
-    if (!route) {
+    const originId = anchors.destinations.find((d) => d.id === destinationId)?.originId;
+    const route = originId ? routes[originId]?.[destinationId] : undefined;
+    if (!originId || !route) {
       console.warn(
-        `No route from origin "${originId}" to "${destinationId}" — ` +
-          `it may be unreachable or the id may not exist in #destinations.`,
+        `No route to "${destinationId}" — it may not exist in #destinations, or may be ` +
+          `unreachable from its network's origin.`,
       );
       setActiveRoute(null);
       return;

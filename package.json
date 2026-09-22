@@ -9,7 +9,7 @@
     "build:network": "tsx tools/build-network.ts",
     "build:artwork": "tsx tools/build-artwork.ts",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview  --host"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

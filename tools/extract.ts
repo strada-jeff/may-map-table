@@ -25,8 +25,9 @@ export interface ExtractedAnchor {
 export interface Extraction {
   /** viewBox of the source document, i.e. the canonical coordinate space. */
   bounds: readonly [Point, Point]
-  /** Which candidate id the roads were actually read from. */
-  networkLayerId: string
+  /** Which candidate id(s) the roads were actually read from — more than one
+   *  when separate networks each get their own top-level Illustrator layer. */
+  networkLayerIds: string[]
   paths: ExtractedPath[]
   destinations: ExtractedAnchor[]
   origins: ExtractedAnchor[]
@@ -41,16 +42,18 @@ export interface Extraction {
 
 export interface ExtractOptions {
   /**
-   * Candidate ids for the group holding the routing paths, tried in order.
-   *
-   * More than one because the layer an illustrator works in gets renamed, and
-   * re-importing into Illustrator wraps everything in a new layer group. The
-   * most specific name wins so a wrapper called `network` cannot shadow the
-   * real roads group nested inside it.
+   * Candidate ids for the group(s) holding the routing paths. Every id that
+   * actually exists in the document is read and merged — not just the first
+   * match — so a second, physically separate network can live in its own
+   * top-level Illustrator layer (e.g. "roads-network-2") instead of nested
+   * inside the first one. The list is also still how a renamed/re-exported
+   * single layer is found (Illustrator wraps everything in a new group on
+   * re-import), which is why a plain rename doesn't accidentally double up:
+   * re-exporting produces one new id, not both the old and new one at once.
    */
   networkLayer?: string | string[]
-  destinationsLayer?: string
-  originsLayer?: string
+  destinationsLayer?: string | string[]
+  originsLayer?: string | string[]
   /** Sampling step in map units. Smaller means more faithful curves. */
   step?: number
   /** Douglas-Peucker tolerance applied after sampling. */
@@ -137,17 +140,8 @@ export function extractFromSvg(svgSource: string, opts: ExtractOptions = {}): Ex
   const bounds = readViewBox(svg)
 
   const candidates = Array.isArray(networkLayer) ? networkLayer : [networkLayer]
-  let networkRoot: Element | null = null
-  let networkLayerId = ''
-  for (const id of candidates) {
-    const found = document.getElementById(id)
-    if (found) {
-      networkRoot = found as Element
-      networkLayerId = id
-      break
-    }
-  }
-  if (!networkRoot) {
+  const networkRoots = findRoots(document, candidates, svg as Element)
+  if (networkRoots.length === 0) {
     throw new Error(
       `No routing layer found: expected a group with one of these ids — ` +
         `${candidates.map((c) => `"${c}"`).join(', ')}. ` +
@@ -157,42 +151,96 @@ export function extractFromSvg(svgSource: string, opts: ExtractOptions = {}): Ex
 
   const paths: ExtractedPath[] = []
   const ungrouped: string[] = []
-  walk(networkRoot, baseMatrixFor(networkRoot, svg as Element), (el, matrix) => {
-    const geometry = toPathData(el)
-    if (!geometry) return
-    const sampled = flatten(geometry.d, matrix, step)
-    if (sampled.length < 2) return
-    const points = simplifyPoints(sampled, simplifyTolerance, geometry.closed)
-    if (points.length < 2) return
+  for (const { element: networkRoot } of networkRoots) {
+    walk(networkRoot, baseMatrixFor(networkRoot, svg as Element), (el, matrix) => {
+      const geometry = toPathData(el)
+      if (!geometry) return
+      const sampled = flatten(geometry.d, matrix, step)
+      if (sampled.length < 2) return
+      const points = simplifyPoints(sampled, simplifyTolerance, geometry.closed)
+      if (points.length < 2) return
 
-    const id = el.getAttribute('id') || `${el.tagName.toLowerCase()}-${paths.length}`
-    const group = groupFor(el, networkRoot)
-    if (group === null) ungrouped.push(id)
+      const id = el.getAttribute('id') || `${el.tagName.toLowerCase()}-${paths.length}`
+      const group = groupFor(el, networkRoot)
+      if (group === null) ungrouped.push(id)
 
-    const oneWay = isOneWay(el, networkRoot)
-    // A drawing tool decides which way round it emits a circle, and the
-    // illustrator has no reliable control over it. Normalising here means a
-    // roundabout circulates correctly however it happened to be drawn.
-    if (oneWay && geometry.closed) orientRing(points, circulation)
+      const oneWay = isOneWay(el, networkRoot)
+      // A drawing tool decides which way round it emits a circle, and the
+      // illustrator has no reliable control over it. Normalising here means
+      // a roundabout circulates correctly however it happened to be drawn.
+      if (oneWay && geometry.closed) orientRing(points, circulation)
 
-    paths.push({
-      id,
-      kind: kindFor(el, networkRoot),
-      points,
-      closed: geometry.closed,
-      oneWay,
-      group,
+      paths.push({
+        id,
+        kind: kindFor(el, networkRoot),
+        points,
+        closed: geometry.closed,
+        oneWay,
+        group,
+      })
     })
-  })
+  }
 
   return {
     bounds,
-    networkLayerId,
+    networkLayerIds: networkRoots.map((r) => r.id),
     paths,
     ungrouped,
     destinations: readAnchors(document, destinationsLayer, svg as Element),
     origins: readAnchors(document, originsLayer, svg as Element),
   }
+}
+
+/**
+ * Every element whose *role* (see `nameOf`) matches a candidate — not just
+ * the first, and not by literal id — except a match that turns out to be
+ * an ancestor of another match.
+ *
+ * Matching by role rather than literal id is what lets a whole layer be
+ * duplicated in Illustrator (to start a second, separate network) and just
+ * work: the copy's ids get auto-suffixed to stay unique, but its
+ * `data-name`s still read "roads-network"/"origins"/etc, so both the
+ * original and the copy match the same plain candidate list.
+ *
+ * The ancestor exclusion handles a different, older Illustrator quirk:
+ * re-importing wraps everything in a new outer layer group, so a
+ * renamed/re-exported single layer can leave both its old and new name
+ * matching at once, one nested inside the other (the outer one is
+ * sometimes literally named "network", the same generic name Illustrator
+ * also gives the whole artboard — excluded separately below since that one
+ * isn't even a wrapper, just the `<svg>` root itself). Keeping the more
+ * specific, nested match and dropping the outer wrapper is what makes that
+ * safe: without it, the wrapper's subtree would read the inner layer's
+ * content a second time.
+ */
+function findRoots(
+  document: Document,
+  candidates: string[],
+  svg: Element,
+): { id: string; element: Element }[] {
+  const all = Array.from(document.querySelectorAll('[id], [data-name]')) as Element[]
+  const roots: { id: string; element: Element }[] = []
+  for (const id of candidates) {
+    for (const el of all) {
+      // `id` here is the actual attribute for reporting, not the matched
+      // role name — with a layer duplicated, several roots share a role
+      // (e.g. "roads-network") but must stay distinguishable by their own
+      // real id (e.g. "roads-network" vs. "roads-network-2").
+      if (el !== svg && nameOf(el) === id) roots.push({ id: el.getAttribute('id') ?? id, element: el })
+    }
+  }
+  return roots.filter(
+    (root) => !roots.some((other) => other.element !== root.element && isAncestor(root.element, other.element)),
+  )
+}
+
+function isAncestor(ancestor: Element, node: Element): boolean {
+  let current: Element | null = node.parentElement
+  while (current) {
+    if (current === ancestor) return true
+    current = current.parentElement
+  }
+  return false
 }
 
 export function readViewBox(svg: Element): readonly [Point, Point] {
@@ -232,6 +280,22 @@ function baseMatrixFor(el: Element, svg: Element): Matrix {
   return matrix
 }
 
+/**
+ * A layer's *role* (roads-network, two-way, origins, ...) — never an
+ * individual anchor's identity. Illustrator auto-suffixes an `id` to keep
+ * it unique when two layers share a name (duplicating a whole layer to
+ * start a second network leaves both a "two-way" and a "two-way-2", say),
+ * but preserves the original name in `data-name`, which is what every
+ * layer-role check below matches against instead of the raw id. Anchors
+ * (destinations/origins circles) are deliberately read by their literal
+ * `id` elsewhere, never through this — two anchors ending up with the same
+ * *role* name here is fine (both are "a two-way road"), but two anchors
+ * resolving to the same *identity* would be a real collision.
+ */
+function nameOf(el: Element): string | null {
+  return el.getAttribute('data-name') ?? el.getAttribute('id')
+}
+
 function walk(
   root: Element,
   matrix: Matrix,
@@ -243,8 +307,8 @@ function walk(
     // reason to skip an element - only an explicit data-ignore is.
     if (child.getAttribute('data-ignore') !== null) continue
     // Skip whole non-road subtrees: reference artwork and anchor layers.
-    const childId = child.getAttribute('id')
-    if (childId && NON_ROAD_LAYERS.has(childId)) continue
+    const childName = nameOf(child)
+    if (childName && NON_ROAD_LAYERS.has(childName)) continue
     if (GEOMETRY_TAGS.has(child.tagName.toLowerCase())) {
       visit(child, childMatrix)
     }
@@ -252,22 +316,22 @@ function walk(
   }
 }
 
-/** Nearest ancestor sublayer id decides the edge kind. */
+/** Nearest ancestor sublayer decides the edge kind. */
 function kindFor(el: Element, root: Element): EdgeKind {
   let current: Element | null = el
   while (current && current !== root.parentElement) {
-    const id = current.getAttribute('id')
-    if (id && KIND_BY_LAYER[id]) return KIND_BY_LAYER[id]!
+    const name = nameOf(current)
+    if (name && KIND_BY_LAYER[name]) return KIND_BY_LAYER[name]!
     current = current.parentElement
   }
   return 'path'
 }
 
-/** True when the element sits anywhere under the one-way sublayer. */
+/** True when the element sits anywhere under a one-way sublayer. */
 function isOneWay(el: Element, root: Element): boolean {
   let current: Element | null = el
   while (current && current !== root.parentElement) {
-    if (current.getAttribute('id') === ONEWAY_LAYER) return true
+    if (nameOf(current) === ONEWAY_LAYER) return true
     current = current.parentElement
   }
   return false
@@ -277,8 +341,8 @@ function isOneWay(el: Element, root: Element): boolean {
 function groupFor(el: Element, root: Element): string | null {
   let current: Element | null = el
   while (current && current !== root.parentElement) {
-    const id = current.getAttribute('id')
-    if (id && KNOWN_LAYERS.has(id)) return id
+    const name = nameOf(current)
+    if (name && KNOWN_LAYERS.has(name)) return name
     current = current.parentElement
   }
   return null
@@ -420,25 +484,25 @@ function simplifyPoints(points: Point[], tolerance: number, closed: boolean): Po
 
 function readAnchors(
   document: Document,
-  layerId: string,
+  layerId: string | string[],
   svg: Element,
 ): ExtractedAnchor[] {
-  const root = document.getElementById(layerId)
-  if (!root) return []
-
+  const candidates = Array.isArray(layerId) ? layerId : [layerId]
   const anchors: ExtractedAnchor[] = []
-  walk(root as Element, baseMatrixFor(root as Element, svg), (el, matrix) => {
-    const id = el.getAttribute('id')
-    // An unnamed anchor cannot be referenced by the UI, so it is a
-    // mis-export rather than a silently-ignorable element.
-    if (!id) {
-      throw new Error(
-        `Anchor in #${layerId} has no id. Name it in the Layers panel and ` +
-          `export with Object IDs -> Layer Names.`,
-      )
-    }
-    anchors.push({ id, point: centroidOf(el, matrix) })
-  })
+  for (const { id: rootId, element: root } of findRoots(document, candidates, svg)) {
+    walk(root, baseMatrixFor(root, svg), (el, matrix) => {
+      const id = el.getAttribute('id')
+      // An unnamed anchor cannot be referenced by the UI, so it is a
+      // mis-export rather than a silently-ignorable element.
+      if (!id) {
+        throw new Error(
+          `Anchor in #${rootId} has no id. Name it in the Layers panel and ` +
+            `export with Object IDs -> Layer Names.`,
+        )
+      }
+      anchors.push({ id, point: centroidOf(el, matrix) })
+    })
+  }
   return anchors
 }
 

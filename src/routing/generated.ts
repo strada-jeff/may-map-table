@@ -10,9 +10,12 @@ export type BoundAnchor = {
   snapDistance: number;
 };
 
+/** A destination bound to whichever single origin's network reaches it. */
+export type BoundDestination = BoundAnchor & { originId: string };
+
 export type AnchorsFile = {
   origins: BoundAnchor[];
-  destinations: BoundAnchor[];
+  destinations: BoundDestination[];
 };
 
 export type RouteResult = {

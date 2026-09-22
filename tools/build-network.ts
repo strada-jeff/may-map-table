@@ -18,11 +18,24 @@ const OUT_DIR = resolve(root, "src/data/generated");
 /** A destination anchor is a mis-placed pin beyond this distance from a road. */
 const MAX_SNAP_DISTANCE = 60;
 
+// Matched by layer *role* (see extract.ts's `nameOf`), not literal id — so
+// duplicating a whole "roads-network"/"origins"/"destinations" layer in
+// Illustrator to start a second, separate network just works, however
+// Illustrator ends up suffixing the copy's actual ids to keep them unique.
+const NETWORK_LAYER_IDS = ["roads-network", "network", "roads"];
+const ORIGINS_LAYER_IDS = ["origins"];
+const DESTINATIONS_LAYER_IDS = ["destinations"];
+
 interface BoundAnchor {
   id: string;
   point: Point;
   node: number;
   snapDistance: number;
+}
+
+/** A destination bound to whichever single origin's network reaches it. */
+interface BoundDestination extends BoundAnchor {
+  originId: string;
 }
 
 interface PrecomputedRoute {
@@ -35,9 +48,13 @@ function main(): void {
   const note = (message: string) => problems.push(message);
 
   console.log(`Reading ${SOURCE_SVG}`);
-  const extraction = extractFromFile(SOURCE_SVG);
+  const extraction = extractFromFile(SOURCE_SVG, {
+    networkLayer: NETWORK_LAYER_IDS,
+    originsLayer: ORIGINS_LAYER_IDS,
+    destinationsLayer: DESTINATIONS_LAYER_IDS,
+  });
   console.log(
-    `  roads read from #${extraction.networkLayerId} — ` +
+    `  roads read from ${extraction.networkLayerIds.map((id) => `#${id}`).join(", ")} — ` +
       `${extraction.paths.length} paths, ${extraction.destinations.length} destinations, ` +
       `${extraction.origins.length} origins`,
   );
@@ -73,8 +90,12 @@ function main(): void {
   );
 
   if (report.components.length > 1) {
-    note(
-      `${report.components.length} disconnected components ` +
+    // Informational only, not a problem: separate road networks (their own
+    // origin, no drawn connection between them) are expected to land as
+    // distinct components here. The real invariant — every destination
+    // reachable from exactly one origin — is checked after routing below.
+    console.log(
+      `\n${report.components.length} disconnected components ` +
         `(largest ${report.components[0]!.length} nodes). ` +
         `Islands start at: ${report.components
           .slice(1)
@@ -110,12 +131,6 @@ function main(): void {
   if (extraction.origins.length === 0) {
     throw new Error(`No origin anchors found. Add at least one to #origins in ${SOURCE_SVG}.`);
   }
-  if (!extraction.origins.some((o) => o.id === CONFIG.routing.activeOriginId)) {
-    note(
-      `CONFIG.routing.activeOriginId is "${CONFIG.routing.activeOriginId}" but no ` +
-        `#origins anchor with that id exists`,
-    );
-  }
 
   // Destinations are bound once — their node doesn't depend on which origin
   // is routing to them. Origins are bound per-anchor, below.
@@ -125,6 +140,10 @@ function main(): void {
 
   const routes: Record<string, Record<string, PrecomputedRoute>> = {};
   const origins: BoundAnchor[] = [];
+  // Which origin(s) successfully reached each destination — a destination
+  // belonging to another, separate network simply won't appear here for
+  // this origin, which is expected rather than noted per-origin below.
+  const reachedBy = new Map<string, string[]>();
 
   for (const anchor of extraction.origins) {
     const origin = bind(network, anchor.id, anchor.point, note);
@@ -134,21 +153,40 @@ function main(): void {
     const originRoutes: Record<string, PrecomputedRoute> = {};
     for (const destination of destinations) {
       const route = pathTo(network, tree, destination.node);
-      if (!route) {
-        note(`"${destination.id}" is unreachable from origin "${origin.id}"`);
-        continue;
-      }
+      if (!route) continue;
       originRoutes[destination.id] = {
         coordinates: route.coordinates,
         distance: Math.round(route.distance * 10) / 10,
       };
+      reachedBy.set(destination.id, [...(reachedBy.get(destination.id) ?? []), origin.id]);
     }
     routes[origin.id] = originRoutes;
   }
 
+  // The real cross-network invariant: every destination should be reachable
+  // from exactly one origin. Zero means a dead pin; more than one means an
+  // unexpected connection between what should be separate networks.
+  const boundDestinations: BoundDestination[] = [];
+  for (const destination of destinations) {
+    const reachingOrigins = reachedBy.get(destination.id) ?? [];
+    if (reachingOrigins.length === 0) {
+      note(`"${destination.id}" is unreachable from every origin`);
+      continue;
+    }
+    if (reachingOrigins.length > 1) {
+      note(
+        `"${destination.id}" is reachable from multiple origins ` +
+          `(${reachingOrigins.join(", ")}) — expected exactly one for separate networks`,
+      );
+    }
+    boundDestinations.push({ ...destination, originId: reachingOrigins[0]! });
+  }
+
   const finalComponents = connectedComponents(network);
   if (finalComponents.length > 1) {
-    note(`${finalComponents.length} disconnected components after binding anchors`);
+    // Informational only — see the matching note on the raw topology check
+    // above; separate networks are expected to leave the graph fragmented.
+    console.log(`\n${finalComponents.length} disconnected components after binding anchors`);
   }
   for (const edge of network.edges) {
     if (edge.len <= 0) note(`Zero-length edge between nodes ${edge.a} and ${edge.b}`);
@@ -156,13 +194,13 @@ function main(): void {
 
   mkdirSync(OUT_DIR, { recursive: true });
   write("network.json", network);
-  write("anchors.json", { origins, destinations });
+  write("anchors.json", { origins, destinations: boundDestinations });
   write("routes.json", routes);
 
   console.log(`\nRoutes precomputed for ${origins.length} origin(s):`);
   for (const origin of origins) {
-    const count = Object.keys(routes[origin.id] ?? {}).length;
-    console.log(`  ${origin.id}: ${count}/${destinations.length} destinations reachable`);
+    const owned = boundDestinations.filter((d) => d.originId === origin.id).length;
+    console.log(`  ${origin.id}: ${owned} destination(s) (of ${destinations.length} total)`);
   }
 
   if (problems.length > 0) {

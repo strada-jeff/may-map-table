@@ -15,7 +15,7 @@ const builders = buildersData satisfies Builder[];
 // validator (e.g. zod) once a CMS is writing this data instead of us.
 const modelHomes = modelHomesData as ModelHome[];
 const locations = locationsData as Location[];
-const lottieMarkers = lottieMarkersData as LottieMarkerConfig[];
+const lottieMarkers = lottieMarkersData as unknown as LottieMarkerConfig[];
 
 /**
  * Static JSON today; swap each body for a `fetch()` against the CMS later.
