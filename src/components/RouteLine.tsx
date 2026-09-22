@@ -32,6 +32,7 @@ const BADGE_SKETCH_FILTER_ID = "route-line-badge-sketch-filter";
 const DRAW_DURATION_S = 3;
 const ARROW_POP_DURATION_S = 0.35;
 // 25% shorter than the original "36 22".
+
 const DASH_LENGTH = 8;
 const DASH_GAP = 6;
 const DASH_ARRAY = `${DASH_LENGTH} ${DASH_GAP}`;
@@ -39,9 +40,10 @@ const DASH_ARRAY = `${DASH_LENGTH} ${DASH_GAP}`;
 // through feDisplacementMap), tuned for the line's actual stroke width.
 const SKETCH_BASE_FREQUENCY = 0.6;
 const SKETCH_DISPLACEMENT_SCALE = 4;
-// 25% narrower than the originals (18/12/26) — kept proportional so the
-// mask's reveal corridor still comfortably covers the widest visible
-// stroke plus its rounded caps.
+// Screen px (non-scaling-stroke), so doubled from the 1080p-tuned 3.5/3/3.5
+// for the 4K (1x DPR) canvas — same on-screen weight as before. Kept
+// proportional so the mask's reveal corridor still covers the widest
+// visible stroke plus its rounded caps.
 const SHADOW_STROKE_WIDTH = 3.5;
 const LINE_STROKE_WIDTH = 3;
 const MASK_STROKE_WIDTH = 3.5;

@@ -12,14 +12,18 @@ const NATURAL_WIDTH = 172;
 const NATURAL_HEIGHT = 215;
 const ANCHOR_X = 14;
 const ANCHOR_Y = 213;
-const DISPLAY_HEIGHT = 70;
-// Sized up when this pin is the active route's destination, so it reads
-// clearly above the route dim overlay/line (see DestinationMarkers,
-// RouteDimOverlay) instead of blending in at the normal pin size.
-const ACTIVE_DISPLAY_HEIGHT = 84;
+// Native artwork height — Figma's 4K comps draw every flag at 215px.
+const DISPLAY_HEIGHT = 215;
+// The active route's destination. Figma's directions overlay shows it at
+// the same size as every other flag (it reads via the dim overlay and its
+// label instead); kept separate so it can be bumped again.
+const ACTIVE_DISPLAY_HEIGHT = 215;
 
-const NAME_LABEL_CLASS =
-  "mb-2 whitespace-nowrap font-vision text-[26px] font-extrabold uppercase tracking-tight text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]";
+// Figma's directions overlay: 42px, set right of the pole and under the
+// fabric (31px past the pole, 150px down the 215px flag).
+const ADDRESS_LABEL_CLASS =
+  "location-marker-label pointer-events-none absolute top-[150px] whitespace-nowrap font-vision text-[42px] font-extrabold leading-[52px] text-white";
+const ADDRESS_LABEL_POLE_GAP_PX = 31;
 
 // Fallback if a location's category has no color set, so a data gap shows
 // up as an odd-colored flag rather than a crash.
@@ -30,8 +34,8 @@ type LocationMarkerProps = {
   /** Whether this pin currently matches the active filter. Ignored while `active`. */
   visible: boolean;
   /**
-   * True while this pin is the active route's destination. Sized up,
-   * labeled with its name, and elevated (z-30) above the route dim
+   * True while this pin is the active route's destination. Labeled with
+   * its address, and elevated (z-30) above the route dim
    * overlay/line instead of getting dimmed like every other pin — see
    * MapView's comment on why plain z-index is enough now, no second
    * disposable marker needed.
@@ -67,11 +71,10 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
         {/* Pure anchor placement — kept separate from .destination-marker
             below so its own inline transform doesn't fight that class's
             CSS-driven show/hide transform on .destination-marker-inner.
-            The active state's name label rides along as a flex sibling —
-            it doesn't add to the icon's own width, so the anchor math
-            above still lands the pole-base at (x, y) either way. */}
+            The active state's address label is absolutely placed over the
+            flag's lower half, so it never affects the anchor math above. */}
         <div
-          className={active ? "flex items-end gap-3" : undefined}
+          className="location-marker-anchor relative"
           style={{
             height: displayHeight,
             transform: `translate(${-anchorLeft}px, ${-anchorTop}px)`,
@@ -87,7 +90,11 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
               </div>
             </div>
           </div>
-          {active && <span className={NAME_LABEL_CLASS}>{pin.title}</span>}
+          {active && (
+            <span className={ADDRESS_LABEL_CLASS} style={{ left: anchorLeft + ADDRESS_LABEL_POLE_GAP_PX }}>
+              {pin.address}
+            </span>
+          )}
         </div>
       </KeepScale>
     </div>

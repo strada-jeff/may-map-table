@@ -10,17 +10,22 @@ const ICON = "/icons/model-home-balloon.svg";
 const NATURAL_WIDTH = 48;
 const NATURAL_HEIGHT = 189;
 const LABEL_TOP_PERCENT = (34 / NATURAL_HEIGHT) * 100;
-const DISPLAY_HEIGHT = 110;
-const LABEL_FONT_PX = 13;
-// Sized up + paired with the model home's name when this pin is the active
+// Native artwork height — Figma's 4K comps draw balloons at 48x189.
+const DISPLAY_HEIGHT = 189;
+// Scaled with the balloon from the old 13px-at-110px (Figma has no
+// map-balloon label spec; the help legend's is ~the same ratio).
+const LABEL_FONT_PX = 23;
+// Paired with the model home's address when this pin is the active
 // route's destination, so it reads clearly above the route dim
-// overlay/line (see DestinationMarkers, RouteDimOverlay) instead of
-// blending in at the normal pin size.
-const ACTIVE_DISPLAY_HEIGHT = 132;
-const ACTIVE_LABEL_FONT_PX = 16;
+// overlay/line (see DestinationMarkers, RouteDimOverlay).
+// Same size as every other balloon, matching Figma's directions overlay
+// (the destination flag isn't sized up there either).
+const ACTIVE_DISPLAY_HEIGHT = 189;
+const ACTIVE_LABEL_FONT_PX = 23;
 
-const NAME_LABEL_CLASS =
-  "mb-2 whitespace-nowrap font-vision text-[26px] font-extrabold uppercase tracking-tight text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.55)]";
+// Same type as LocationMarker's label (Figma's directions overlay).
+const ADDRESS_LABEL_CLASS =
+  "mb-2 whitespace-nowrap font-vision text-[42px] font-extrabold leading-[52px] text-white";
 
 // Anchor is bottom-center, unconditionally: the icon floats above its
 // (already pin.iconOffset-nudged, see useDestinationPins) point. Computed
@@ -34,8 +39,8 @@ type ModelHomeMarkerProps = {
   /** Whether this pin currently matches the active filter. Ignored while `active`. */
   visible: boolean;
   /**
-   * True while this pin is the active route's destination. Sized up,
-   * labeled with its name, and elevated (z-30) above the route dim
+   * True while this pin is the active route's destination. Labeled with
+   * its address, and elevated (z-30) above the route dim
    * overlay/line instead of getting dimmed like every other pin — see
    * MapView's comment on why plain z-index is enough now, no second
    * disposable marker needed.
@@ -90,7 +95,7 @@ export default function ModelHomeMarker({ pin, visible, active, fadeOut }: Model
               </div>
             </div>
           </div>
-          {active && <span className={NAME_LABEL_CLASS}>{pin.name}</span>}
+          {active && <span className={ADDRESS_LABEL_CLASS}>{pin.address}</span>}
         </div>
       </KeepScale>
     </div>
