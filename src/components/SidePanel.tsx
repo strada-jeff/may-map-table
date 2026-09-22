@@ -1,27 +1,13 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { CONFIG } from "../config";
-import exploreMark from "../assets/icons/explore-mark.svg";
+import signupMark from "../assets/icons/signup-mark.svg";
+import iconClose from "../assets/icons/close.svg";
 import RotateArrowsIcon from "./RotateArrowsIcon";
 import { useSideModal, type SideModalKey } from "../hooks/SideModalContext";
 import { useRotation } from "../hooks/RotationContext";
 
 const QR_SIZE_PX = 517;
-
-function CloseIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      className="size-full"
-    >
-      <path d="M5 5l14 14M19 5 5 19" />
-    </svg>
-  );
-}
 
 /**
  * Full-screen overlay, same slot and translucent-navy treatment as
@@ -49,7 +35,7 @@ export default function SidePanel() {
 
   return (
     <div
-      className={`side-panel absolute inset-0 z-50 flex flex-col items-center justify-center gap-16 bg-mayfair-navy/92 px-6 text-center transition-opacity duration-300 ${
+      className={`side-panel absolute inset-0 z-50 flex flex-col items-center justify-center bg-mayfair-navy/92 px-6 text-center transition-opacity duration-300 ${
         isOpen ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
@@ -57,9 +43,9 @@ export default function SidePanel() {
         type="button"
         onClick={close}
         aria-label="Close"
-        className="side-panel-close absolute right-12 top-12 flex size-14 items-center justify-center text-white"
+        className="side-panel-close absolute right-[50px] top-[50px] h-[57px] w-[58px]"
       >
-        <CloseIcon />
+        <img src={iconClose} alt="" className="side-panel-close-icon size-full" />
       </button>
 
       {lastModal === "signup" ? (
@@ -73,14 +59,14 @@ export default function SidePanel() {
             size={QR_SIZE_PX}
             fgColor="#ffffff"
             bgColor="transparent"
-            className="side-panel-qr"
+            className="side-panel-qr mt-[56px]"
           />
 
-          <img src={exploreMark} alt="" className="side-panel-mark h-[150px] w-auto" />
+          <img src={signupMark} alt="" className="side-panel-mark mt-[79px] h-[149px] w-[172px]" />
         </>
       ) : lastModal === "rotate" ? (
         <>
-          <p className="side-panel-heading max-w-[700px] font-vision text-[80px] leading-[84px] text-white">
+          <p className="side-panel-heading max-w-[1041px] font-vision text-[80px] leading-[84px] text-white">
             This will rotate the screen view 180º, continue?
           </p>
 
@@ -91,9 +77,9 @@ export default function SidePanel() {
               close();
             }}
             aria-label="Confirm rotation"
-            className="side-panel-rotate-confirm flex size-[181px] items-center justify-center rounded-full border-[3.5px] border-mayfair-blue"
+            className="side-panel-rotate-confirm mt-[95px] flex size-[181px] items-center justify-center rounded-full border-[3.5px] border-mayfair-blue"
           >
-            <RotateArrowsIcon color="#ffffff" className="h-9 w-auto" />
+            <RotateArrowsIcon color="#ffffff" className="h-[36.5px] w-[45px]" />
           </button>
         </>
       ) : (

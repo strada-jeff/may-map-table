@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import iconClose from "../assets/icons/gallery-close.svg";
+import iconClose from "../assets/icons/close.svg";
 import iconNext from "../assets/icons/gallery-next.svg";
 
 type DetailsGalleryProps = {
