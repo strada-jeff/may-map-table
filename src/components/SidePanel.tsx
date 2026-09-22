@@ -4,6 +4,7 @@ import { CONFIG } from "../config";
 import signupMark from "../assets/icons/signup-mark.svg";
 import iconClose from "../assets/icons/close.svg";
 import RotateArrowsIcon from "./RotateArrowsIcon";
+import HelpLegend from "./HelpLegend";
 import { useSideModal, type SideModalKey } from "../hooks/SideModalContext";
 import { useRotation } from "../hooks/RotationContext";
 
@@ -12,8 +13,7 @@ const QR_SIZE_PX = 517;
 /**
  * Full-screen overlay, same slot and translucent-navy treatment as
  * WelcomeOverlay — a deliberate interruption of the map, not a sidebar.
- * Help is still a placeholder (per the ask): just the word, content to
- * come later. Signup is a pitch line and a live-generated QR (qrcode.react,
+ * Help is the pin legend (HelpLegend). Signup is a pitch line and a live-generated QR (qrcode.react,
  * same library DetailsView uses for directions) instead of a fixed image,
  * so its target lives in CONFIG.signup instead of a baked-in asset. Rotate
  * is a confirm step for RotateControl — its CTA is what actually calls
@@ -83,7 +83,7 @@ export default function SidePanel() {
           </button>
         </>
       ) : (
-        <p className="side-panel-body font-vision text-4xl capitalize text-white">{lastModal}</p>
+        <HelpLegend />
       )}
     </div>
   );

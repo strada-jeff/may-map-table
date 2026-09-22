@@ -1,5 +1,7 @@
 type DestinationFlagIconProps = {
   color: string;
+  /** The pole-base shadow; white where the flag sits on the navy overlay (help legend) instead of the map. */
+  baseColor?: string;
   className?: string;
 };
 
@@ -8,7 +10,7 @@ type DestinationFlagIconProps = {
  * per category. The base shadow and fold-shading layers stay fixed so the
  * flag keeps depth regardless of color.
  */
-export default function DestinationFlagIcon({ color, className }: DestinationFlagIconProps) {
+export default function DestinationFlagIcon({ color, baseColor = "#04485f", className }: DestinationFlagIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +21,7 @@ export default function DestinationFlagIcon({ color, className }: DestinationFla
       className={className}
     >
       <path
-        fill="#04485f"
+        fill={baseColor}
         fillRule="evenodd"
         clipRule="evenodd"
         d="M28 211.192c0-5.08-6.265-9.192-14-9.192-7.734 0-14 4.118-14 9.192s28 5.081 28 0"

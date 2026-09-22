@@ -3,6 +3,8 @@ import { createContext, useCallback, useContext, useState, type ReactNode } from
 type RotationContextValue = {
   rotated: boolean;
   toggle: () => void;
+  /** Back to upright — IdleResetEffect uses this so each visitor starts unrotated. */
+  reset: () => void;
 };
 
 const RotationContext = createContext<RotationContextValue | null>(null);
@@ -17,8 +19,9 @@ const RotationContext = createContext<RotationContextValue | null>(null);
 export function RotationProvider({ children }: { children: ReactNode }) {
   const [rotated, setRotated] = useState(false);
   const toggle = useCallback(() => setRotated((r) => !r), []);
+  const reset = useCallback(() => setRotated(false), []);
 
-  return <RotationContext.Provider value={{ rotated, toggle }}>{children}</RotationContext.Provider>;
+  return <RotationContext.Provider value={{ rotated, toggle, reset }}>{children}</RotationContext.Provider>;
 }
 
 export function useRotation(): RotationContextValue {
