@@ -46,7 +46,7 @@ type LocationMarkerProps = {
 };
 
 export default function LocationMarker({ pin, visible, active, fadeOut }: LocationMarkerProps) {
-  const onClick = usePinClick(pin.id);
+  const tap = usePinClick(pin.id);
   const [x, y] = pin.position;
   const displayHeight = active ? ACTIVE_DISPLAY_HEIGHT : DISPLAY_HEIGHT;
   const displayWidth = Math.round((displayHeight * NATURAL_WIDTH) / NATURAL_HEIGHT);
@@ -83,7 +83,7 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
           <div style={{ width: displayWidth, height: displayHeight }}>
             <div
               className={`destination-marker size-full ${visible || active ? "" : "marker-hidden"}`}
-              onClick={onClick}
+              {...tap}
             >
               <div className="destination-marker-inner size-full">
                 <DestinationFlagIcon color={pin.markerColor ?? FALLBACK_COLOR} className="size-full" />

@@ -7,6 +7,7 @@ import RotateArrowsIcon from "./RotateArrowsIcon";
 import HelpLegend from "./HelpLegend";
 import { useSideModal, type SideModalKey } from "../hooks/SideModalContext";
 import { useRotation } from "../hooks/RotationContext";
+import { useTap } from "../hooks/useTap";
 
 const QR_SIZE_PX = 517;
 
@@ -31,6 +32,12 @@ export default function SidePanel() {
   if (activeModal && activeModal !== lastModal) {
     setLastModal(activeModal);
   }
+  const closeTap = useTap(close);
+  const rotateConfirmTap = useTap(() => {
+    toggle();
+    close();
+  });
+
   if (!lastModal) return null;
 
   return (
@@ -41,7 +48,7 @@ export default function SidePanel() {
     >
       <button
         type="button"
-        onClick={close}
+        {...closeTap}
         aria-label="Close"
         className="side-panel-close absolute right-[50px] top-[50px] h-[57px] w-[58px]"
       >
@@ -72,10 +79,7 @@ export default function SidePanel() {
 
           <button
             type="button"
-            onClick={() => {
-              toggle();
-              close();
-            }}
+            {...rotateConfirmTap}
             aria-label="Confirm rotation"
             className="side-panel-rotate-confirm mt-[95px] flex size-[181px] items-center justify-center rounded-full border-[3.5px] border-mayfair-blue"
           >

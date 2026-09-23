@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useTap } from "../hooks/useTap";
 import iconClose from "../assets/icons/close.svg";
 import iconNext from "../assets/icons/gallery-next.svg";
 
@@ -15,13 +16,15 @@ const fadeClass =
   "details-gallery-fade pointer-events-none absolute inset-y-0 w-[872px] opacity-40";
 
 function GalleryChrome({ onClose }: { onClose: () => void }) {
+  const closeTap = useTap(onClose);
+
   return (
     <>
       <div className={`${fadeClass} left-0 bg-gradient-to-r from-black to-transparent`} />
       <div className={`${fadeClass} right-0 bg-gradient-to-l from-black to-transparent`} />
       <button
         type="button"
-        onClick={onClose}
+        {...closeTap}
         aria-label="Close"
         className="details-gallery-close absolute right-[54px] top-[50px] z-10 h-[57px] w-[58px]"
       >
@@ -47,6 +50,9 @@ export default function DetailsGallery({ images, alt, onClose }: DetailsGalleryP
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi]);
+
+  const prevTap = useTap(scrollPrev);
+  const nextTap = useTap(scrollNext);
 
   if (images.length <= 1) {
     return (
@@ -77,7 +83,7 @@ export default function DetailsGallery({ images, alt, onClose }: DetailsGalleryP
 
       <button
         type="button"
-        onClick={scrollPrev}
+        {...prevTap}
         aria-label="Previous image"
         className="details-gallery-prev absolute left-[39px] top-1/2 z-10 size-[86px] -translate-y-1/2"
       >
@@ -85,7 +91,7 @@ export default function DetailsGallery({ images, alt, onClose }: DetailsGalleryP
       </button>
       <button
         type="button"
-        onClick={scrollNext}
+        {...nextTap}
         aria-label="Next image"
         className="details-gallery-next absolute right-[40px] top-1/2 z-10 size-[86px] -translate-y-1/2"
       >

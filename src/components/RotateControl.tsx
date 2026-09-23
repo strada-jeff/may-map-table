@@ -1,4 +1,5 @@
 import rotateIcon from "../assets/icons/rotate-icon.svg";
+import { useTap } from "../hooks/useTap";
 import { useRotation } from "../hooks/RotationContext";
 import { useSideModal } from "../hooks/SideModalContext";
 
@@ -12,11 +13,12 @@ import { useSideModal } from "../hooks/SideModalContext";
 export default function RotateControl() {
   const { rotated } = useRotation();
   const { open } = useSideModal();
+  const tap = useTap(() => open("rotate"));
 
   return (
     <button
       type="button"
-      onClick={() => open("rotate")}
+      {...tap}
       aria-pressed={rotated}
       aria-label="Rotate view 180 degrees"
       className="rotate-control absolute bottom-[162px] right-[63px] z-40 size-[65px] cursor-pointer"

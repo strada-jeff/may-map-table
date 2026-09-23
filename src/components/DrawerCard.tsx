@@ -2,6 +2,7 @@ import type { DestinationPin } from "../hooks/useDestinationPins";
 import type { Category } from "../types/pins";
 import { useRoute } from "../hooks/RouteContext";
 import { useDetails } from "../hooks/DetailsContext";
+import { useTap } from "../hooks/useTap";
 import LocateFlagIcon from "./LocateFlagIcon";
 import iconLearnMoreArrow from "../assets/icons/learn-more-arrow.svg";
 
@@ -32,11 +33,15 @@ export default function DrawerCard({
     openDetails(pin.id);
   }
 
+  const cardTap = useTap(showDetails);
+  const learnMoreTap = useTap(showDetails);
+  const locateTap = useTap(() => routeTo(pin.id));
+
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={showDetails}
+      {...cardTap}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") showDetails();
       }}
@@ -58,10 +63,7 @@ export default function DrawerCard({
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              showDetails();
-            }}
+            {...learnMoreTap}
             className="flex h-[42px] items-center gap-[6px] border-[1.5px] border-mayfair-blue pl-[24.5px] pr-[21.5px] font-vision text-[16px] font-extrabold uppercase leading-none tracking-[0.1em] text-mayfair-navy"
           >
             learn more
@@ -71,10 +73,7 @@ export default function DrawerCard({
           <button
             type="button"
             aria-label={`Locate ${title} on the map`}
-            onClick={(e) => {
-              e.stopPropagation();
-              routeTo(pin.id);
-            }}
+            {...locateTap}
             // LocateFlagIcon draws its own ring; the balloon fallback needs one.
             className={`flex size-[50px] shrink-0 items-center justify-center rounded-full bg-white ${
               category?.color ? "" : "border-[1.5px] border-mayfair-blue"

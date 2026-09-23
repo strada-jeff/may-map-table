@@ -7,6 +7,7 @@ import { useCategories } from "../hooks/useCategories";
 import { useBuilders } from "../hooks/useBuilders";
 import { useRoute } from "../hooks/RouteContext";
 import { useSideModal } from "../hooks/SideModalContext";
+import { useTap } from "../hooks/useTap";
 import DetailsGallery from "./DetailsGallery";
 import ButtonFlagIcon from "./ButtonFlagIcon";
 import iconNewsletter from "../assets/icons/newsletter.svg";
@@ -44,13 +45,6 @@ export default function DetailsView() {
   const isOpen = activePinId !== null;
   const pin = lastPin;
 
-  if (!pin) return null;
-
-  const category = categories.find((c) => c.id === pin.categoryId);
-  const builderName =
-    pin.kind === "model-home" ? builders.find((b) => b.id === pin.builderId)?.name : undefined;
-  const title = pin.kind === "model-home" ? pin.name : pin.title;
-
   function showOnMap() {
     if (!pin) return;
     // No explicit closeDetails() — DetailsProvider closes itself as soon
@@ -59,6 +53,17 @@ export default function DetailsView() {
     // locate button).
     routeTo(pin.id);
   }
+
+  // Above the early return (rules of hooks).
+  const keepInTouchTap = useTap(() => openSideModal("signup"));
+  const showOnMapTap = useTap(() => showOnMap());
+
+  if (!pin) return null;
+
+  const category = categories.find((c) => c.id === pin.categoryId);
+  const builderName =
+    pin.kind === "model-home" ? builders.find((b) => b.id === pin.builderId)?.name : undefined;
+  const title = pin.kind === "model-home" ? pin.name : pin.title;
 
   return (
     <div className="details-view pointer-events-none absolute inset-0 z-50 flex h-full overflow-hidden">
@@ -118,7 +123,7 @@ export default function DetailsView() {
 
             <button
               type="button"
-              onClick={() => openSideModal("signup")}
+              {...keepInTouchTap}
               className="details-view-keep-in-touch mt-auto flex h-[102px] w-[478px] shrink-0 items-center justify-between border-[1.5px] border-mayfair-blue pl-[44.5px] pr-[34.5px] text-left font-vision text-[26px] font-extrabold leading-[27px] text-mayfair-navy"
             >
               <span className="details-view-keep-in-touch-text flex flex-col">
@@ -157,7 +162,7 @@ export default function DetailsView() {
 
             <button
               type="button"
-              onClick={showOnMap}
+              {...showOnMapTap}
               className={`details-view-show-on-map flex h-[78px] w-full shrink-0 items-center justify-between border-[1.5px] border-mayfair-blue pl-[35.5px] pr-[9.5px] font-vision text-[26px] font-extrabold uppercase leading-none tracking-[0.1em] text-mayfair-navy ${
                 pin.kind === "model-home" ? "mt-[68px]" : "mt-[58px]"
               }`}

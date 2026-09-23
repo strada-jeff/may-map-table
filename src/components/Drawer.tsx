@@ -6,6 +6,7 @@ import { useFilter } from "../hooks/FilterContext";
 import { useDrawer } from "../hooks/DrawerContext";
 import DrawerCard from "./DrawerCard";
 import FilterChip from "./FilterChip";
+import { useTap } from "../hooks/useTap";
 import iconHideChevrons from "../assets/icons/drawer-hide-chevrons.svg";
 import iconShowChevrons from "../assets/icons/drawer-show-chevrons.svg";
 
@@ -20,6 +21,7 @@ export default function Drawer() {
   const categories = useCategories();
   const builders = useBuilders();
   const { activeCategoryId, setActiveCategoryId } = useFilter();
+  const toggleTap = useTap(() => setOpen((o) => !o));
 
   const builderNameById = useMemo(
     () => new Map(builders.map((b) => [b.id, b.name])),
@@ -84,7 +86,7 @@ export default function Drawer() {
 
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        {...toggleTap}
         // Tucks 60px under the panel's right edge; pl centers the label on
         // x=63 like Figma, straddling the panel edge rather than the tab.
         className="absolute left-[766px] top-[939px] flex h-[206px] w-[95px] flex-col items-center justify-center gap-[12px] rounded-full bg-mayfair-navy pl-[31px]"

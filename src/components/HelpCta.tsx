@@ -1,14 +1,16 @@
 import helpIcon from "../assets/icons/help-icon.svg";
+import { useTap } from "../hooks/useTap";
 import { useSideModal } from "../hooks/SideModalContext";
 
 /** Bottom-right circular icon button — opens the help legend. */
 export default function HelpCta() {
   const { open } = useSideModal();
+  const tap = useTap(() => open("help"));
 
   return (
     <button
       type="button"
-      onClick={() => open("help")}
+      {...tap}
       aria-label="Help"
       className="help-cta absolute bottom-[67px] right-[63px] z-40 size-[65px] cursor-pointer"
     >

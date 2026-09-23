@@ -1,4 +1,5 @@
 import ButtonFlagIcon from "./ButtonFlagIcon";
+import { useTap } from "../hooks/useTap";
 
 type TextIconCtaProps = {
   text: string;
@@ -15,10 +16,12 @@ export default function TextIconCta({
   color,
   onClick,
 }: TextIconCtaProps) {
+  const tap = useTap(onClick);
+
   return (
     <button
       type="button"
-      onClick={onClick}
+      {...tap}
       className="flex h-[78px] items-center gap-[18px] whitespace-nowrap border-[3.5px] border-mayfair-blue pl-[44px] pr-[7.5px] text-white"
     >
       <span className="font-vision text-[26px] font-extrabold uppercase leading-none tracking-[0.1em]">

@@ -51,7 +51,7 @@ type ModelHomeMarkerProps = {
 };
 
 export default function ModelHomeMarker({ pin, visible, active, fadeOut }: ModelHomeMarkerProps) {
-  const onClick = usePinClick(pin.id);
+  const tap = usePinClick(pin.id);
   const [x, y] = pin.position;
   const displayHeight = active ? ACTIVE_DISPLAY_HEIGHT : DISPLAY_HEIGHT;
   const displayWidth = Math.round((displayHeight * NATURAL_WIDTH) / NATURAL_HEIGHT);
@@ -82,7 +82,7 @@ export default function ModelHomeMarker({ pin, visible, active, fadeOut }: Model
           <div style={{ width: displayWidth, height: displayHeight }}>
             <div
               className={`destination-marker relative size-full ${visible || active ? "" : "marker-hidden"}`}
-              onClick={onClick}
+              {...tap}
             >
               <div className="destination-marker-inner relative size-full">
                 <img src={ICON} alt="" className="absolute inset-0 size-full" />
