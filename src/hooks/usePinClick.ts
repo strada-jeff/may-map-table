@@ -6,7 +6,7 @@ import type { DestinationPin } from "../types/pins";
 
 // How far the map's own transform may drift between finger-down and -up
 // and still count as a tap on the pin, in screen px / scale ratio.
-const MAP_MOVE_TOLERANCE_PX = 10;
+const MAP_MOVE_TOLERANCE_PX = 18;
 const MAP_SCALE_TOLERANCE = 0.02;
 
 /**

@@ -2,6 +2,7 @@ import { TransformComponent } from "react-zoom-pan-pinch";
 import { CONFIG } from "../config";
 import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
+import { DebugCoordsMarkers, DebugCoordsPanel } from "./DebugCoords";
 import DestinationMarkers from "./DestinationMarkers";
 import LottieMarkers from "./LottieMarkers";
 import RouteSvgLayer from "./RouteSvgLayer";
@@ -49,6 +50,7 @@ function MapView({ rotated }: { rotated: boolean }) {
           >
             <RouteSvgLayer />
             {isDebug && <DebugNetworkOverlay />}
+            {isDebug && <DebugCoordsMarkers />}
           </svg>
         </div>
       </TransformComponent>
@@ -57,6 +59,7 @@ function MapView({ rotated }: { rotated: boolean }) {
       <InitialViewEffect />
       <ZoomWarmupEffect />
       <ZoomSlider rotated={rotated} />
+      {isDebug && <DebugCoordsPanel />}
     </>
   );
 }

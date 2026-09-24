@@ -52,6 +52,24 @@
       <circle id="loc-costco" cx="2145.63" cy="1915.39" r="2.13" fill="red"/>
       <circle id="mh-history-maker-brookstone" cx="2040.99" cy="1472.96" r="2.13" fill="red"/>
       <circle id="mh-chesmar-magnolia" cx="2094.27" cy="1413.79" r="2.13" fill="red"/>
+      <circle id="loc-mayfair-park" cx="2577.76" cy="1011.52" r="2.13" fill="red"/>
+      <circle id="loc-prairie-park" cx="2239.98" cy="1807.63" r="2.13" fill="red"/>
+      <circle id="loc-dog-park" cx="2489.5" cy="1297.89" r="2.13" fill="red"/>
+      <circle id="loc-fairway-park" cx="1733.07" cy="1129.36" r="2.13" fill="red"/>
+      <circle id="loc-lark-hill-pavilion" cx="2193.18" cy="804.82" r="2.13" fill="red"/>
+      <circle id="loc-mayfair-middle-school" cx="2235.59" cy="986.89" r="2.13" fill="red"/>
+      <circle id="loc-midtown-shops" cx="1903.21" cy="807.1" r="2.13" fill="red"/>
+      <circle id="loc-mayfair-market" cx="1883.3" cy="1724.8" r="2.13" fill="red"/>
+      <circle id="loc-mayfair-medical" cx="2099.93" cy="1895.9" r="2.13" fill="red"/>
+      <circle id="loc-taqueria" cx="2236.87" cy="1998.89" r="2.13" fill="red"/>
+      <circle id="loc-brick-oven-pizza" cx="1889.03" cy="1524.08" r="2.13" fill="red"/>
+      <circle id="mh-david-weekley-bluebonnet" cx="1765.02" cy="731.14" r="2.13" fill="red"/>
+      <circle id="mh-chesmar-cypress" cx="2270.22" cy="761.31" r="2.13" fill="red"/>
+      <circle id="mh-history-maker-willow" cx="2483.4" cy="765.36" r="2.13" fill="red"/>
+      <circle id="mh-david-weekley-sycamore" cx="2308.54" cy="980.67" r="2.13" fill="red"/>
+      <circle id="mh-chesmar-pecan" cx="1228.48" cy="940.91" r="2.13" fill="red"/>
+      <circle id="mh-history-maker-live-oak" cx="2040.41" cy="1672.75" r="2.13" fill="red"/>
+      <circle id="mh-david-weekley-juniper" cx="2058.82" cy="1527.68" r="2.13" fill="red"/>
     </g>
   </g>
   <g id="network-mini-map">

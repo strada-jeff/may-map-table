@@ -28,15 +28,23 @@ export type TapHandlers = {
  * tap stops propagation, so a nested button (e.g. a drawer card's
  * learn-more) doesn't also tap its card.
  */
-export function useTap(onTap: () => void, { maxMovePx = 24, minContactMs = 30 }: TapOptions = {}): TapHandlers {
+export function useTap(
+  onTap: () => void,
+  { maxMovePx = 24, minContactMs = 20 }: TapOptions = {},
+): TapHandlers {
   const downs = useRef(new Map<number, { x: number; y: number; t: number }>());
 
   return {
     onPointerDown: (e) => {
       // A nested tap stops its pointerup from bubbling here, leaving this
       // pointer's entry behind; touch pointerIds never repeat, so sweep.
-      for (const [id, d] of downs.current) if (e.timeStamp - d.t > STALE_MS) downs.current.delete(id);
-      downs.current.set(e.pointerId, { x: e.clientX, y: e.clientY, t: e.timeStamp });
+      for (const [id, d] of downs.current)
+        if (e.timeStamp - d.t > STALE_MS) downs.current.delete(id);
+      downs.current.set(e.pointerId, {
+        x: e.clientX,
+        y: e.clientY,
+        t: e.timeStamp,
+      });
     },
     onPointerUp: (e) => {
       const down = downs.current.get(e.pointerId);
