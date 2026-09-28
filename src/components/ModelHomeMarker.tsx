@@ -1,4 +1,4 @@
-import { KeepScale } from "react-zoom-pan-pinch";
+import KeepScale from "./KeepScale";
 import type { DestinationPin } from "../hooks/useDestinationPins";
 import { usePinClick } from "../hooks/usePinClick";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
@@ -59,7 +59,7 @@ export default function ModelHomeMarker({ pin, visible, active, fadeOut }: Model
 
   return (
     <div
-      className={`absolute ${active ? "z-30" : ""}`}
+      className={`pointer-events-none absolute ${active ? "z-30" : ""}`}
       style={{
         left: x,
         top: y,
@@ -82,6 +82,7 @@ export default function ModelHomeMarker({ pin, visible, active, fadeOut }: Model
           <div style={{ width: displayWidth, height: displayHeight }}>
             <div
               className={`destination-marker relative size-full ${visible || active ? "" : "marker-hidden"}`}
+              data-pin-id={pin.id}
               {...tap}
             >
               <div className="destination-marker-inner relative size-full">

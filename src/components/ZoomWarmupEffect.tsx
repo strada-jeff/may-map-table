@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useControls } from "react-zoom-pan-pinch";
+import { useMapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 import { resolveMapPoint } from "../routing";
 import { centeredTransform, zoomToScale } from "../hooks/mapTransform";
@@ -12,24 +12,24 @@ import { centeredTransform, zoomToScale } from "../hooks/mapTransform";
  * right after mount, hides the cost behind the welcome overlay (up at
  * 92% opacity from isIdle's initial true) instead: jump to max scale for
  * one frame, then jump straight back to the idle transform already set
- * by TransformWrapper's onInit.
+ * by MapControlsProvider's initialTransform.
  */
 export default function ZoomWarmupEffect() {
-  const controls = useControls();
+  const controls = useMapControls();
 
   useEffect(() => {
-    const wrapper = controls.instance.wrapperComponent;
+    const wrapper = controls.wrapper;
     if (!wrapper) return;
 
-    const { positionX, positionY, scale } = controls.instance.state;
+    const initial = controls.state;
     const { width, height } = wrapper.getBoundingClientRect();
     const center = resolveMapPoint(CONFIG.map.initialCenter);
     const warm = centeredTransform({ width, height }, center, zoomToScale(CONFIG.map.maxZoom));
 
     requestAnimationFrame(() => {
-      controls.setTransform(warm.x, warm.y, warm.scale, 0);
+      controls.setTransform(warm);
       requestAnimationFrame(() => {
-        controls.setTransform(positionX, positionY, scale, 0);
+        controls.setTransform(initial);
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

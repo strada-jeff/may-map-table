@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useControls } from "react-zoom-pan-pinch";
+import { useMapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 import { resolveMapPoint } from "../routing";
 import { centeredTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
@@ -7,12 +7,12 @@ import { useWelcome } from "../hooks/WelcomeContext";
 import { useRoute } from "../hooks/RouteContext";
 
 /**
- * App.tsx's TransformWrapper onInit already renders the idle (zoomed-out)
+ * App.tsx's MapControlsProvider initialTransform already renders the idle (zoomed-out)
  * view on first mount — this only handles the transitions after that:
  * flying back out on returning to idle, and flying in on Explore.
  */
 export default function InitialViewEffect() {
-  const controls = useControls();
+  const controls = useMapControls();
   const { isIdle, exploreCount } = useWelcome();
   const { clearRoute } = useRoute();
   const isFirstIdleRun = useRef(true);
@@ -21,7 +21,7 @@ export default function InitialViewEffect() {
   const idleScale = zoomToScale(CONFIG.map.initialZoom - CONFIG.map.idleZoomOffset);
 
   function targetTransform(scale: number) {
-    const wrapper = controls.instance.wrapperComponent;
+    const wrapper = controls.wrapper;
     if (!wrapper) return null;
     const { width, height } = wrapper.getBoundingClientRect();
     return centeredTransform({ width, height }, center, scale);

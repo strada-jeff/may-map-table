@@ -17,8 +17,8 @@ body,
   margin: 0;
   height: 100%;
   background-color: #f2f0ee;
-  /* react-zoom-pan-pinch's own wrapper claims touch-action: none for its
-     pan/pinch gestures. This blocks pinch-zoom, double-tap-zoom, and
+  /* MapView's wrapper claims touch-action: none for its pan/pinch
+     gestures. This blocks pinch-zoom, double-tap-zoom, and
      swipe-triggered overscroll everywhere else in the kiosk UI (drawer,
      toolbar, background) that it doesn't own. */
   touch-action: none;
@@ -89,6 +89,13 @@ body {
    element. */
 .destination-marker {
   transition: opacity 260ms ease;
+  /* The marker's wrappers (its positioned div and KeepScale) are
+     pointer-events: none: KeepScale's box stays at the anchor point while
+     the marker is translated up/left off it, so it would otherwise sit as
+     an invisible, tappable, marker-sized box down-right of every pin,
+     swallowing taps meant for whatever pin is under it. Only the marker
+     itself takes taps. */
+  pointer-events: auto;
 }
 
 .destination-marker.marker-hidden {
@@ -103,6 +110,45 @@ body {
 
 .destination-marker.marker-hidden .destination-marker-inner {
   transform: translateY(-14px);
+}
+
+/* ?debug=touch: each pin's tap area. Translucent so overlaps read darker —
+   where two overlap, the later pin in DOM order takes the tap. */
+.debug-hitboxes .destination-marker {
+  outline: 3px dashed #e5322d;
+  outline-offset: -3px;
+  background: rgb(229 50 45 / 0.15);
+}
+
+.debug-hitboxes .destination-marker.marker-hidden {
+  opacity: 0.35;
+  outline-color: #888;
+  background: rgb(0 0 0 / 0.08);
+}
+
+/* ?debug=touch sliders, sized for a finger on the 4K table — the native
+   range input is ~16px tall. */
+.debug-touch-slider-input {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 56px;
+  background: transparent;
+}
+
+.debug-touch-slider-input::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.3);
+}
+
+.debug-touch-slider-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 56px;
+  height: 56px;
+  margin-top: -22px;
+  border-radius: 50%;
+  background: #facc15;
 }
 
 /* ZoomSlider renders after <TransformComponent> in DOM order (see

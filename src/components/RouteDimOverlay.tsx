@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
-import { useControls } from "react-zoom-pan-pinch";
+import { useMapControls } from "../hooks/MapControlsContext";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
 
 const MAX_OPACITY = 0.5;
@@ -34,24 +34,24 @@ export default function RouteDimOverlay({
   /** True while RouteContext is fading this out ahead of a route change. */
   fadeOut: boolean;
 }) {
-  const controls = useControls();
+  const controls = useMapControls();
   const rectRef = useRef<SVGRectElement | null>(null);
 
   useLayoutEffect(() => {
     const apply = () => {
       const rect = rectRef.current;
-      const wrapper = controls.instance.wrapperComponent;
+      const wrapper = controls.wrapper;
       if (!rect || !wrapper) return;
       const { width, height } = wrapper.getBoundingClientRect();
-      const { positionX, positionY, scale } = controls.instance.state;
+      const { x, y, scale } = controls.state;
       const pad = EDGE_PADDING_PX / scale;
-      rect.setAttribute("x", String(-positionX / scale - pad));
-      rect.setAttribute("y", String(-positionY / scale - pad));
+      rect.setAttribute("x", String(-x / scale - pad));
+      rect.setAttribute("y", String(-y / scale - pad));
       rect.setAttribute("width", String(width / scale + 2 * pad));
       rect.setAttribute("height", String(height / scale + 2 * pad));
     };
     apply();
-    return controls.instance.onChange(apply);
+    return controls.onChange(apply);
   }, [controls]);
 
   return (

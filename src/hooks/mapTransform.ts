@@ -1,30 +1,29 @@
 import gsap from "gsap";
-import type { ReactZoomPanPinchContentRef } from "react-zoom-pan-pinch";
+import { CONFIG } from "../config";
 import type { Point } from "../routing/types";
+import type { MapControls } from "./MapControlsContext";
 
 export type Transform = { x: number; y: number; scale: number };
 
 /**
  * Every programmatic camera move (idle zoom-out, Explore zoom-in, route fit,
- * panel-open offset) goes through this, driving react-zoom-pan-pinch's
- * setTransform via a GSAP tween instead of the library's own fixed easing
- * set — one motion language, shared with RouteLine's draw-in timeline,
- * across both user gestures and programmatic movement.
+ * panel-open offset) goes through this, driving MapControls' setTransform
+ * via a GSAP tween — one motion language, shared with RouteLine's draw-in
+ * timeline.
  */
 export function tweenTransform(
-  controls: Pick<ReactZoomPanPinchContentRef, "setTransform" | "instance">,
+  controls: Pick<MapControls, "setTransform" | "state">,
   target: Transform,
   opts: { duration?: number; ease?: string } = {},
 ): gsap.core.Tween {
-  const { scale, positionX, positionY } = controls.instance.state;
-  const proxy = { x: positionX, y: positionY, scale };
+  const proxy = { ...controls.state };
   return gsap.to(proxy, {
     x: target.x,
     y: target.y,
     scale: target.scale,
     duration: opts.duration ?? 0.8,
     ease: opts.ease ?? "power2.inOut",
-    onUpdate: () => controls.setTransform(proxy.x, proxy.y, proxy.scale, 0),
+    onUpdate: () => controls.setTransform(proxy),
   });
 }
 
@@ -68,7 +67,7 @@ export function fitTransform(
 }
 
 /** CONFIG.map's zoom values are Leaflet-era log2 zoom levels (0 = 1x, 1 =
- * 2x, ...); react-zoom-pan-pinch's scale is linear. Converted once here so
+ * 2x, ...); the transform's scale is linear. Converted once here so
  * every call site can keep using the same familiar zoom numbers. */
 export function zoomToScale(zoom: number): number {
   return 2 ** zoom;
@@ -82,11 +81,33 @@ export function scaleToZoom(scale: number): number {
 /** The point currently sitting at the wrapper's own screen-space center, in
  * content (artwork-pixel) coordinates. */
 export function contentCenter(
-  controls: Pick<ReactZoomPanPinchContentRef, "instance" | "clientToContent">,
+  controls: Pick<MapControls, "wrapper" | "clientToContent">,
 ): Point | null {
-  const wrapper = controls.instance.wrapperComponent;
+  const wrapper = controls.wrapper;
   if (!wrapper) return null;
   const rect = wrapper.getBoundingClientRect();
   const center = controls.clientToContent(rect.left + rect.width / 2, rect.top + rect.height / 2);
   return [center.x, center.y];
+}
+
+/** Clamps a scale to CONFIG.map's zoom range. */
+export function clampScale(scale: number): number {
+  return Math.min(zoomToScale(CONFIG.map.maxZoom), Math.max(zoomToScale(CONFIG.map.minZoom), scale));
+}
+
+/** Clamps scale to the zoom range and position so the artwork always
+ * covers the wrapper — no background showing past its edges. User gestures
+ * only; programmatic moves (e.g. the details panel offset) may go past. */
+export function clampTransform(
+  t: Transform,
+  wrapperSize: { width: number; height: number },
+): Transform {
+  const scale = clampScale(t.scale);
+  const minX = wrapperSize.width - CONFIG.map.width * scale;
+  const minY = wrapperSize.height - CONFIG.map.height * scale;
+  return {
+    scale,
+    x: Math.min(0, Math.max(minX, t.x)),
+    y: Math.min(0, Math.max(minY, t.y)),
+  };
 }

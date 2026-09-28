@@ -41,9 +41,9 @@ function chevronFor(geom: readonly Point[], size = 11, sweep = 0.6): Point[] | n
 const toPointsAttr = (points: readonly Point[]) => points.map(([x, y]) => `${x},${y}`).join(" ");
 
 /**
- * Renders the derived road graph over the artwork, gated behind `?debug=1`.
- * The only way to see what the extractor actually produced — a gap the merge
- * missed, a disconnected component, a road that never made it out of the SVG
+ * Renders the derived road graph over the artwork, in `?debug=network` or
+ * via the other debug modes' network toggle. The only way to see what the
+ * extractor actually produced — a gap the merge missed, a disconnected component, a road that never made it out of the SVG
  * are all obvious here and invisible everywhere else. Plain SVG children of
  * the shared master <svg> (see MapView) — network coordinates are already
  * in the same artwork-pixel space.

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useControls } from "react-zoom-pan-pinch";
+import { useMapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 import { centeredTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
 import { useDetails } from "../hooks/DetailsContext";
@@ -14,7 +14,7 @@ import { useDestinationPins } from "../hooks/useDestinationPins";
  * CONFIG.map.pinDetailZoomLevel.
  */
 export default function DetailsMapEffect() {
-  const controls = useControls();
+  const controls = useMapControls();
   const { activePinId } = useDetails();
   const { pins } = useDestinationPins();
 
@@ -22,7 +22,7 @@ export default function DetailsMapEffect() {
     const pin = pins.find((p) => p.id === activePinId);
     if (!pin) return;
 
-    const wrapper = controls.instance.wrapperComponent;
+    const wrapper = controls.wrapper;
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
     const target = centeredTransform(

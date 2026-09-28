@@ -1,16 +1,32 @@
 export const CONFIG = {
   welcomeScreen: {
-    idleTimeoutMs: 90_000, // how long the app can sit idle before the welcome overlay reappears
+    idleTimeoutMs: 200_000, // how long the app can sit idle before the welcome overlay reappears
   },
   map: {
     width: 3840, // pixel dimension of base artwork
     height: 2160,
     minZoom: 0, // furthest the map controls can zoom out; 0 = the 3840px artwork exactly fills the 4K viewport
-    maxZoom: 2, // furthest the map controls can zoom in; build:tiles matches this
+    maxZoom: 3, // furthest the map controls can zoom in; build:tiles matches this
     initialCenter: "main" as string | readonly [number, number], // anchor id or [x, y] point
     initialZoom: 1.4, // zoom once the welcome screen is dismissed; Figma's 4K comps draw the map at ~1.43 (scale ~2.69)
     idleZoomOffset: 1, // idle view is initialZoom minus this, zoomed further out
     pinDetailZoomLevel: 2, // zoom the map flies to when a pin's details open
+  },
+  // Tuned on the IR touch frame in ~/Sandbox/touch-poc (2026-09-24). All px
+  // are screen px. See useMapGestures and usePinClick.
+  touch: {
+    panThresholdPx: 30, // finger travel before a one-finger drag pans the map, so tap jitter never moves it
+    inertiaStrength: 0.1, // multiplier on release velocity for the glide after a flick; 0 disables
+    pinch: {
+      deadZonePx: 30, // fingers' spread must change this much before zoom starts
+      smoothingMs: 20, // half-life: time for the map to close half the gap to the fingers. 0 = raw IR positions, higher = steadier but laggier
+    },
+    pinTap: {
+      maxMovePx: 20, // finger travel beyond which a contact on a pin isn't a tap
+      minContactMs: 50, // shorter contacts are IR ghost points
+      mapDriftSlackPx: 20, // tap rejected only if the map moved more than the finger did, plus this (i.e. a pinch moved it)
+      maxScaleChange: 0.06, // tap rejected if zoom changed more than this ratio during it
+    },
   },
   tiles: {
     tileSize: 256,
@@ -25,7 +41,10 @@ export const CONFIG = {
     // uses its own anchor point. Override with a point only if the badge
     // needs to sit somewhere visually different (e.g. centered on the
     // "home" artwork) than where that origin's routes actually start.
-    youAreHereBadgePoints: {} as Record<string, string | readonly [number, number]>,
+    youAreHereBadgePoints: {} as Record<
+      string,
+      string | readonly [number, number]
+    >,
   },
   details: {
     panelWidthPx: 2160, // Figma Info_card_overlay; kiosk screen is fixed, so this is a constant, not measured

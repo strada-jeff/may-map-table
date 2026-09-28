@@ -1,5 +1,5 @@
 import { useLayoutEffect, useMemo, useState } from "react";
-import { useControls } from "react-zoom-pan-pinch";
+import { useMapControls } from "../hooks/MapControlsContext";
 import gsap from "gsap";
 import { CONFIG } from "../config";
 import { distance, resolveMapPoint } from "../routing";
@@ -96,7 +96,7 @@ const MASK_HEIGHT = CONFIG.map.height + 2 * MASK_MARGIN;
  * it just gets progressively uncovered.
  */
 export default function RouteLine({ route, fadeOut }: RouteLineProps) {
-  const controls = useControls();
+  const controls = useMapControls();
   const points = useMemo<[number, number][]>(
     () => route.coordinates.map(([x, y]) => [x, y]),
     [route.coordinates],
@@ -120,7 +120,7 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
     setArrowT(0);
     setBadgeVisible(false);
 
-    const wrapper = controls.instance.wrapperComponent;
+    const wrapper = controls.wrapper;
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
     const padding = CONFIG.routing.fitPaddingPx;

@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
-import { useControls, useTransformEffect } from "react-zoom-pan-pinch";
+import { useMapControls, useMapTransformEffect } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 import { centeredTransform, contentCenter, scaleToZoom, zoomToScale } from "../hooks/mapTransform";
 
@@ -18,19 +18,18 @@ const round = (n: number) => Math.round(n / STEP) * STEP;
  * ourselves sidesteps that entirely. Styling lives in index.css
  * (.zoom-slider-track/-rail/-thumb).
  *
- * Renders as a sibling of <TransformComponent> (see MapView/App), not a
- * descendant of it — react-zoom-pan-pinch's gesture listeners only attach
- * to TransformComponent's own wrapper element, so unlike the old Leaflet
- * version there's no pointer-event bubbling into the pannable map to guard
- * against here.
+ * Renders as a sibling of MapView's wrapper, not a descendant of it —
+ * useMapGestures' listeners only attach to that wrapper element, so unlike
+ * the old Leaflet version there's no pointer-event bubbling into the
+ * pannable map to guard against here.
  */
 export default function ZoomSlider({ rotated }: { rotated: boolean }) {
-  const controls = useControls();
-  const [zoom, setZoom] = useState(() => scaleToZoom(controls.instance.state.scale));
+  const controls = useMapControls();
+  const [zoom, setZoom] = useState(() => scaleToZoom(controls.state.scale));
   const draggingRef = useRef(false);
   const { minZoom, maxZoom } = CONFIG.map;
 
-  useTransformEffect(({ state }) => setZoom(scaleToZoom(state.scale)));
+  useMapTransformEffect(({ scale }) => setZoom(scaleToZoom(scale)));
 
   function zoomFromPointer(e: ReactPointerEvent<HTMLDivElement>): number {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -49,11 +48,11 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
   function moveZoomTo(targetZoom: number) {
     const center = contentCenter(controls);
     if (!center) return;
-    const wrapper = controls.instance.wrapperComponent;
+    const wrapper = controls.wrapper;
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
     const target = centeredTransform({ width, height }, center, zoomToScale(targetZoom));
-    controls.setTransform(target.x, target.y, target.scale, 0);
+    controls.setTransform(target);
   }
 
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {

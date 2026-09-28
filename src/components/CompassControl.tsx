@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useControls, useTransformEffect, type ReactZoomPanPinchContentRef } from "react-zoom-pan-pinch";
+import { useMapControls, useMapTransformEffect, type MapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 import compassPoints from "../assets/icons/compass-points.svg";
 import youAreHereIcon from "../assets/icons/compass-you-are-here.svg";
@@ -39,8 +39,8 @@ function toFramePercent(fraction: number, offset: number, visible: number): numb
   return ((fraction - offset) / visible) * 100;
 }
 
-function readView(controls: ReactZoomPanPinchContentRef): View | null {
-  const wrapper = controls.instance.wrapperComponent;
+function readView(controls: MapControls): View | null {
+  const wrapper = controls.wrapper;
   if (!wrapper) return null;
   const rect = wrapper.getBoundingClientRect();
   const topLeft = controls.clientToContent(rect.left, rect.top);
@@ -63,17 +63,15 @@ function readView(controls: ReactZoomPanPinchContentRef): View | null {
  * version of the artwork) plus a live rectangle + dot, positioned by plain
  * percentage math rather than a second map instance — this never needed
  * Leaflet's own mapping features to begin with, just its current
- * viewport/center, which react-zoom-pan-pinch exposes just as directly.
+ * viewport/center, which MapControls exposes just as directly.
  */
 export default function CompassControl() {
-  const controls = useControls();
-  // Read once synchronously at first render (App.tsx's onInit already set
-  // the real transform by the time this mounts) rather than starting at
-  // null and waiting for the first onChange, which wouldn't fire until the
-  // user's first pan/zoom.
-  const [view, setView] = useState<View | null>(() => readView(controls));
+  const controls = useMapControls();
+  // useMapTransformEffect also runs once on mount (before paint), so this
+  // never waits for the user's first pan/zoom to show the viewport box.
+  const [view, setView] = useState<View | null>(null);
 
-  useTransformEffect(() => setView(readView(controls)));
+  useMapTransformEffect(() => setView(readView(controls)));
 
   return (
     <div className="compass-control pointer-events-none absolute right-[82px] top-[78px] z-40">

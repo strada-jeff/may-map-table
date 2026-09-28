@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useControls } from "react-zoom-pan-pinch";
+import { useMapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 import { fitTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
 import { useFilter } from "../hooks/FilterContext";
@@ -11,7 +11,7 @@ import { useDestinationPins } from "../hooks/useDestinationPins";
  * them wherever the map already happened to be looking.
  */
 export default function FilterEffects() {
-  const controls = useControls();
+  const controls = useMapControls();
   const { activeCategoryId } = useFilter();
   const { pins } = useDestinationPins();
   // Skips the initial mount (activeCategoryId starts null with nothing to
@@ -33,7 +33,7 @@ export default function FilterEffects() {
       activeCategoryId === null ? pins : pins.filter((pin) => pin.categoryId === activeCategoryId);
     if (visible.length === 0) return;
 
-    const wrapper = controls.instance.wrapperComponent;
+    const wrapper = controls.wrapper;
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
     const padding = CONFIG.routing.fitPaddingPx;

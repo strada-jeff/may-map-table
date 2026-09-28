@@ -1,4 +1,4 @@
-import { KeepScale } from "react-zoom-pan-pinch";
+import KeepScale from "./KeepScale";
 import type { DestinationPin } from "../hooks/useDestinationPins";
 import { usePinClick } from "../hooks/usePinClick";
 import DestinationFlagIcon from "./DestinationFlagIcon";
@@ -55,7 +55,7 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
 
   return (
     <div
-      className={`absolute ${active ? "z-30" : ""}`}
+      className={`pointer-events-none absolute ${active ? "z-30" : ""}`}
       style={{
         left: x,
         top: y,
@@ -83,6 +83,7 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
           <div style={{ width: displayWidth, height: displayHeight }}>
             <div
               className={`destination-marker size-full ${visible || active ? "" : "marker-hidden"}`}
+              data-pin-id={pin.id}
               {...tap}
             >
               <div className="destination-marker-inner size-full">

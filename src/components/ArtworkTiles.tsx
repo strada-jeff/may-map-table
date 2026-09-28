@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useControls, useTransformEffect, type ReactZoomPanPinchContentRef } from "react-zoom-pan-pinch";
+import { useMapControls, useMapTransformEffect, type MapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
 
 // Must match tools/build-artwork.ts's GRID_SIZE.
@@ -20,8 +20,8 @@ function rangesEqual(a: VisibleRange, b: VisibleRange): boolean {
   return a.minCol === b.minCol && a.maxCol === b.maxCol && a.minRow === b.minRow && a.maxRow === b.maxRow;
 }
 
-function readVisibleRange(controls: ReactZoomPanPinchContentRef): VisibleRange | null {
-  const wrapper = controls.instance.wrapperComponent;
+function readVisibleRange(controls: MapControls): VisibleRange | null {
+  const wrapper = controls.wrapper;
   if (!wrapper) return null;
   const rect = wrapper.getBoundingClientRect();
   const topLeft = controls.clientToContent(rect.left, rect.top);
@@ -48,11 +48,11 @@ function readVisibleRange(controls: ReactZoomPanPinchContentRef): VisibleRange |
  * Each tile is still a plain absolutely-positioned child of the shared
  * transformed div (see MapView), riding the same pan/zoom transform as
  * markers and routes — no per-frame position recompute needed, only which
- * tiles are mounted changes, driven by react-zoom-pan-pinch's own
- * useTransformEffect (same pattern CompassControl uses for its minimap).
+ * tiles are mounted changes, driven by useMapTransformEffect (same pattern
+ * CompassControl uses for its minimap).
  */
 export default function ArtworkTiles() {
-  const controls = useControls();
+  const controls = useMapControls();
   const [range, setRange] = useState<VisibleRange | null>(() => readVisibleRange(controls));
   // Tracks the last range independently of React's render timing, so the
   // comparison below is always against what was last computed, not what's
@@ -61,7 +61,7 @@ export default function ArtworkTiles() {
   // actually changed, e.g. panning within the same tile neighborhood.
   const lastRangeRef = useRef(range);
 
-  useTransformEffect(() => {
+  useMapTransformEffect(() => {
     const next = readVisibleRange(controls);
     const last = lastRangeRef.current;
     if (next && last && rangesEqual(next, last)) return;
