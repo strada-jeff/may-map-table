@@ -103,6 +103,12 @@ body {
   pointer-events: none;
 }
 
+/* LottieFlag: flag_red's recipe tags the fabric and radiating-lines layers
+   with this class; a stylesheet fill beats lottie-web's fill attribute. */
+.lottie-flag .flag-color path {
+  fill: var(--flag-color);
+}
+
 .destination-marker-inner {
   transition: transform 260ms ease;
   transform: translateY(0);

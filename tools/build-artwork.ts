@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 import sharp from "sharp";
 import { CONFIG } from "../src/config";
+import { withoutGroups } from "./lottie/artwork";
+import { ALSO_HIDDEN, ARTWORK_MAP } from "./lottie/artwork-map";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCE_SVG = resolve(root, "public/base.svg");
@@ -28,7 +30,12 @@ const { width: baseWidth, maxZoom } = CONFIG.map;
  */
 async function main(): Promise<void> {
   console.log(`Reading ${SOURCE_SVG}`);
-  const svg = readFileSync(SOURCE_SVG);
+  // Art that animated Lottie scenery stands in for (tools/lottie/artwork-map.ts)
+  // comes out before rasterizing, or it'd show through/around the animation.
+  // base.svg itself stays untouched.
+  const hidden = [...Object.values(ARTWORK_MAP), ...Object.values(ALSO_HIDDEN)].flat();
+  console.log(`Leaving out ${hidden.length} group(s) replaced by Lottie scenery: ${hidden.join(", ")}`);
+  const svg = withoutGroups(readFileSync(SOURCE_SVG, "utf8"), hidden);
 
   const masterWidth = Math.round(baseWidth * 2 ** maxZoom);
 

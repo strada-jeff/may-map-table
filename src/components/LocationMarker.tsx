@@ -1,15 +1,15 @@
 import KeepScale from "./KeepScale";
 import type { DestinationPin } from "../hooks/useDestinationPins";
 import { usePinClick } from "../hooks/usePinClick";
-import DestinationFlagIcon from "./DestinationFlagIcon";
+import LottieFlag, { FLAG_BODY_HEIGHT, FLAG_BODY_WIDTH } from "./LottieFlag";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
 
-// destination-flag.svg's native size and its pole-base anchor point
-// (measured from the base-shadow ellipse path) — the flag "plants" there,
-// not at its bottom-center, since the fabric waves off to the right of the
-// pole.
-const NATURAL_WIDTH = 172;
-const NATURAL_HEIGHT = 215;
+// The animated flag's body size (see LottieFlag — its radiating lines
+// overflow this box) and its pole-base anchor point (measured from the
+// base-shadow ellipse path) — the flag "plants" there, not at its
+// bottom-center, since the fabric waves off to the right of the pole.
+const NATURAL_WIDTH = FLAG_BODY_WIDTH;
+const NATURAL_HEIGHT = FLAG_BODY_HEIGHT;
 const ANCHOR_X = 14;
 const ANCHOR_Y = 213;
 // Native artwork height — Figma's 4K comps draw every flag at 215px.
@@ -86,8 +86,8 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
               data-pin-id={pin.id}
               {...tap}
             >
-              <div className="destination-marker-inner size-full">
-                <DestinationFlagIcon color={pin.markerColor ?? FALLBACK_COLOR} className="size-full" />
+              <div className="destination-marker-inner relative size-full">
+                <LottieFlag color={pin.markerColor ?? FALLBACK_COLOR} />
               </div>
             </div>
           </div>

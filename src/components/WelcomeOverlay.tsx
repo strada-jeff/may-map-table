@@ -47,7 +47,7 @@ export default function WelcomeOverlay() {
       </div>
 
       <div className="mt-[157px]">
-        <ExploreCta onClick={explore} />
+        <ExploreCta onClick={explore} visible={isIdle} />
       </div>
     </div>
   );

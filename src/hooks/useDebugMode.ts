@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const DEBUG_MODES = ["network", "points", "touch"] as const;
+export const DEBUG_MODES = ["network", "points", "touch", "lottie"] as const;
 export type DebugMode = (typeof DEBUG_MODES)[number];
 
 const param = new URLSearchParams(window.location.search).get("debug");

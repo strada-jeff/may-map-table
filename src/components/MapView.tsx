@@ -3,11 +3,13 @@ import { CONFIG } from "../config";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { useMapGestures } from "../hooks/useMapGestures";
 import { isDebug, useDebugMode } from "../hooks/useDebugMode";
+import { useLottieMotionPause } from "../hooks/lottiePlayback";
 import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import { DebugCoordsMarkers, DebugCoordsPanel } from "./DebugCoords";
 import DebugTapLog from "./DebugTapLog";
 import DebugTouchSettings from "./DebugTouchSettings";
+import DebugLottie from "./DebugLottie";
 import DebugSwitcher from "./DebugSwitcher";
 import DestinationMarkers from "./DestinationMarkers";
 import LottieMarkers from "./LottieMarkers";
@@ -54,6 +56,7 @@ function MapView({ rotated }: { rotated: boolean }) {
   );
   useMapGestures(wrapperRef);
   const debug = useDebugMode();
+  useLottieMotionPause();
 
   return (
     <>
@@ -67,8 +70,9 @@ function MapView({ rotated }: { rotated: boolean }) {
           style={{ width: CONFIG.map.width, height: CONFIG.map.height }}
         >
           <ArtworkTiles />
-          <DestinationMarkers />
+          {/* Scenery stands in for tile art, so it sits with the tiles: under the pins. */}
           <LottieMarkers />
+          <DestinationMarkers />
           <svg
             className="pointer-events-none absolute inset-0 size-full overflow-visible"
             viewBox={`0 0 ${CONFIG.map.width} ${CONFIG.map.height}`}
@@ -87,6 +91,7 @@ function MapView({ rotated }: { rotated: boolean }) {
       {debug.mode === "points" && <DebugCoordsPanel />}
       {debug.mode === "touch" && <DebugTapLog />}
       {debug.mode === "touch" && <DebugTouchSettings />}
+      {debug.mode === "lottie" && <DebugLottie />}
       {isDebug && (
         <DebugSwitcher
           mode={debug.mode}

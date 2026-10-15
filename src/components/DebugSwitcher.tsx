@@ -5,6 +5,7 @@ const LABELS: Record<DebugMode, string> = {
   network: "Network",
   points: "Find points",
   touch: "Touch",
+  lottie: "Lottie",
 };
 
 type Props = {
