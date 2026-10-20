@@ -166,10 +166,10 @@ body {
 .zoom-slider-track {
   position: absolute;
   right: 65px;
-  top: 478px;
+  top: 72px;
   z-index: 40;
   width: 62px;
-  height: 1412px;
+  height: 1442px;
   cursor: pointer;
   touch-action: none;
 }
@@ -182,9 +182,47 @@ body {
   height: 100%;
   transform: translateX(-50%);
   border-radius: 9999px;
-  background: white;
+  background: var(--color-mayfair-navy);
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
   pointer-events: none;
+}
+
+/* Figma's white + and − drawn on the rail's ends; decorative — the ends of
+   the track already zoom fully in/out. */
+.zoom-slider-sign {
+  position: absolute;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.zoom-slider-sign::before,
+.zoom-slider-sign::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 16px;
+  height: 4px;
+  background: white;
+}
+
+.zoom-slider-sign-plus {
+  top: 36px;
+}
+
+.zoom-slider-sign-plus::after {
+  transform: rotate(90deg);
+}
+
+.zoom-slider-sign-minus {
+  top: calc(100% - 28px);
+}
+
+.zoom-slider-sign-minus::after {
+  display: none;
 }
 
 .zoom-slider-thumb {
@@ -194,8 +232,8 @@ body {
   height: 62px;
   transform: translate(-50%, -50%);
   border-radius: 9999px;
-  background: var(--color-mayfair-navy);
-  border: 20px solid white; /* leaves Figma's 22px navy centre dot */
+  background: white;
+  border: 20px solid var(--color-mayfair-navy); /* leaves Figma's 22px white centre dot */
   pointer-events: none;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
 }

@@ -5,7 +5,7 @@ type RotateArrowsIconProps = {
 
 /**
  * Just the two curved arrows from rotate-icon.svg, no backing circle —
- * that asset bakes in a white disc meant to float directly on the map, but
+ * that asset bakes in a navy disc meant to float directly on the map, but
  * the rotate-confirm overlay's CTA draws its own outlined circle instead
  * (see SidePanel), so the icon needs to be recolorable and disc-free.
  */

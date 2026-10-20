@@ -4,6 +4,9 @@ import { CONFIG } from "../config";
 import { centeredTransform, contentCenter, scaleToZoom, zoomToScale } from "../hooks/mapTransform";
 
 const STEP = 0.05;
+// The thumb's travel stops a radius short of each end, so it stays on the
+// rail (and covers the + / − when fully zoomed in or out).
+const THUMB_RADIUS = 31;
 
 const clamp = (n: number, min: number, max: number) =>
   Math.min(max, Math.max(min, n));
@@ -33,8 +36,17 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
 
   function zoomFromPointer(e: ReactPointerEvent<HTMLDivElement>): number {
     const rect = e.currentTarget.getBoundingClientRect();
-    // top = maxZoom (zoomed in), bottom = minZoom (zoomed out).
-    const fraction = clamp((e.clientY - rect.top) / rect.height, 0, 1);
+    // Fraction down the track as painted on screen. The rect and clientY
+    // are both real screen space (see useRotatedInputCorrection), so when
+    // the app is rotated the track's own top — the + end — is the
+    // screen's bottom, and the fraction flips to match.
+    const screenFraction = clamp(
+      (e.clientY - rect.top - THUMB_RADIUS) / (rect.height - 2 * THUMB_RADIUS),
+      0,
+      1,
+    );
+    const fraction = rotated ? 1 - screenFraction : screenFraction;
+    // top (+) = maxZoom (zoomed in), bottom (−) = minZoom (zoomed out).
     return round(maxZoom - fraction * (maxZoom - minZoom));
   }
 
@@ -77,17 +89,10 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
       moveZoomTo(clamp(zoom - STEP, minZoom, maxZoom));
   }
 
-  // `top: X%` is authored assuming this element renders in normal, upright
-  // layout — the value that makes maxZoom sit at the visual top of the
-  // track. App.tsx's rotate(180deg) flips how that layout position ends up
-  // painted (top-of-layout renders at the visual bottom, and vice versa)
-  // without changing this element's own DOM/CSS at all, so the thumb needs
-  // the complementary offset here to land back at the correct visual end.
-  const unrotatedThumbTopPercent =
-    (1 - (zoom - minZoom) / (maxZoom - minZoom)) * 100;
-  const thumbTopPercent = rotated
-    ? 100 - unrotatedThumbTopPercent
-    : unrotatedThumbTopPercent;
+  // Laid out in the track's own (unrotated) frame: maxZoom at the + end.
+  // When the app is rotated the whole slider turns with it, so the + stays
+  // at the top for whoever the app is facing.
+  const thumbFraction = 1 - (zoom - minZoom) / (maxZoom - minZoom);
 
   return (
     <div
@@ -106,9 +111,13 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
       className="zoom-slider-track"
     >
       <div className="zoom-slider-rail" />
+      <span aria-hidden="true" className="zoom-slider-sign zoom-slider-sign-plus" />
+      <span aria-hidden="true" className="zoom-slider-sign zoom-slider-sign-minus" />
       <div
         className="zoom-slider-thumb"
-        style={{ top: `${thumbTopPercent}%` }}
+        style={{
+          top: `calc(${THUMB_RADIUS}px + (100% - ${2 * THUMB_RADIUS}px) * ${thumbFraction})`,
+        }}
       />
     </div>
   );

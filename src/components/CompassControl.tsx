@@ -74,14 +74,14 @@ export default function CompassControl() {
   useMapTransformEffect(() => setView(readView(controls)));
 
   return (
-    <div className="compass-control pointer-events-none absolute right-[82px] top-[78px] z-40">
+    <div className="compass-control pointer-events-none absolute bottom-[67px] right-[82px] z-40">
       <img
         src={compassPoints}
         alt=""
-        className="compass-control-points pointer-events-none absolute left-[-73px] top-[-70px] size-[231px]"
+        className="compass-control-points pointer-events-none absolute left-[-71px] top-[-68px] size-[231.4px]"
       />
       <div
-        className="compass-control-frame relative overflow-hidden rounded-full border-[9px] border-white bg-[#f1f0ee] shadow-[0_4px_10px_0_rgba(0,0,0,0.2)]"
+        className="compass-control-frame relative overflow-hidden rounded-full border-[16px] border-mayfair-navy bg-[#f1f0ee]"
         style={{ width: SIZE_PX, height: SIZE_PX }}
       >
         <img
