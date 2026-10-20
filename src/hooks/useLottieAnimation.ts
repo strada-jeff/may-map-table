@@ -2,7 +2,8 @@ import { useEffect, useRef, type RefObject } from "react";
 // Light build: no AE expressions interpreter (this project's animations
 // don't use them), which also drops the `eval()` the full build ships for it.
 import lottie, { type AnimationItem } from "lottie-web/build/player/lottie_light";
-import { isLottiePaused, subscribeLottiePaused } from "./lottiePlayback";
+import { LOTTIE_ANIMATIONS, type LottieAnimationId } from "../data/lottie";
+import { isLottiePaused, subscribeLottiePaused, useDisabledByDebug } from "./lottiePlayback";
 
 type Options = {
   /** False pauses it regardless of visibility (e.g. under a faded-out overlay). Default true. */
@@ -25,12 +26,14 @@ type Options = {
  *   lottie-web's default interpolates in-between frames at 60fps, doubling
  *   the update and repaint work for motion that's mostly stop-motion
  *   anyway.
+ * - Isn't loaded at all while ?debug=lottie has switched its id off.
  */
 export function useLottieAnimation(
   containerRef: RefObject<HTMLElement | null>,
-  animationData: unknown,
+  id: LottieAnimationId,
   { active = true, onLoad }: Options = {},
 ) {
+  const disabled = useDisabledByDebug().has(id);
   const animationRef = useRef<AnimationItem | null>(null);
   const onScreenRef = useRef(false);
   const activeRef = useRef(active);
@@ -50,13 +53,13 @@ export function useLottieAnimation(
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || disabled) return;
     const animation = lottie.loadAnimation({
       container,
       renderer: "svg",
       loop: true,
       autoplay: false,
-      animationData,
+      animationData: LOTTIE_ANIMATIONS[id],
     });
     animation.setSubframe(false);
     animationRef.current = animation;
@@ -81,7 +84,7 @@ export function useLottieAnimation(
       animation.destroy();
       animationRef.current = null;
     };
-  }, [containerRef, animationData]);
+  }, [containerRef, id, disabled]);
 
   useEffect(() => {
     activeRef.current = active;

@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { LOTTIE_ANIMATIONS } from "../data/lottie";
 import { useLottieAnimation } from "../hooks/useLottieAnimation";
 import { useTap } from "../hooks/useTap";
 
@@ -22,7 +21,7 @@ type ExploreCtaProps = {
 export default function ExploreCta({ onClick, visible }: ExploreCtaProps) {
   const tap = useTap(onClick);
   const animationRef = useRef<HTMLDivElement | null>(null);
-  useLottieAnimation(animationRef, LOTTIE_ANIMATIONS.cta_viewmap, { active: visible });
+  useLottieAnimation(animationRef, "cta_viewmap", { active: visible });
 
   return (
     <button

@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import type { LottieAnimationId } from "../data/lottie";
 import { useMapTransformEffect } from "./MapControlsContext";
 
 // How long the map must sit still after its last transform change before
@@ -35,6 +36,20 @@ export const usePausedByDebug = () => useSyncExternalStore(subscribe, () => paus
 
 export function setPausedByDebug(paused: boolean) {
   pausedByDebug = paused;
+  notify();
+}
+
+// ?debug=lottie's per-animation switches: an id in here isn't loaded at
+// all (no SVG in the DOM), so turning one off removes its whole cost —
+// for finding which animation the frame-rate meter's slow frames come
+// from. Replaced, never mutated, so it works as a useSyncExternalStore
+// snapshot.
+let disabledByDebug: ReadonlySet<LottieAnimationId> = new Set();
+
+export const useDisabledByDebug = () => useSyncExternalStore(subscribe, () => disabledByDebug);
+
+export function setDisabledByDebug(ids: Iterable<LottieAnimationId>) {
+  disabledByDebug = new Set(ids);
   notify();
 }
 

@@ -1,5 +1,4 @@
 import { useRef, type CSSProperties } from "react";
-import { LOTTIE_ANIMATIONS } from "../data/lottie";
 import { useLottieAnimation } from "../hooks/useLottieAnimation";
 
 // flag_red's comp, in its own pixels: the Figma frame (283x267, the flag
@@ -25,7 +24,7 @@ const pct = (n: number, of: number) => `${(n / of) * 100}%`;
  */
 export default function LottieFlag({ color }: { color: string }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  useLottieAnimation(containerRef, LOTTIE_ANIMATIONS.flag_red);
+  useLottieAnimation(containerRef, "flag_red");
 
   return (
     <div

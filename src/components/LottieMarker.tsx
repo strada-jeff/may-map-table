@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { LOTTIE_ANIMATIONS } from "../data/lottie";
 import { useLottieAnimation } from "../hooks/useLottieAnimation";
 import type { LottieMarkerConfig } from "../types/lottie";
 
@@ -13,7 +12,7 @@ import type { LottieMarkerConfig } from "../types/lottie";
  */
 export default function LottieMarker({ marker }: { marker: LottieMarkerConfig }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  useLottieAnimation(containerRef, LOTTIE_ANIMATIONS[marker.file]);
+  useLottieAnimation(containerRef, marker.file);
 
   const [width, height] = marker.size;
 

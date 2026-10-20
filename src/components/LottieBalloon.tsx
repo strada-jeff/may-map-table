@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from "react";
-import { LOTTIE_ANIMATIONS } from "../data/lottie";
 import { useLottieAnimation } from "../hooks/useLottieAnimation";
 
 // balloon_coventry's comp, in its own pixels: the Figma frame (127x261, the
@@ -53,7 +52,7 @@ export default function LottieBalloon({ label, fontPx = LABEL_FONT_PX }: { label
     textRef.current = text;
   }, []);
 
-  useLottieAnimation(containerRef, LOTTIE_ANIMATIONS.balloon_coventry, { onLoad: addLabel });
+  useLottieAnimation(containerRef, "balloon_coventry", { onLoad: addLabel });
 
   useEffect(() => {
     labelRef.current = label;

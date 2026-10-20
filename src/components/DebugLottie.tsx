@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import lottie, { type AnimationItem } from "lottie-web/build/player/lottie_light";
 import { LOTTIE_ANIMATIONS, type LottieAnimationId } from "../data/lottie";
-import { setPausedByDebug, usePausedByDebug } from "../hooks/lottiePlayback";
+import { setDisabledByDebug, setPausedByDebug, useDisabledByDebug, usePausedByDebug } from "../hooks/lottiePlayback";
 import { useTap } from "../hooks/useTap";
 
 /**
  * ?debug=lottie. Always shows a small bar with a frame-rate meter and a
  * switch to pause every Lottie on the map — compare the two on the table to
- * see what the animations cost on the kiosk's hardware. "Previews" opens
+ * see what the animations cost on the kiosk's hardware. "Animations" lists
+ * every animation with an on/off switch each (off = not loaded at all, on
+ * the map, pins and CTA alike), to find which one the slow frames come
+ * from — "All off" then one back on runs it alone. "Previews" opens
  * every generated Lottie (npm run build:lottie) away from the map: a grid
  * of loops; tap one to expand it with play/pause, a frame scrubber, and a
  * contact strip of frames across its loop — for checking joints and seams
@@ -27,14 +30,24 @@ const FLAG_COLORS = ["#e56b59", "#82b1dd", "#e5ae29", "#2f7d5b"];
 const ids = Object.keys(LOTTIE_ANIMATIONS) as LottieAnimationId[];
 const dataOf = (id: LottieAnimationId) => LOTTIE_ANIMATIONS[id] as LottieData;
 
+type Panel = "switches" | "previews";
+
 export default function DebugLottie() {
-  const [showPreviews, setShowPreviews] = useState(false);
+  const [panel, setPanel] = useState<Panel | null>(null);
   const paused = usePausedByDebug();
   const pauseTap = useTap(() => setPausedByDebug(!paused));
-  const previewsTap = useTap(() => setShowPreviews((show) => !show));
+  const togglePanel = (which: Panel) => setPanel((open) => (open === which ? null : which));
+  const switchesTap = useTap(() => togglePanel("switches"));
+  const previewsTap = useTap(() => togglePanel("previews"));
 
-  // Leaving the mode shouldn't leave the map frozen.
-  useEffect(() => () => setPausedByDebug(false), []);
+  // Leaving the mode shouldn't leave the map frozen or missing animations.
+  useEffect(
+    () => () => {
+      setPausedByDebug(false);
+      setDisabledByDebug([]);
+    },
+    [],
+  );
 
   return (
     <>
@@ -49,13 +62,21 @@ export default function DebugLottie() {
         </button>
         <button
           type="button"
-          className={`debug-lottie-previews-toggle rounded-xl px-6 py-3 ${showPreviews ? "bg-[#FACC15] text-black" : "bg-white/20"}`}
+          className={`debug-lottie-switches-toggle rounded-xl px-6 py-3 ${panel === "switches" ? "bg-[#FACC15] text-black" : "bg-white/20"}`}
+          {...switchesTap}
+        >
+          Animations
+        </button>
+        <button
+          type="button"
+          className={`debug-lottie-previews-toggle rounded-xl px-6 py-3 ${panel === "previews" ? "bg-[#FACC15] text-black" : "bg-white/20"}`}
           {...previewsTap}
         >
           Previews
         </button>
       </div>
-      {showPreviews && <LottiePreviews />}
+      {panel === "switches" && <LottieSwitches />}
+      {panel === "previews" && <LottiePreviews />}
     </>
   );
 }
@@ -107,6 +128,52 @@ function FrameRateMeter() {
         · worst {stats.worstMs}ms · {stats.longFrames} slow
       </span>
     </span>
+  );
+}
+
+/**
+ * An on/off chip per animation id. Sits under the bar, clear of the map's
+ * middle, so the meter can be read against the scene as switches change.
+ */
+function LottieSwitches() {
+  const disabled = useDisabledByDebug();
+  const allOnTap = useTap(() => setDisabledByDebug([]));
+  const allOffTap = useTap(() => setDisabledByDebug(ids));
+
+  return (
+    <div className="debug-lottie-switches pointer-events-auto absolute left-12 right-12 top-40 z-[100] rounded-3xl bg-black/80 px-8 py-6 font-mono text-[24px] text-white">
+      <div className="debug-lottie-switches-header flex items-center gap-4">
+        <span className="debug-lottie-switches-hint grow text-white/60">
+          {ids.length - disabled.size}/{ids.length} on · off = not loaded
+        </span>
+        <button type="button" className="debug-lottie-switches-all-on rounded-xl bg-white/20 px-6 py-3" {...allOnTap}>
+          All on
+        </button>
+        <button type="button" className="debug-lottie-switches-all-off rounded-xl bg-white/20 px-6 py-3" {...allOffTap}>
+          All off
+        </button>
+      </div>
+      <div className="debug-lottie-switches-list mt-4 flex flex-wrap gap-3">
+        {ids.map((id) => (
+          <LottieSwitch key={id} id={id} on={!disabled.has(id)} disabled={disabled} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function LottieSwitch({ id, on, disabled }: { id: LottieAnimationId; on: boolean; disabled: ReadonlySet<LottieAnimationId> }) {
+  const tap = useTap(() =>
+    setDisabledByDebug(on ? [...disabled, id] : [...disabled].filter((other) => other !== id)),
+  );
+  return (
+    <button
+      type="button"
+      className={`debug-lottie-switch rounded-xl px-5 py-2 ${on ? "bg-[#FACC15] text-black" : "bg-white/10 text-white/50 line-through"}`}
+      {...tap}
+    >
+      {id}
+    </button>
   );
 }
 
