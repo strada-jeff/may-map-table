@@ -21,6 +21,10 @@ export const CONFIG = {
       deadZonePx: 30, // fingers' spread must change this much before zoom starts
       smoothingMs: 20, // half-life: time for the map to close half the gap to the fingers. 0 = raw IR positions, higher = steadier but laggier
     },
+    drawerSwipe: {
+      thresholdPx: 30, // horizontal travel before a drag on the drawer starts moving it (vertical travel scrolls its list instead)
+      flickVelocity: 0.5, // px/ms at release above which the drawer goes the flick's way, wherever it was let go
+    },
     pinTap: {
       maxMovePx: 20, // finger travel beyond which a contact on a pin isn't a tap
       minContactMs: 50, // shorter contacts are IR ghost points

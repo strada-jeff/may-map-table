@@ -1,9 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useDestinationPins } from "../hooks/useDestinationPins";
 import { useCategories } from "../hooks/useCategories";
 import { useBuilders } from "../hooks/useBuilders";
 import { useFilter } from "../hooks/FilterContext";
 import { useDrawer } from "../hooks/DrawerContext";
+import { drawerTransform, useDrawerSwipe } from "../hooks/useDrawerSwipe";
 import DrawerCard from "./DrawerCard";
 import FilterChip from "./FilterChip";
 import { useTap } from "../hooks/useTap";
@@ -14,6 +15,9 @@ import iconShowChevrons from "../assets/icons/drawer-show-chevrons.svg";
 // the flag) — this is only the dot shown on its filter chip.
 const MODEL_HOMES_CHIP_COLOR = "#82b1dd";
 const ALL_CHIP_COLOR = "#82b1dd";
+const PANEL_WIDTH = 826;
+// How much of the panel still shows at the screen edge while closed.
+const PEEK_PX = 35;
 
 export default function Drawer() {
   const { open, setOpen } = useDrawer();
@@ -22,6 +26,13 @@ export default function Drawer() {
   const builders = useBuilders();
   const { activeCategoryId, setActiveCategoryId } = useFilter();
   const toggleTap = useTap(() => setOpen((o) => !o));
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+  const swipe = useDrawerSwipe(drawerRef, {
+    open,
+    setOpen,
+    panelWidth: PANEL_WIDTH,
+    peekPx: PEEK_PX,
+  });
 
   const builderNameById = useMemo(
     () => new Map(builders.map((b) => [b.id, b.name])),
@@ -38,10 +49,10 @@ export default function Drawer() {
 
   return (
     <div
-      className="absolute left-0 top-0 z-[45] h-full transition-transform duration-300 ease-out"
-      style={{
-        transform: open ? "translateX(0)" : "translateX(calc(-100% + 35px))",
-      }}
+      ref={drawerRef}
+      {...swipe}
+      className="drawer absolute left-0 top-0 z-[45] h-full select-none transition-transform duration-300 ease-out"
+      style={{ transform: drawerTransform(open, PEEK_PX) }}
     >
       <div className="flex h-full w-[826px] flex-col bg-mayfair-navy">
         <div className="relative min-h-0 flex-1">
@@ -87,9 +98,9 @@ export default function Drawer() {
       <button
         type="button"
         {...toggleTap}
-        // Tucks 60px under the panel's right edge; pl centers the label on
-        // x=63 like Figma, straddling the panel edge rather than the tab.
-        className="absolute left-[766px] top-[939px] flex h-[206px] w-[95px] flex-col items-center justify-center gap-[12px] rounded-full bg-mayfair-navy pl-[31px]"
+        // Tucks 70px under the panel's right edge; pl centers the label on
+        // x=38 like Figma, straddling the panel edge rather than the tab.
+        className="absolute left-[756px] top-[1793px] flex h-[250px] w-[115px] flex-col items-center justify-center gap-[12px] rounded-full bg-mayfair-navy pl-[31px]"
       >
         <span className="font-vision text-[24px] font-extrabold uppercase leading-none text-white [writing-mode:vertical-rl]">
           {open ? "hide" : "show"}
