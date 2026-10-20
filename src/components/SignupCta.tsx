@@ -1,8 +1,13 @@
-import signupBadge from "../assets/icons/signup-badge.svg";
+import signupCorner from "../assets/icons/signup-corner.svg";
 import { useTap } from "../hooks/useTap";
 import { useSideModal } from "../hooks/SideModalContext";
 
-/** Corner ribbon badge, top-right — opens the sign-up overlay. */
+/**
+ * Quarter-circle "keep in touch" badge, bottom-right — opens the sign-up
+ * overlay. The button is the quarter circle itself (148px radius, its
+ * corner 12px/1px past the screen's, as in Figma), rounded so only the
+ * visible navy shape takes taps.
+ */
 export default function SignupCta() {
   const { open } = useSideModal();
   const tap = useTap(() => open("signup"));
@@ -11,11 +16,12 @@ export default function SignupCta() {
     <button
       type="button"
       {...tap}
-      aria-label="Sign up"
-      className="signup-cta absolute right-0 top-0 z-40 size-[155px]"
+      aria-label="Keep in touch"
+      className="signup-cta absolute bottom-[-1px] right-[-12px] z-40 size-[148px] rounded-tl-full"
     >
-      {/* 175px export = the 155px badge plus its drop-shadow margin. */}
-      <img src={signupBadge} alt="" className="signup-cta-icon pointer-events-none absolute left-[-10px] top-[-6px] h-[175px] w-[175px] max-w-none" />
+      {/* The export is the whole 271.76px Figma frame plus its drop-shadow
+          margin; the quarter circle sits in its top-left. */}
+      <img src={signupCorner} alt="" className="signup-cta-icon pointer-events-none absolute left-[-10px] top-[-6px] h-[277.76px] w-[281.76px] max-w-none" />
     </button>
   );
 }
