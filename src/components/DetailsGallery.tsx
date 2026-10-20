@@ -10,10 +10,12 @@ type DetailsGalleryProps = {
   onClose: () => void;
 };
 
-// Figma's side fades: 40% black easing to clear, 872px in from each edge —
-// what keeps the white close/arrow glyphs legible over bright photos.
+// Figma's side fades: 40% black easing to clear, 872px in from each edge of
+// its 2160px panel (kept as that share of the width, so the two don't meet
+// in the middle on a narrower panel) — what keeps the white close/arrow
+// glyphs legible over bright photos.
 const fadeClass =
-  "details-gallery-fade pointer-events-none absolute inset-y-0 w-[872px] opacity-40";
+  "details-gallery-fade pointer-events-none absolute inset-y-0 w-[40.37%] opacity-40";
 
 function GalleryChrome({ onClose }: { onClose: () => void }) {
   const closeTap = useTap(onClose);

@@ -51,7 +51,7 @@ export const CONFIG = {
     >,
   },
   details: {
-    panelWidthPx: 2160, // Figma Info_card_overlay; kiosk screen is fixed, so this is a constant, not measured
+    panelWidthPx: 1728, // Figma Info_card_overlay's 2160 narrowed 20%; kiosk screen is fixed, so this is a constant, not measured
   },
   help: {
     // TODO: replace with the real help copy (Figma help_alt is still lorem ipsum).
