@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useState } from "react";
 import { useMapControls } from "../hooks/MapControlsContext";
+import { useDetails } from "../hooks/DetailsContext";
 import gsap from "gsap";
 import { CONFIG } from "../config";
 import { distance, resolveMapPoint } from "../routing";
@@ -112,6 +113,11 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
   const [arrowT, setArrowT] = useState(0);
   const [badgeVisible, setBadgeVisible] = useState(false);
 
+  // DetailsContext keeps the details panel open for a route to its own pin
+  // ("show on map"), so the fit goes into the map space right of it.
+  const { activePinId } = useDetails();
+  const detailsOpenForRoute = activePinId === route.destinationId;
+
   // Fits the route's bounds into view, then starts the draw-in animation
   // once that settle finishes — mirrors the old flyToBounds-then-moveend
   // sequencing, just driven by our own GSAP tween instead of Leaflet's.
@@ -130,6 +136,7 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
       padding,
       zoomToScale(CONFIG.map.minZoom),
       zoomToScale(CONFIG.map.maxZoom),
+      detailsOpenForRoute ? CONFIG.details.panelWidthPx : 0,
     );
     const fitTween = tweenTransform(controls, target);
 

@@ -17,8 +17,10 @@ const DetailsContext = createContext<DetailsContextValue | null>(null);
  * RouteProvider (see App.tsx) specifically so this can reach into route
  * state in both directions: viewing a pin's details clears any active
  * route (its "show on map" destination pin may not even be the one being
- * viewed), and a route starting closes the details view right back, since
- * the two aren't meant to be on screen at the same time.
+ * viewed), and a route starting to any other pin closes the details view.
+ * A route to the viewed pin itself ("show on map") leaves it open —
+ * RouteLine fits that route into the map space beside the panel — and
+ * closing the details view clears it.
  */
 export function DetailsProvider({ children }: { children: ReactNode }) {
   const [activePinId, setActivePinId] = useState<DestinationPin["id"] | null>(null);
@@ -31,10 +33,16 @@ export function DetailsProvider({ children }: { children: ReactNode }) {
     },
     [clearRoute],
   );
-  const closeDetails = useCallback(() => setActivePinId(null), []);
+  // Any route still active while details is open is that pin's own "show
+  // on map" (a route to another pin closes details, below), so it goes too.
+  const closeDetails = useCallback(() => {
+    clearRoute();
+    setActivePinId(null);
+  }, [clearRoute]);
 
   useEffect(() => {
-    if (activeRoute) setActivePinId(null);
+    if (!activeRoute) return;
+    setActivePinId((id) => (id === activeRoute.destinationId ? id : null));
   }, [activeRoute]);
 
   return (

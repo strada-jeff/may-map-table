@@ -41,13 +41,16 @@ export function centeredTransform(
 }
 
 /** Transform that fits `points` inside the wrapper with `paddingPx` of
- * screen-space breathing room, clamped to [minScale, maxScale]. */
+ * screen-space breathing room, clamped to [minScale, maxScale].
+ * `leftInsetPx` leaves that much of the wrapper's left edge out of the fit
+ * (e.g. under the details panel), fitting into what's right of it. */
 export function fitTransform(
   wrapperSize: { width: number; height: number },
   points: readonly Point[],
   paddingPx: number,
   minScale: number,
   maxScale: number,
+  leftInsetPx = 0,
 ): Transform {
   const xs = points.map((p) => p[0]);
   const ys = points.map((p) => p[1]);
@@ -57,13 +60,16 @@ export function fitTransform(
   const maxY = Math.max(...ys);
   const boxWidth = Math.max(1, maxX - minX);
   const boxHeight = Math.max(1, maxY - minY);
-  const availWidth = Math.max(1, wrapperSize.width - 2 * paddingPx);
+  const availWidth = Math.max(1, wrapperSize.width - leftInsetPx - 2 * paddingPx);
   const availHeight = Math.max(1, wrapperSize.height - 2 * paddingPx);
   const scale = Math.min(
     maxScale,
     Math.max(minScale, Math.min(availWidth / boxWidth, availHeight / boxHeight)),
   );
-  return centeredTransform(wrapperSize, [(minX + maxX) / 2, (minY + maxY) / 2], scale);
+  return centeredTransform(wrapperSize, [(minX + maxX) / 2, (minY + maxY) / 2], scale, {
+    x: leftInsetPx / 2,
+    y: 0,
+  });
 }
 
 /** CONFIG.map's zoom values are Leaflet-era log2 zoom levels (0 = 1x, 1 =

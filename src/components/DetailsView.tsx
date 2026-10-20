@@ -20,6 +20,15 @@ function StatRow({ children }: { children: ReactNode }) {
   );
 }
 
+/** "Street, City, ST ZIP" -> street on one line, the rest on the next,
+ * as an envelope would have it. Already-broken addresses pass through. */
+function postalAddress(address: string) {
+  if (address.includes("\n")) return address;
+  const comma = address.indexOf(",");
+  if (comma === -1) return address;
+  return `${address.slice(0, comma)}\n${address.slice(comma + 1).trim()}`;
+}
+
 function StatDivider() {
   return <span className="details-view-stat-divider h-[40px] w-[1.5px] shrink-0 bg-mayfair-blue" />;
 }
@@ -47,10 +56,8 @@ export default function DetailsView() {
 
   function showOnMap() {
     if (!pin) return;
-    // No explicit closeDetails() — DetailsProvider closes itself as soon
-    // as a route actually starts (see there), so this stays in sync with
-    // routeTo() being called from anywhere else too (e.g. a drawer card's
-    // locate button).
+    // The panel stays open: DetailsProvider only closes it for a route to
+    // some other pin, and RouteLine fits this one beside the panel.
     routeTo(pin.id);
   }
 
@@ -178,7 +185,7 @@ export default function DetailsView() {
             </button>
 
             <p className="details-view-address mt-[34px] whitespace-pre-line font-vision text-[30px] font-extrabold leading-[42px] text-mayfair-navy">
-              {pin.address}
+              {postalAddress(pin.address)}
             </p>
 
             <div className="details-view-directions mt-[33px] flex items-center justify-between border-t-[1.5px] border-mayfair-blue pt-[55px]">
