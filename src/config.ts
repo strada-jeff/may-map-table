@@ -11,6 +11,9 @@ export const CONFIG = {
     initialZoom: 1.4, // zoom once the welcome screen is dismissed; Figma's 4K comps draw the map at ~1.43 (scale ~2.69)
     idleZoomOffset: 1, // idle view is initialZoom minus this, zoomed further out
     pinDetailZoomLevel: 2, // zoom the map flies to when a pin's details open
+    pinFullSizeZoom: 1, // flags/balloons are full size at this zoom and closer; zoomed out past it they shrink, linearly...
+    pinMinSizeZoom: 0.4, // ...until this zoom (the idle/start view), and stay that small further out...
+    pinMinScale: 0.6, // ...at this fraction of full size. See KeepScale
     resharpenZoomRatio: 1.25, // while zooming in, the moving map is repainted sharp each time it grows by this factor (lower = sharper, more repaints mid-pinch). See useMapMovingLayers
   },
   // Tuned on the IR touch frame in ~/Sandbox/touch-poc (2026-09-24). All px
