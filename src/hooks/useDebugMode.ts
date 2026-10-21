@@ -6,27 +6,37 @@ export type DebugMode = (typeof DEBUG_MODES)[number];
 const param = new URLSearchParams(window.location.search).get("debug");
 const initialMode = DEBUG_MODES.find((m) => m === param) ?? null;
 
-/** `?debug=1` opens the mode picker; `?debug=<mode>` opens straight into that mode. */
-export const isDebug = param === "1" || initialMode !== null;
-
 /**
- * Which debug tool is showing. Modes are exclusive (their panels would
- * fight over the screen); the network overlay can additionally be layered
- * over the others, since it's what points and routes are placed against.
- * The URL follows the mode, so a reload lands back in it.
+ * Which debug tool is showing. `?debug=1` opens the mode picker;
+ * `?debug=<mode>` opens straight into that mode. Debug can also be
+ * entered and exited in-app (DebugEntryButton, DebugSwitcher's Exit), for
+ * the kiosk, which has no address bar.
+ *
+ * Modes are exclusive (their panels would fight over the screen); the
+ * network overlay can additionally be layered over the others, since it's
+ * what points and routes are placed against. The URL follows the state,
+ * so a reload lands back in it.
  */
 export function useDebugMode() {
+  const [enabled, setEnabled] = useState(param === "1" || initialMode !== null);
   const [mode, setMode] = useState<DebugMode | null>(initialMode);
   const [showNetwork, setShowNetwork] = useState(false);
 
   useEffect(() => {
-    if (!isDebug) return;
     const url = new URL(window.location.href);
-    url.searchParams.set("debug", mode ?? "1");
+    if (enabled) url.searchParams.set("debug", mode ?? "1");
+    else url.searchParams.delete("debug");
     window.history.replaceState(window.history.state, "", url);
-  }, [mode]);
+  }, [enabled, mode]);
 
   return {
+    enabled,
+    enter: () => setEnabled(true),
+    exit: () => {
+      setEnabled(false);
+      setMode(null);
+      setShowNetwork(false);
+    },
     mode,
     setMode,
     showNetwork,

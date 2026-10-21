@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 import { CONFIG } from "../config";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { useMapGestures } from "../hooks/useMapGestures";
-import { isDebug, useDebugMode } from "../hooks/useDebugMode";
+import { useDebugMode } from "../hooks/useDebugMode";
 import { useLottieMotionPause } from "../hooks/lottiePlayback";
 import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
@@ -11,6 +11,7 @@ import DebugTapLog from "./DebugTapLog";
 import DebugTouchSettings from "./DebugTouchSettings";
 import DebugLottie from "./DebugLottie";
 import DebugSwitcher from "./DebugSwitcher";
+import DebugEntryButton from "./DebugEntryButton";
 import DestinationMarkers from "./DestinationMarkers";
 import LottieMarkers from "./LottieMarkers";
 import RouteSvgLayer from "./RouteSvgLayer";
@@ -92,14 +93,16 @@ function MapView({ rotated }: { rotated: boolean }) {
       {debug.mode === "touch" && <DebugTapLog />}
       {debug.mode === "touch" && <DebugTouchSettings />}
       {debug.mode === "lottie" && <DebugLottie />}
-      {isDebug && (
+      {debug.enabled && (
         <DebugSwitcher
           mode={debug.mode}
           onMode={debug.setMode}
           showNetwork={debug.showNetwork}
           onShowNetwork={debug.setShowNetwork}
+          onExit={debug.exit}
         />
       )}
+      {!debug.enabled && CONFIG.debug.showEntryButton && <DebugEntryButton onEnter={debug.enter} />}
     </>
   );
 }

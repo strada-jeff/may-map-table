@@ -63,4 +63,10 @@ export const CONFIG = {
     // TODO: replace with the real sign-up destination.
     qrValue: "https://mayfairtx.com/",
   },
+  debug: {
+    // Temporary, for development on the table: a "Debug" button in the
+    // top-right corner, since the kiosk has no address bar for ?debug=1.
+    // Turn off before handover; ?debug=1 still works without it.
+    showEntryButton: true,
+  },
 } as const;
