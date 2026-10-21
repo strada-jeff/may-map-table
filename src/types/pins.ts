@@ -21,16 +21,24 @@ export type Builder = {
 
 /**
  * Nudge for a pin's icon, in map units — the same artwork-pixel space as
- * network.svg's anchors, y-down (positive y moves down, matching that
- * space, not screen convention). Scales with zoom like the road does,
- * rather than staying a fixed screen-pixel gap. Anchors are placed right on
- * the road in network.svg for accurate routing/snapping, so the icon needs
- * its own way to move off the road without moving the anchor itself.
+ * `anchor`, y-down (positive y moves down, matching that space, not screen
+ * convention). Scales with zoom like the road does, rather than staying a
+ * fixed screen-pixel gap. Anchors are placed right on the road for
+ * accurate routing/snapping, so the icon needs its own way to move off the
+ * road without moving the anchor itself.
  */
 type MapOffset = { x: number; y: number };
 
 type BasePin = {
   id: string;
+  /**
+   * Where routes to this pin end, in artwork px (network.svg's viewBox,
+   * y-down) — place it on the road the visitor should arrive by; the
+   * routing build snaps it to the nearest road and fails if it's far off.
+   * The debug "Find points" mode reads these off the map. The icon sits
+   * here too, plus iconOffset.
+   */
+  anchor: Point;
   images: string[];
   address: string;
   /** Destination URL — encoded into a QR code at render time, not stored pre-rendered. */

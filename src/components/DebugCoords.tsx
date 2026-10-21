@@ -35,7 +35,7 @@ function copy(text: string) {
 
 /**
  * `?debug=points` tap-to-read coordinates, in artwork-pixel space (the same
- * y-down space as network.svg's anchors, CONFIG points and iconOffset).
+ * y-down space as pin anchors, CONFIG points and iconOffset).
  * Listens in the capture phase so a tap on a pin still reports. Rotation
  * needs no handling here: useRotatedInputCorrection has already mirrored
  * clientX/Y by the time these listeners see the event.

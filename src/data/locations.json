@@ -2,6 +2,7 @@
   {
     "id": "loc-mayfair-swim-club",
     "kind": "location",
+    "anchor": [1995.55, 927.38],
     "images": [
       "https://picsum.photos/seed/loc-mayfair-swim-club/600/600",
       "https://picsum.photos/seed/loc-mayfair-swim-club1/600/600",
@@ -17,6 +18,7 @@
   {
     "id": "loc-celebration-hall",
     "kind": "location",
+    "anchor": [1287.87, 1322.86],
     "images": [
       "https://picsum.photos/seed/loc-celebration-hall/600/600"
     ],
@@ -30,6 +32,7 @@
   {
     "id": "loc-costco",
     "kind": "location",
+    "anchor": [2145.63, 1915.39],
     "images": [
       "https://picsum.photos/seed/loc-costco/600/600"
     ],
@@ -47,6 +50,7 @@
   {
     "id": "loc-mayfair-elementary-school",
     "kind": "location",
+    "anchor": [2074.15, 1161.76],
     "images": [
       "https://picsum.photos/seed/loc-mayfair-elementary-school/600/600",
       "https://picsum.photos/seed/loc-mayfair-elementary-school/600/600",
@@ -66,6 +70,7 @@
   {
     "id": "loc-mayfair-park",
     "kind": "location",
+    "anchor": [2577.76, 1011.52],
     "images": [
       "https://picsum.photos/seed/loc-mayfair-park/600/600",
       "https://picsum.photos/seed/loc-mayfair-park1/600/600",
@@ -85,6 +90,7 @@
   {
     "id": "loc-prairie-park",
     "kind": "location",
+    "anchor": [2239.98, 1807.63],
     "images": [
       "https://picsum.photos/seed/loc-prairie-park/600/600",
       "https://picsum.photos/seed/loc-prairie-park1/600/600",
@@ -104,6 +110,7 @@
   {
     "id": "loc-dog-park",
     "kind": "location",
+    "anchor": [2489.5, 1297.89],
     "images": [
       "https://picsum.photos/seed/loc-dog-park/600/600",
       "https://picsum.photos/seed/loc-dog-park1/600/600",
@@ -123,6 +130,7 @@
   {
     "id": "loc-fairway-park",
     "kind": "location",
+    "anchor": [1733.07, 1129.36],
     "images": [
       "https://picsum.photos/seed/loc-fairway-park/600/600",
       "https://picsum.photos/seed/loc-fairway-park1/600/600",
@@ -142,6 +150,7 @@
   {
     "id": "loc-lark-hill-pavilion",
     "kind": "location",
+    "anchor": [2193.18, 804.82],
     "images": [
       "https://picsum.photos/seed/loc-lark-hill-pavilion/600/600",
       "https://picsum.photos/seed/loc-lark-hill-pavilion1/600/600",
@@ -161,6 +170,7 @@
   {
     "id": "loc-mayfair-middle-school",
     "kind": "location",
+    "anchor": [2235.59, 986.89],
     "images": [
       "https://picsum.photos/seed/loc-mayfair-middle-school/600/600",
       "https://picsum.photos/seed/loc-mayfair-middle-school1/600/600",
@@ -180,6 +190,7 @@
   {
     "id": "loc-midtown-shops",
     "kind": "location",
+    "anchor": [1903.21, 807.1],
     "images": [
       "https://picsum.photos/seed/loc-midtown-shops/600/600",
       "https://picsum.photos/seed/loc-midtown-shops1/600/600",
@@ -199,6 +210,7 @@
   {
     "id": "loc-mayfair-market",
     "kind": "location",
+    "anchor": [1883.3, 1724.8],
     "images": [
       "https://picsum.photos/seed/loc-mayfair-market/600/600",
       "https://picsum.photos/seed/loc-mayfair-market1/600/600",
@@ -218,6 +230,7 @@
   {
     "id": "loc-mayfair-medical",
     "kind": "location",
+    "anchor": [2099.93, 1895.9],
     "images": [
       "https://picsum.photos/seed/loc-mayfair-medical/600/600",
       "https://picsum.photos/seed/loc-mayfair-medical1/600/600",
@@ -237,6 +250,7 @@
   {
     "id": "loc-taqueria",
     "kind": "location",
+    "anchor": [2236.87, 1998.89],
     "images": [
       "https://picsum.photos/seed/loc-taqueria/600/600",
       "https://picsum.photos/seed/loc-taqueria1/600/600",
@@ -256,6 +270,7 @@
   {
     "id": "loc-brick-oven-pizza",
     "kind": "location",
+    "anchor": [1889.03, 1524.08],
     "images": [
       "https://picsum.photos/seed/loc-brick-oven-pizza/600/600",
       "https://picsum.photos/seed/loc-brick-oven-pizza1/600/600",

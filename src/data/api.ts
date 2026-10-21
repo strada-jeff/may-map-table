@@ -9,12 +9,13 @@ import lottieMarkersData from "./lottie-markers.json";
 const categories = categoriesData satisfies Category[];
 const builders = buildersData satisfies Builder[];
 
-// TS widens JSON string fields to `string`, so the `kind`/`categoryId`
-// discriminants can't be structurally checked against the literal union
-// types here — these are asserted, not validated. Worth a runtime
+// TS widens JSON string fields to `string` (and `anchor`'s [x, y] to
+// number[]), so the `kind`/`categoryId` discriminants can't be structurally
+// checked against the literal union types here — these are asserted, not
+// validated. Worth a runtime
 // validator (e.g. zod) once a CMS is writing this data instead of us.
-const modelHomes = modelHomesData as ModelHome[];
-const locations = locationsData as Location[];
+const modelHomes = modelHomesData as unknown as ModelHome[];
+const locations = locationsData as unknown as Location[];
 const lottieMarkers = lottieMarkersData as unknown as LottieMarkerConfig[];
 
 /**

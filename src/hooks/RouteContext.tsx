@@ -68,7 +68,7 @@ export function RouteProvider({ children }: { children: ReactNode }) {
     const route = originId ? routes[originId]?.[destinationId] : undefined;
     if (!originId || !route) {
       console.warn(
-        `No route to "${destinationId}" — it may not exist in #destinations, or may be ` +
+        `No route to "${destinationId}" — it may have no anchor in the data, or may be ` +
           `unreachable from its network's origin.`,
       );
       setActiveRoute(null);

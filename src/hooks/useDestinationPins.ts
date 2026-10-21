@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getBuilders, getCategories, getLocations, getModelHomes } from "../data/api";
 import { MODEL_HOMES_CATEGORY_ID, type DestinationPin } from "../types/pins";
-import { anchors } from "../routing/generated";
 import type { Point } from "../routing/types";
 
 export type { DestinationPin };
@@ -17,10 +16,9 @@ function withOffset(point: Point, offset?: { x: number; y: number }): Point {
 }
 
 /**
- * Joins pin content (locations/model homes) with anchor position
- * (network.svg's #destinations, via the routing build). A pin without a
- * matching anchor yet — e.g. a model home before it gets an SVG anchor —
- * is silently skipped rather than rendered without a position.
+ * Joins pin content (locations/model homes) with its builder/category
+ * lookups and places each at its own `anchor`. The routing build fails on
+ * an entry without one, so every pin here has a route.
  */
 export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean } {
   const [pins, setPins] = useState<DestinationPin[]>([]);
@@ -44,25 +42,19 @@ export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean
       const colorByCategoryId = new Map(
         categories.map((category) => [category.id, category.color]),
       );
-      const positionById = new Map(anchors.destinations.map((a) => [a.id, a.point]));
-
       const resolved: DestinationPin[] = [];
       for (const location of locations) {
-        const anchorPoint = positionById.get(location.id);
-        if (!anchorPoint) continue;
         resolved.push({
           ...location,
-          position: withOffset(anchorPoint, location.iconOffset),
+          position: withOffset(location.anchor, location.iconOffset),
           markerColor: colorByCategoryId.get(location.categoryId),
         });
       }
       for (const modelHome of modelHomes) {
-        const anchorPoint = positionById.get(modelHome.id);
-        if (!anchorPoint) continue;
         const abbreviation = abbreviationByBuilderId.get(modelHome.builderId) ?? "";
         resolved.push({
           ...modelHome,
-          position: withOffset(anchorPoint, modelHome.iconOffset),
+          position: withOffset(modelHome.anchor, modelHome.iconOffset),
           markerLabel: abbreviation.toUpperCase(),
           categoryId: MODEL_HOMES_CATEGORY_ID,
         });

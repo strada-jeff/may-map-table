@@ -19,11 +19,14 @@ const OUT_DIR = resolve(root, "src/data/generated");
 const MAX_SNAP_DISTANCE = 60;
 
 // Matched by layer *role* (see extract.ts's `nameOf`), not literal id — so
-// duplicating a whole "roads-network"/"origins"/"destinations" layer in
-// Illustrator to start a second, separate network just works, however
-// Illustrator ends up suffixing the copy's actual ids to keep them unique.
+// duplicating a whole "roads-network"/"origins" layer in Illustrator to
+// start a second, separate network just works, however Illustrator ends up
+// suffixing the copy's actual ids to keep them unique.
 const NETWORK_LAYER_IDS = ["roads-network", "network", "roads"];
 const ORIGINS_LAYER_IDS = ["origins"];
+// No longer read: destination points come from each entry's `anchor` in
+// locations.json/model-homes.json (the CMS, eventually). Still named here
+// so a leftover layer is reported, and so it can never be read as roads.
 const DESTINATIONS_LAYER_IDS = ["destinations"];
 
 interface BoundAnchor {
@@ -55,9 +58,14 @@ function main(): void {
   });
   console.log(
     `  roads read from ${extraction.networkLayerIds.map((id) => `#${id}`).join(", ")} — ` +
-      `${extraction.paths.length} paths, ${extraction.destinations.length} destinations, ` +
-      `${extraction.origins.length} origins`,
+      `${extraction.paths.length} paths, ${extraction.origins.length} origins`,
   );
+  if (extraction.destinations.length > 0) {
+    console.log(
+      `  ${extraction.destinations.length} dot(s) in a #destinations layer, ignored — ` +
+        `destinations are placed by each entry's "anchor" in the data now. Delete the layer.`,
+    );
+  }
 
   if (extraction.ungrouped.length > 0) {
     console.log(
@@ -113,19 +121,15 @@ function main(): void {
     }
   }
 
-  // The silent-failure direction: a destination anchor with no matching pin
-  // entry produces nothing at all in the UI. Cross-check both ways.
-  const knownIds = new Set([
-    ...readIds(LOCATIONS_JSON),
-    ...readIds(MODEL_HOMES_JSON),
-  ]);
-  for (const anchor of extraction.destinations) {
-    if (!knownIds.has(anchor.id)) {
-      note(
-        `#destinations anchor "${anchor.id}" has no matching entry in ` +
-          `locations.json or model-homes.json, so it has no content`,
-      );
+  // An entry with no anchor would be a pin with no place on the map; fail
+  // the build rather than ship it silently missing.
+  const destinationAnchors: { id: string; point: Point }[] = [];
+  for (const entry of [...readEntries(LOCATIONS_JSON), ...readEntries(MODEL_HOMES_JSON)]) {
+    if (!isPoint(entry.anchor)) {
+      note(`"${entry.id}" has no "anchor": [x, y], so it has no place on the map`);
+      continue;
     }
+    destinationAnchors.push({ id: entry.id, point: entry.anchor });
   }
 
   if (extraction.origins.length === 0) {
@@ -134,7 +138,7 @@ function main(): void {
 
   // Destinations are bound once — their node doesn't depend on which origin
   // is routing to them. Origins are bound per-anchor, below.
-  const destinations: BoundAnchor[] = extraction.destinations.map((anchor) =>
+  const destinations: BoundAnchor[] = destinationAnchors.map((anchor) =>
     bind(network, anchor.id, anchor.point, note),
   );
 
@@ -230,9 +234,16 @@ function bind(
   return { id, point, node, snapDistance: snap.distance };
 }
 
-function readIds(path: string): string[] {
-  const data = JSON.parse(readFileSync(path, "utf8")) as { id: string }[];
-  return data.map((entry) => entry.id);
+function readEntries(path: string): { id: string; anchor?: unknown }[] {
+  return JSON.parse(readFileSync(path, "utf8")) as { id: string; anchor?: unknown }[];
+}
+
+function isPoint(value: unknown): value is Point {
+  return (
+    Array.isArray(value) &&
+    value.length === 2 &&
+    value.every((n) => typeof n === "number" && Number.isFinite(n))
+  );
 }
 
 function write(name: string, data: unknown): void {
