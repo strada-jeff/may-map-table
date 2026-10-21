@@ -3,6 +3,7 @@ import type { DestinationPin } from "../hooks/useDestinationPins";
 import { usePinClick } from "../hooks/usePinClick";
 import LottieFlag, { FLAG_BODY_HEIGHT, FLAG_BODY_WIDTH } from "./LottieFlag";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
+import { postalAddress } from "./postalAddress";
 
 // The animated flag's body size (see LottieFlag — its radiating lines
 // overflow this box) and its pole-base anchor point (measured from the
@@ -20,9 +21,11 @@ const DISPLAY_HEIGHT = 215;
 const ACTIVE_DISPLAY_HEIGHT = 215;
 
 // Figma's directions overlay: 42px, set right of the pole and under the
-// fabric (31px past the pole, 150px down the 215px flag).
+// fabric (31px past the pole, 150px down the 215px flag). Street and
+// city on separate lines (postalAddress); `pre` keeps it from wrapping
+// anywhere else.
 const ADDRESS_LABEL_CLASS =
-  "location-marker-label pointer-events-none absolute top-[150px] whitespace-nowrap font-vision text-[42px] font-extrabold leading-[52px] text-white";
+  "location-marker-label pointer-events-none absolute top-[150px] whitespace-pre font-vision text-[42px] font-extrabold leading-[52px] text-white";
 const ADDRESS_LABEL_POLE_GAP_PX = 31;
 
 // Fallback if a location's category has no color set, so a data gap shows
@@ -93,7 +96,7 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
           </div>
           {active && (
             <span className={ADDRESS_LABEL_CLASS} style={{ left: anchorLeft + ADDRESS_LABEL_POLE_GAP_PX }}>
-              {pin.address}
+              {postalAddress(pin.address)}
             </span>
           )}
         </div>

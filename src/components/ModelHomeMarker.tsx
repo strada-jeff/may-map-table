@@ -3,6 +3,7 @@ import LottieBalloon, { BALLOON_BODY_HEIGHT, BALLOON_BODY_WIDTH } from "./Lottie
 import type { DestinationPin } from "../hooks/useDestinationPins";
 import { usePinClick } from "../hooks/usePinClick";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
+import { postalAddress } from "./postalAddress";
 
 // The animated balloon's body box (see LottieBalloon — its radiating lines
 // overflow it), anchored at the string's foot.
@@ -23,7 +24,7 @@ const ACTIVE_LABEL_FONT_PX = 23;
 
 // Same type as LocationMarker's label (Figma's directions overlay).
 const ADDRESS_LABEL_CLASS =
-  "mb-2 whitespace-nowrap font-vision text-[42px] font-extrabold leading-[52px] text-white";
+  "model-home-marker-label mb-2 whitespace-pre font-vision text-[42px] font-extrabold leading-[52px] text-white";
 
 // Anchor is bottom-center, unconditionally: the icon floats above its
 // (already pin.iconOffset-nudged, see useDestinationPins) point. Computed
@@ -88,7 +89,7 @@ export default function ModelHomeMarker({ pin, visible, active, fadeOut }: Model
               </div>
             </div>
           </div>
-          {active && <span className={ADDRESS_LABEL_CLASS}>{pin.address}</span>}
+          {active && <span className={ADDRESS_LABEL_CLASS}>{postalAddress(pin.address)}</span>}
         </div>
       </KeepScale>
     </div>

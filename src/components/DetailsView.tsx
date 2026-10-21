@@ -11,6 +11,7 @@ import { useTap } from "../hooks/useTap";
 import DetailsGallery from "./DetailsGallery";
 import ButtonFlagIcon from "./ButtonFlagIcon";
 import iconNewsletter from "../assets/icons/newsletter.svg";
+import { postalAddress } from "./postalAddress";
 
 function StatRow({ children }: { children: ReactNode }) {
   return (
@@ -18,15 +19,6 @@ function StatRow({ children }: { children: ReactNode }) {
       {children}
     </div>
   );
-}
-
-/** "Street, City, ST ZIP" -> street on one line, the rest on the next,
- * as an envelope would have it. Already-broken addresses pass through. */
-function postalAddress(address: string) {
-  if (address.includes("\n")) return address;
-  const comma = address.indexOf(",");
-  if (comma === -1) return address;
-  return `${address.slice(0, comma)}\n${address.slice(comma + 1).trim()}`;
 }
 
 function StatDivider() {
