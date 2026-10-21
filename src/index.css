@@ -118,6 +118,17 @@ body {
   transform: translateY(-14px);
 }
 
+/* While the map moves (useMapMovingLayers), the scene and each
+   counter-scaled pin get their own compositor layer, so a pan or pinch
+   frame moves already-painted layers instead of repainting the 4K scene on
+   the kiosk's integrated graphics. Only while moving: a layer is painted at
+   the scale it had when it was promoted, so zooming in softens it until
+   useMapMovingLayers forces a repaint or the map settles. */
+.map-moving .map-scene,
+.map-moving .keep-scale {
+  will-change: transform;
+}
+
 /* ?debug=touch: each pin's tap area. Translucent so overlaps read darker —
    where two overlap, the later pin in DOM order takes the tap. */
 .debug-hitboxes .destination-marker {

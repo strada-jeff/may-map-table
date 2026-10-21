@@ -11,6 +11,7 @@ export const CONFIG = {
     initialZoom: 1.4, // zoom once the welcome screen is dismissed; Figma's 4K comps draw the map at ~1.43 (scale ~2.69)
     idleZoomOffset: 1, // idle view is initialZoom minus this, zoomed further out
     pinDetailZoomLevel: 2, // zoom the map flies to when a pin's details open
+    resharpenZoomRatio: 1.25, // while zooming in, the moving map is repainted sharp each time it grows by this factor (lower = sharper, more repaints mid-pinch). See useMapMovingLayers
   },
   // Tuned on the IR touch frame in ~/Sandbox/touch-poc (2026-09-24). All px
   // are screen px. See useMapGestures and usePinClick.
@@ -32,8 +33,13 @@ export const CONFIG = {
       maxScaleChange: 0.06, // tap rejected if zoom changed more than this ratio during it
     },
   },
+  // Background artwork pyramid (tools/build-artwork.ts, ArtworkTiles): one
+  // level per whole zoom step, 0..map.maxZoom, level z being the artwork at
+  // map.width * 2^z px. Every level is cut into tiles of this size, in that
+  // level's own pixels, so must divide map.width x map.height evenly.
   tiles: {
-    tileSize: 256,
+    width: 960,
+    height: 540,
   },
   routing: {
     fitPaddingPx: 400, // Screen-pixel padding when the map fits to a newly-activated route (doubled for the 4K canvas).

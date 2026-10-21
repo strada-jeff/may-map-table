@@ -4,6 +4,7 @@ import { useMapControls } from "../hooks/MapControlsContext";
 import { useMapGestures } from "../hooks/useMapGestures";
 import { useDebugMode } from "../hooks/useDebugMode";
 import { useLottieMotionPause } from "../hooks/lottiePlayback";
+import { useMapMovingLayers } from "../hooks/useMapMovingLayers";
 import ArtworkTiles from "./ArtworkTiles";
 import DebugNetworkOverlay from "./DebugNetworkOverlay";
 import { DebugCoordsMarkers, DebugCoordsPanel } from "./DebugCoords";
@@ -58,6 +59,7 @@ function MapView({ rotated }: { rotated: boolean }) {
   useMapGestures(wrapperRef);
   const debug = useDebugMode();
   useLottieMotionPause();
+  useMapMovingLayers(wrapperRef);
 
   return (
     <>
