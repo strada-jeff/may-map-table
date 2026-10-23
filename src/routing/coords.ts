@@ -1,17 +1,18 @@
 import type { Point } from './types'
-import { anchors } from './generated'
+import { origins } from './generated'
 
 /**
  * A config-friendly map point: either raw artwork-pixel coords, or a
- * network.svg #origins anchor id or a pin id (e.g. CONFIG.map's
- * initialCenter, "main"). Resolved here since both need the same lookup.
+ * network.svg #origins anchor id (e.g. CONFIG.map's initialCenter, "main").
+ * Pin ids aren't accepted: pins come from the CMS at runtime, and config
+ * resolves before they load.
  */
 export function resolveMapPoint(ref: Point | string): Point {
   if (typeof ref !== 'string') return ref
 
-  const anchor = anchors.origins.find((a) => a.id === ref) ?? anchors.destinations.find((a) => a.id === ref)
+  const anchor = origins.find((a) => a.id === ref)
   if (!anchor) {
-    throw new Error(`"${ref}" isn't a network.svg #origins anchor or a pin id.`)
+    throw new Error(`"${ref}" isn't a network.svg #origins anchor.`)
   }
   return anchor.point
 }

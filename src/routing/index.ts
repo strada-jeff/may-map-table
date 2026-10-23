@@ -7,3 +7,5 @@ export type { Snap, Projection } from "./snap";
 export { SnapIndex, projectPointOnSegment, splitEdgeAt } from "./snap";
 export { connectedComponents } from "./components";
 export { resolveMapPoint } from "./coords";
+export type { BoundAnchor, PlannedRoute, RoutePlan } from "./planner";
+export { planRoutes } from "./planner";

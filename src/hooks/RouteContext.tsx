@@ -3,11 +3,15 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
 } from "react";
-import { anchors, routes } from "../routing/generated";
+import { CONFIG } from "../config";
+import { planRoutes } from "../routing";
+import { network, origins } from "../routing/generated";
+import { useDestinationPins } from "./useDestinationPins";
 import type { ActiveRoute } from "../types/routing";
 import { ROUTE_EXIT_FADE_MS } from "../components/routePanes";
 
@@ -42,6 +46,21 @@ export function RouteProvider({ children }: { children: ReactNode }) {
   const [displayedRoute, setDisplayedRoute] = useState<ActiveRoute | null>(null);
   const [exiting, setExiting] = useState(false);
   const displayedRouteRef = useRef(displayedRoute);
+
+  // Routed from the pins as loaded, so a pin moved in the CMS routes from
+  // its new spot without a rebuild. Each destination lands on the road at
+  // its `anchor`, not its icon (iconOffset moves only the icon).
+  const { pins } = useDestinationPins();
+  const plan = useMemo(() => {
+    const result = planRoutes(
+      network,
+      origins,
+      pins.map((pin) => ({ id: pin.id, point: pin.anchor })),
+      CONFIG.routing.maxSnapDistance,
+    );
+    for (const problem of result.problems) console.warn(`Pin placement: ${problem}`);
+    return result;
+  }, [pins]);
   useEffect(() => {
     displayedRouteRef.current = displayedRoute;
   }, [displayedRoute]);
@@ -64,9 +83,8 @@ export function RouteProvider({ children }: { children: ReactNode }) {
   }, [activeRoute]);
 
   const routeTo = useCallback((destinationId: string) => {
-    const originId = anchors.destinations.find((d) => d.id === destinationId)?.originId;
-    const route = originId ? routes[originId]?.[destinationId] : undefined;
-    if (!originId || !route) {
+    const route = plan.routes.get(destinationId);
+    if (!route) {
       console.warn(
         `No route to "${destinationId}" — it may have no anchor in the data, or may be ` +
           `unreachable from its network's origin.`,
@@ -76,11 +94,11 @@ export function RouteProvider({ children }: { children: ReactNode }) {
     }
     setActiveRoute({
       destinationId,
-      originId,
+      originId: route.originId,
       coordinates: route.coordinates,
       distance: route.distance,
     });
-  }, []);
+  }, [plan]);
 
   const clearRoute = useCallback(() => setActiveRoute(null), []);
 

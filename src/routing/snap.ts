@@ -164,7 +164,7 @@ function arcLengthTo(geom: readonly Point[], segmentIndex: number, point: Point)
  *
  * Mutates the network in place: the original edge is truncated to end at the
  * new node and a second edge carries the remainder. Run at build time for the
- * origin and every destination, so the runtime never has to splice the graph.
+ * origins, and at runtime for each destination on a copy (see planner.ts).
  *
  * Snaps landing on an existing endpoint reuse that node rather than creating a
  * zero-length edge.

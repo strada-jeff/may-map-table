@@ -17,8 +17,8 @@ function withOffset(point: Point, offset?: { x: number; y: number }): Point {
 
 /**
  * Joins pin content (locations/model homes) with its builder/category
- * lookups and places each at its own `anchor`. The routing build fails on
- * an entry without one, so every pin here has a route.
+ * lookups and places each at its own `anchor`, which RouteContext also
+ * routes to.
  */
 export function useDestinationPins(): { pins: DestinationPin[]; loading: boolean } {
   const [pins, setPins] = useState<DestinationPin[]>([]);

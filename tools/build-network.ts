@@ -1,22 +1,20 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { extractFromFile } from "./extract";
 import { buildTopology, connectedComponents } from "./topology";
-import { buildGraph, dijkstraFrom, pathTo } from "../src/routing/graph";
 import { SnapIndex, splitEdgeAt } from "../src/routing/snap";
+import type { BoundAnchor } from "../src/routing/planner";
 import type { Network, Point } from "../src/routing/types";
 import { CONFIG } from "../src/config";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const SOURCE_SVG = resolve(root, "public/network.svg");
-const LOCATIONS_JSON = resolve(root, "src/data/locations.json");
-const MODEL_HOMES_JSON = resolve(root, "src/data/model-homes.json");
 const OUT_DIR = resolve(root, "src/data/generated");
+/** What the CMS's map position field draws and checks pins against (cms/theme/inc/map-field.php). */
+const CMS_MAP_DATA = resolve(root, "cms/theme/assets/map-data.json");
 
-/** A destination anchor is a mis-placed pin beyond this distance from a road. */
-const MAX_SNAP_DISTANCE = 60;
 
 // Matched by layer *role* (see extract.ts's `nameOf`), not literal id — so
 // duplicating a whole "roads-network"/"origins" layer in Illustrator to
@@ -24,27 +22,10 @@ const MAX_SNAP_DISTANCE = 60;
 // suffixing the copy's actual ids to keep them unique.
 const NETWORK_LAYER_IDS = ["roads-network", "network", "roads"];
 const ORIGINS_LAYER_IDS = ["origins"];
-// No longer read: destination points come from each entry's `anchor` in
-// locations.json/model-homes.json (the CMS, eventually). Still named here
-// so a leftover layer is reported, and so it can never be read as roads.
+// No longer read: destinations are the CMS's pins, each placed by its own
+// `anchor` and routed to at runtime (src/routing/planner.ts). Still named
+// here so a leftover layer is reported, and so it can never be read as roads.
 const DESTINATIONS_LAYER_IDS = ["destinations"];
-
-interface BoundAnchor {
-  id: string;
-  point: Point;
-  node: number;
-  snapDistance: number;
-}
-
-/** A destination bound to whichever single origin's network reaches it. */
-interface BoundDestination extends BoundAnchor {
-  originId: string;
-}
-
-interface PrecomputedRoute {
-  coordinates: Point[];
-  distance: number;
-}
 
 function main(): void {
   const problems: string[] = [];
@@ -121,70 +102,15 @@ function main(): void {
     }
   }
 
-  // An entry with no anchor would be a pin with no place on the map; fail
-  // the build rather than ship it silently missing.
-  const destinationAnchors: { id: string; point: Point }[] = [];
-  for (const entry of [...readEntries(LOCATIONS_JSON), ...readEntries(MODEL_HOMES_JSON)]) {
-    if (!isPoint(entry.anchor)) {
-      note(`"${entry.id}" has no "anchor": [x, y], so it has no place on the map`);
-      continue;
-    }
-    destinationAnchors.push({ id: entry.id, point: entry.anchor });
-  }
-
   if (extraction.origins.length === 0) {
     throw new Error(`No origin anchors found. Add at least one to #origins in ${SOURCE_SVG}.`);
   }
 
-  // Destinations are bound once — their node doesn't depend on which origin
-  // is routing to them. Origins are bound per-anchor, below.
-  const destinations: BoundAnchor[] = destinationAnchors.map((anchor) =>
+  // Origins are split into the network here, once; destinations are split
+  // into a copy of it at runtime, from wherever the CMS puts them.
+  const origins: BoundAnchor[] = extraction.origins.map((anchor) =>
     bind(network, anchor.id, anchor.point, note),
   );
-
-  const routes: Record<string, Record<string, PrecomputedRoute>> = {};
-  const origins: BoundAnchor[] = [];
-  // Which origin(s) successfully reached each destination — a destination
-  // belonging to another, separate network simply won't appear here for
-  // this origin, which is expected rather than noted per-origin below.
-  const reachedBy = new Map<string, string[]>();
-
-  for (const anchor of extraction.origins) {
-    const origin = bind(network, anchor.id, anchor.point, note);
-    origins.push(origin);
-
-    const tree = dijkstraFrom(buildGraph(network), origin.node);
-    const originRoutes: Record<string, PrecomputedRoute> = {};
-    for (const destination of destinations) {
-      const route = pathTo(network, tree, destination.node);
-      if (!route) continue;
-      originRoutes[destination.id] = {
-        coordinates: route.coordinates,
-        distance: Math.round(route.distance * 10) / 10,
-      };
-      reachedBy.set(destination.id, [...(reachedBy.get(destination.id) ?? []), origin.id]);
-    }
-    routes[origin.id] = originRoutes;
-  }
-
-  // The real cross-network invariant: every destination should be reachable
-  // from exactly one origin. Zero means a dead pin; more than one means an
-  // unexpected connection between what should be separate networks.
-  const boundDestinations: BoundDestination[] = [];
-  for (const destination of destinations) {
-    const reachingOrigins = reachedBy.get(destination.id) ?? [];
-    if (reachingOrigins.length === 0) {
-      note(`"${destination.id}" is unreachable from every origin`);
-      continue;
-    }
-    if (reachingOrigins.length > 1) {
-      note(
-        `"${destination.id}" is reachable from multiple origins ` +
-          `(${reachingOrigins.join(", ")}) — expected exactly one for separate networks`,
-      );
-    }
-    boundDestinations.push({ ...destination, originId: reachingOrigins[0]! });
-  }
 
   const finalComponents = connectedComponents(network);
   if (finalComponents.length > 1) {
@@ -198,14 +124,28 @@ function main(): void {
 
   mkdirSync(OUT_DIR, { recursive: true });
   write("network.json", network);
-  write("anchors.json", { origins, destinations: boundDestinations });
-  write("routes.json", routes);
+  write("origins.json", origins);
 
-  console.log(`\nRoutes precomputed for ${origins.length} origin(s):`);
-  for (const origin of origins) {
-    const owned = boundDestinations.filter((d) => d.originId === origin.id).length;
-    console.log(`  ${origin.id}: ${owned} destination(s) (of ${destinations.length} total)`);
-  }
+  // The admin only draws roads and measures distance to them, so it gets
+  // the bare geometry (to 0.01u) rather than the whole graph — plus which
+  // roads no origin connects to, since a pin on one of those gets no route.
+  const round = (p: Point): Point => [Math.round(p[0] * 100) / 100, Math.round(p[1] * 100) / 100];
+  const routedNodes = new Set(
+    finalComponents.filter((component) => origins.some((o) => component.includes(o.node))).flat(),
+  );
+  mkdirSync(dirname(CMS_MAP_DATA), { recursive: true });
+  writeFileSync(
+    CMS_MAP_DATA,
+    `${JSON.stringify({
+      width: CONFIG.map.width,
+      height: CONFIG.map.height,
+      maxSnapDistance: CONFIG.routing.maxSnapDistance,
+      roads: network.edges.map((edge) => edge.geom.map(round)),
+      unreachableRoads: network.edges.flatMap((edge, i) => (routedNodes.has(edge.a) ? [] : [i])),
+      origins: origins.map(({ id, point }) => ({ id, point })),
+    })}\n`,
+  );
+  console.log(`  wrote ${CMS_MAP_DATA.slice(root.length + 1)}`);
 
   if (problems.length > 0) {
     console.error(`\n${problems.length} problem(s):`);
@@ -224,26 +164,14 @@ function bind(
 ): BoundAnchor {
   const snap = new SnapIndex(network).snap(point);
   if (!snap) throw new Error(`Cannot snap "${id}": the network has no edges`);
-  if (snap.distance > MAX_SNAP_DISTANCE) {
+  if (snap.distance > CONFIG.routing.maxSnapDistance) {
     note(
       `"${id}" is ${snap.distance.toFixed(1)}u from the nearest road ` +
-        `(limit ${MAX_SNAP_DISTANCE}u) - is the anchor in the right place?`,
+        `(limit ${CONFIG.routing.maxSnapDistance}u) - is the anchor in the right place?`,
     );
   }
   const node = splitEdgeAt(network, snap);
   return { id, point, node, snapDistance: snap.distance };
-}
-
-function readEntries(path: string): { id: string; anchor?: unknown }[] {
-  return JSON.parse(readFileSync(path, "utf8")) as { id: string; anchor?: unknown }[];
-}
-
-function isPoint(value: unknown): value is Point {
-  return (
-    Array.isArray(value) &&
-    value.length === 2 &&
-    value.every((n) => typeof n === "number" && Number.isFinite(n))
-  );
 }
 
 function write(name: string, data: unknown): void {
