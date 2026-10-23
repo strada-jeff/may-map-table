@@ -1,0 +1,139 @@
+{
+    "key": "group_pin",
+    "title": "Pin",
+    "fields": [
+        {
+            "key": "field_pin_tab_map",
+            "label": "Map",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_pin_anchor",
+            "label": "Map position",
+            "name": "anchor",
+            "type": "group",
+            "instructions": "Where the directions line ends, in pixels on the 3840 × 2160 map artwork from its top-left corner. Put it on the road at the entrance: more than 60 from a road gets flagged.",
+            "required": 1,
+            "layout": "table",
+            "sub_fields": [
+                {
+                    "key": "field_pin_anchor_x",
+                    "label": "X",
+                    "name": "x",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 1,
+                    "step": "any"
+                },
+                {
+                    "key": "field_pin_anchor_y",
+                    "label": "Y",
+                    "name": "y",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 1,
+                    "step": "any"
+                }
+            ]
+        },
+        {
+            "key": "field_pin_icon_offset",
+            "label": "Icon offset",
+            "name": "icon_offset",
+            "type": "group",
+            "instructions": "Optional nudge for the pin's icon only, in the same map pixels (positive y moves down). The route still ends at the map position.",
+            "required": 0,
+            "layout": "table",
+            "sub_fields": [
+                {
+                    "key": "field_pin_icon_offset_x",
+                    "label": "X",
+                    "name": "x",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "step": "any"
+                },
+                {
+                    "key": "field_pin_icon_offset_y",
+                    "label": "Y",
+                    "name": "y",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "step": "any"
+                }
+            ]
+        },
+        {
+            "key": "field_pin_tab_visit",
+            "label": "Visit",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_pin_address",
+            "label": "Address",
+            "name": "address",
+            "type": "text",
+            "instructions": "Street, City, ST — the comma splits it onto two lines.",
+            "required": 1
+        },
+        {
+            "key": "field_pin_directions_url",
+            "label": "Directions URL",
+            "name": "directions_url",
+            "type": "url",
+            "instructions": "Google Maps > Share > Copy link. Shown as a QR code.",
+            "required": 1
+        },
+        {
+            "key": "field_pin_tab_photos",
+            "label": "Photos",
+            "name": "",
+            "type": "tab",
+            "placement": "top"
+        },
+        {
+            "key": "field_pin_images",
+            "label": "Photos",
+            "name": "images",
+            "type": "gallery",
+            "instructions": "Landscape, at least 1728 px wide. Shown 1728 × 1222, cropped to fill.",
+            "required": 0,
+            "return_format": "id",
+            "preview_size": "medium",
+            "library": "all",
+            "insert": "append",
+            "min_width": 1728
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "model_home"
+            }
+        ],
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "location"
+            }
+        ]
+    ],
+    "menu_order": 10,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1792770598
+}

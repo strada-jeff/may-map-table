@@ -1,0 +1,69 @@
+{
+    "key": "group_location",
+    "title": "Location",
+    "fields": [
+        {
+            "key": "field_location_category",
+            "label": "Category",
+            "name": "category",
+            "type": "taxonomy",
+            "instructions": "",
+            "required": 1,
+            "taxonomy": "map_category",
+            "field_type": "select",
+            "return_format": "object",
+            "add_term": 0,
+            "save_terms": 1,
+            "load_terms": 1,
+            "allow_null": 0,
+            "multiple": 0
+        },
+        {
+            "key": "field_location_location",
+            "label": "Neighborhood / area",
+            "name": "location",
+            "type": "text",
+            "instructions": "e.g. Midtown Mayfair",
+            "required": 1
+        },
+        {
+            "key": "field_location_description",
+            "label": "Description",
+            "name": "description",
+            "type": "textarea",
+            "instructions": "Separate paragraphs with a blank line.",
+            "required": 1,
+            "rows": 6,
+            "new_lines": ""
+        },
+        {
+            "key": "field_location_illustration",
+            "label": "Illustration",
+            "name": "illustration",
+            "type": "image",
+            "instructions": "Optional artwork for the right column (e.g. the swim club's pool). Without one, the category flag shows.",
+            "required": 0,
+            "return_format": "id",
+            "preview_size": "medium",
+            "library": "all"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "location"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1792770598
+}

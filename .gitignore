@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# CMS import images, pulled from Drive by hand (see cms/import)
+cms/import/images/
+
+# Env files (VITE_CONTENT_URL): local per machine, set in the build environment for production
+.env
+.env.*

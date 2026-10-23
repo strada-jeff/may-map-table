@@ -1,0 +1,217 @@
+{
+    "key": "group_model_home",
+    "title": "Model Home",
+    "fields": [
+        {
+            "key": "field_model_home_builder",
+            "label": "Builder",
+            "name": "builder",
+            "type": "post_object",
+            "instructions": "",
+            "required": 1,
+            "post_type": [
+                "builder"
+            ],
+            "return_format": "id",
+            "ui": 1,
+            "allow_null": 0,
+            "multiple": 0
+        },
+        {
+            "key": "field_model_home_collection",
+            "label": "Collection",
+            "name": "collection",
+            "type": "text",
+            "instructions": "e.g. 50' Series",
+            "required": 1
+        },
+        {
+            "key": "field_model_home_square_footage",
+            "label": "Square footage",
+            "name": "square_footage",
+            "type": "group",
+            "instructions": "Leave Max blank for a single value; fill it in for a range (e.g. 3–4).",
+            "required": 0,
+            "layout": "table",
+            "sub_fields": [
+                {
+                    "key": "field_model_home_square_footage_min",
+                    "label": "Min",
+                    "name": "min",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 1,
+                    "step": 1,
+                    "min": 0,
+                    "append": "sq ft"
+                },
+                {
+                    "key": "field_model_home_square_footage_max",
+                    "label": "Max (optional)",
+                    "name": "max",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "step": 1,
+                    "min": 0,
+                    "append": "sq ft"
+                }
+            ]
+        },
+        {
+            "key": "field_model_home_beds",
+            "label": "Beds",
+            "name": "beds",
+            "type": "group",
+            "instructions": "Leave Max blank for a single value; fill it in for a range (e.g. 3–4).",
+            "required": 0,
+            "layout": "table",
+            "sub_fields": [
+                {
+                    "key": "field_model_home_beds_min",
+                    "label": "Min",
+                    "name": "min",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 1,
+                    "step": 1,
+                    "min": 0,
+                    "append": ""
+                },
+                {
+                    "key": "field_model_home_beds_max",
+                    "label": "Max (optional)",
+                    "name": "max",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "step": 1,
+                    "min": 0,
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_model_home_baths",
+            "label": "Baths",
+            "name": "baths",
+            "type": "group",
+            "instructions": "Leave Max blank for a single value; fill it in for a range (e.g. 3–4).",
+            "required": 0,
+            "layout": "table",
+            "sub_fields": [
+                {
+                    "key": "field_model_home_baths_min",
+                    "label": "Min",
+                    "name": "min",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 1,
+                    "step": 0.5,
+                    "min": 0,
+                    "append": ""
+                },
+                {
+                    "key": "field_model_home_baths_max",
+                    "label": "Max (optional)",
+                    "name": "max",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "step": 0.5,
+                    "min": 0,
+                    "append": ""
+                }
+            ]
+        },
+        {
+            "key": "field_model_home_garage",
+            "label": "Garage",
+            "name": "garage",
+            "type": "group",
+            "instructions": "Leave Max blank for a single value; fill it in for a range (e.g. 3–4).",
+            "required": 0,
+            "layout": "table",
+            "sub_fields": [
+                {
+                    "key": "field_model_home_garage_min",
+                    "label": "Min",
+                    "name": "min",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 1,
+                    "step": 1,
+                    "min": 0,
+                    "append": "cars"
+                },
+                {
+                    "key": "field_model_home_garage_max",
+                    "label": "Max (optional)",
+                    "name": "max",
+                    "type": "number",
+                    "instructions": "",
+                    "required": 0,
+                    "step": 1,
+                    "min": 0,
+                    "append": "cars"
+                }
+            ]
+        },
+        {
+            "key": "field_model_home_stories",
+            "label": "Stories",
+            "name": "stories",
+            "type": "number",
+            "instructions": "",
+            "required": 1,
+            "min": 1,
+            "step": 1
+        },
+        {
+            "key": "field_model_home_price_text",
+            "label": "Price text",
+            "name": "price_text",
+            "type": "text",
+            "instructions": "Shown on the kiosk, e.g. From the low $500s",
+            "required": 1
+        },
+        {
+            "key": "field_model_home_price_value",
+            "label": "Price",
+            "name": "price_value",
+            "type": "number",
+            "instructions": "Full dollars (e.g. 500000), not thousands. For sorting; not shown.",
+            "required": 1,
+            "min": 0,
+            "prepend": "$"
+        },
+        {
+            "key": "field_model_home_hours",
+            "label": "Hours",
+            "name": "hours",
+            "type": "textarea",
+            "instructions": "One line per set of days; line breaks show on the kiosk.",
+            "required": 1,
+            "rows": 3,
+            "new_lines": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "model_home"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1792770598
+}

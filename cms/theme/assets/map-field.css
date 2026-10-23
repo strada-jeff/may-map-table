@@ -1,0 +1,131 @@
+/* The map on a pin's "Map position" field (assets/map-field.js). */
+
+.maytable-map {
+  margin-bottom: 12px;
+}
+
+.maytable-map__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.maytable-map__mode {
+  display: inline-flex;
+  gap: 12px;
+}
+
+.maytable-map__spacer {
+  flex: 1;
+}
+
+.maytable-map__viewport {
+  position: relative;
+  /* Full width even when max-height caps it; the view still covers it. */
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 70vh;
+  overflow: hidden;
+  background: #f1f0ee;
+  border: 1px solid #c3c4c7;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.maytable-map__viewport.is-panning {
+  cursor: grabbing;
+}
+
+.maytable-map__stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+.maytable-map__stage img,
+.maytable-map__stage svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  max-width: none;
+}
+
+.maytable-map__roads polyline {
+  fill: none;
+  stroke: #2271b1;
+  stroke-opacity: 0.45;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.maytable-map__other,
+.maytable-map__origin {
+  fill: #fff;
+  stroke: #50575e;
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.8;
+}
+
+.maytable-map__origin {
+  fill: #50575e;
+}
+
+.maytable-map__anchor {
+  fill: #00a32a;
+  stroke: #fff;
+  stroke-width: 2.5px;
+  vector-effect: non-scaling-stroke;
+  cursor: move;
+}
+
+.maytable-map.is-far .maytable-map__anchor {
+  fill: #d63638;
+}
+
+.maytable-map__snap-line,
+.maytable-map__offset-line {
+  stroke: #1d2327;
+  stroke-width: 1.5px;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.maytable-map.is-far .maytable-map__snap-line {
+  stroke: #d63638;
+}
+
+.maytable-map__icon {
+  fill: #dba617;
+  stroke: #fff;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  cursor: move;
+}
+
+/* The icon sits on the anchor until it's given an offset. */
+.maytable-map:not(.has-offset) .maytable-map__icon,
+.maytable-map:not(.has-offset) .maytable-map__offset-line,
+.maytable-map.is-empty svg > circle,
+.maytable-map.is-empty svg > line {
+  display: none;
+}
+
+.maytable-map__status {
+  margin: 8px 0 0;
+}
+
+.maytable-map__status.is-ok {
+  color: #00a32a;
+}
+
+.maytable-map__status.is-far {
+  color: #d63638;
+  font-weight: 600;
+}

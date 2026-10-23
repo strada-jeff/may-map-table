@@ -1,0 +1,58 @@
+{
+    "key": "group_kiosk_settings",
+    "title": "Kiosk Settings",
+    "fields": [
+        {
+            "key": "field_kiosk_settings_help_heading",
+            "label": "Help heading",
+            "name": "help_heading",
+            "type": "text",
+            "instructions": "",
+            "required": 1
+        },
+        {
+            "key": "field_kiosk_settings_help_body",
+            "label": "Help body",
+            "name": "help_body",
+            "type": "textarea",
+            "instructions": "",
+            "required": 1,
+            "rows": 4,
+            "new_lines": ""
+        },
+        {
+            "key": "field_kiosk_settings_signup_heading",
+            "label": "Sign-up heading",
+            "name": "signup_heading",
+            "type": "text",
+            "instructions": "",
+            "required": 1
+        },
+        {
+            "key": "field_kiosk_settings_signup_qr_value",
+            "label": "Sign-up URL",
+            "name": "signup_qr_value",
+            "type": "url",
+            "instructions": "Encoded in the sign-up QR code.",
+            "required": 1
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "kiosk-settings"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1792770598
+}

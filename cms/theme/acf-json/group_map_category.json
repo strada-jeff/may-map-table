@@ -1,0 +1,59 @@
+{
+    "key": "group_map_category",
+    "title": "Category",
+    "fields": [
+        {
+            "key": "field_map_category_label",
+            "label": "Button label",
+            "name": "label",
+            "type": "text",
+            "instructions": "Welcome screen button, e.g. See amenities",
+            "required": 1
+        },
+        {
+            "key": "field_map_category_color",
+            "label": "Flag color",
+            "name": "color",
+            "type": "color_picker",
+            "instructions": "The location flag and welcome button color.",
+            "required": 0,
+            "return_format": "string"
+        },
+        {
+            "key": "field_map_category_icon",
+            "label": "Icon path",
+            "name": "icon",
+            "type": "text",
+            "instructions": "App path to a button icon used instead of the color flag (only model homes, /icons/model-homes.svg). Ask Strada to change.",
+            "required": 0
+        },
+        {
+            "key": "field_map_category_order",
+            "label": "Order",
+            "name": "order",
+            "type": "number",
+            "instructions": "Lower comes first on the welcome screen.",
+            "required": 0,
+            "step": 1,
+            "default_value": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "map_category"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1792770598
+}

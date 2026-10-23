@@ -1,0 +1,54 @@
+{
+    "key": "group_builder",
+    "title": "Builder",
+    "fields": [
+        {
+            "key": "field_builder_abbreviation",
+            "label": "Abbreviation",
+            "name": "abbreviation",
+            "type": "text",
+            "instructions": "Shown on the model home balloon, e.g. HH",
+            "required": 1,
+            "maxlength": 3
+        },
+        {
+            "key": "field_builder_logo",
+            "label": "Logo",
+            "name": "logo",
+            "type": "image",
+            "instructions": "",
+            "required": 0,
+            "return_format": "id",
+            "preview_size": "medium",
+            "library": "all"
+        },
+        {
+            "key": "field_builder_description",
+            "label": "Description",
+            "name": "description",
+            "type": "textarea",
+            "instructions": "Not shown on the kiosk yet.",
+            "required": 0,
+            "rows": 4,
+            "new_lines": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "builder"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "modified": 1792770598
+}

@@ -1,0 +1,665 @@
+{
+  "_note": "Normalized from may-map-table-content.xlsx (2026-10-23) for cms/import/import.php. Shaped like src/types/pins.ts; Category adds `name` (the admin term name).",
+  "categories": [
+    {
+      "id": "model-homes",
+      "label": "See model homes",
+      "icon": "/icons/model-homes.svg",
+      "name": "Model Homes"
+    },
+    {
+      "id": "amenities",
+      "label": "See amenities",
+      "color": "#E7B78A",
+      "name": "Amenities"
+    },
+    {
+      "id": "commercial",
+      "label": "See commercial",
+      "color": "#E56B59",
+      "name": "Commercial"
+    },
+    {
+      "id": "parks-trails",
+      "label": "See parks & trails",
+      "color": "#B6CD89",
+      "name": "Parks & Trails"
+    },
+    {
+      "id": "schools",
+      "label": "See schools",
+      "color": "#AF75C4",
+      "name": "Schools"
+    }
+  ],
+  "builders": [
+    {
+      "id": "highland-homes",
+      "name": "Highland Homes",
+      "abbreviation": "HH",
+      "description": "Highland Homes’ Artisan and Classic Series merge energy-efficient construction with thoughtful design for maximum livability in both ranch and two-story plans."
+    },
+    {
+      "id": "perry-homes",
+      "name": "Perry Homes",
+      "abbreviation": "PH",
+      "description": "Offering a variety of ranch and two-story plans in timeless architectural styles — built with four-sided masonry and eight-foot first-floor doors — Perry Homes brings classic into the modern age."
+    },
+    {
+      "id": "coventry-homes",
+      "name": "Coventry Homes",
+      "abbreviation": "CO",
+      "description": "Coventry Homes brings flexible, open ranch and two-story plans to Mayfair — with designs that mix customizability with a fresh modern aesthetic."
+    },
+    {
+      "id": "d-r-horton",
+      "name": "D.R. Horton",
+      "abbreviation": "DR",
+      "description": "Smart, secure ranch and two-story plans with entertaining-ready designs, top-notch finishes and professionally landscaped yards make D.R. Horton homes a must see."
+    },
+    {
+      "id": "scott-felder-homes",
+      "name": "Scott Felder Homes",
+      "abbreviation": "SF",
+      "description": "Offering tailor-made homes with innovative open designs and energy efficient technology — Scott Felder Homes’ detail-oriented customer service makes homebuilding a pleasure."
+    },
+    {
+      "id": "david-weekley-homes",
+      "name": "David Weekley Homes",
+      "abbreviation": "DW",
+      "description": "David Weekley Homes mix the latest homebuilding tech with wide-open floorplans, detailed craftsmanship and thoughtful finishes — so smart never looked so beautiful."
+    }
+  ],
+  "modelHomes": [
+    {
+      "id": "coventry-homes-groveton",
+      "kind": "model-home",
+      "anchor": [
+        2084,
+        1402
+      ],
+      "images": [],
+      "address": "322 Cleveland Way, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/9K5k5CiHzgVWpDHR9",
+      "builderId": "coventry-homes",
+      "name": "Groveton",
+      "collection": "60s Collection",
+      "squareFootage": 2722,
+      "beds": 4,
+      "baths": 3,
+      "garage": 3,
+      "stories": 1,
+      "priceText": "From the high $500s",
+      "priceValue": 599000,
+      "hours": "Monday – Thursday & Saturday 10am – 6pm\nFriday & Sunday 12-6pm"
+    },
+    {
+      "id": "coventry-homes-granger",
+      "kind": "model-home",
+      "anchor": [
+        2133,
+        1400
+      ],
+      "images": [],
+      "address": "350 Cleveland Way, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/ihSRoWYpHdDf98Zr8",
+      "builderId": "coventry-homes",
+      "name": "Granger",
+      "collection": "50s Collection",
+      "squareFootage": 3118,
+      "beds": 5,
+      "baths": 3.5,
+      "garage": 2,
+      "stories": 2,
+      "priceText": "From the mid $500s",
+      "priceValue": 550000,
+      "hours": "Monday – Thursday & Saturday 10am – 6pm\nFriday & Sunday 12-6pm"
+    },
+    {
+      "id": "d-r-horton-gaven",
+      "kind": "model-home",
+      "anchor": [
+        2023,
+        1516
+      ],
+      "images": [],
+      "address": "203 Grebe Drive, New Braunfels, TX 78130",
+      "directionsUrl": "",
+      "builderId": "d-r-horton",
+      "name": "Gaven",
+      "collection": "Tradition Series",
+      "squareFootage": 1772,
+      "beds": 4,
+      "baths": 2,
+      "garage": 2,
+      "stories": 1,
+      "priceText": "From the mid $300s",
+      "priceValue": 350000,
+      "hours": "Monday 12PM – 6PM\nTuesday-Saturday 10AM – 6PM\nSunday 12PM -6PM"
+    },
+    {
+      "id": "d-r-horton-nicole",
+      "kind": "model-home",
+      "anchor": [
+        2008,
+        1532
+      ],
+      "images": [],
+      "address": "5555 Eula Lane, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/WhX9rZTyxjU3RzH58",
+      "builderId": "d-r-horton",
+      "name": "Nicole",
+      "collection": "Tradition Series",
+      "squareFootage": 2473,
+      "beds": 4,
+      "baths": 3,
+      "garage": 2,
+      "stories": 2,
+      "priceText": "From the low $400s",
+      "priceValue": 400000,
+      "hours": "Monday 12PM – 6PM\nTuesday-Saturday 10AM – 6PM\nSunday 12PM -6PM"
+    },
+    {
+      "id": "highland-homes-kingston",
+      "kind": "model-home",
+      "anchor": [
+        2119,
+        1402
+      ],
+      "images": [],
+      "address": "346 Cleveland Way, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/Mbb2kJKqBRtXhkJZ8",
+      "builderId": "highland-homes",
+      "name": "Kingston",
+      "collection": "50' Series",
+      "squareFootage": 2460,
+      "beds": [
+        3,
+        4
+      ],
+      "baths": 3,
+      "garage": 2,
+      "stories": 1,
+      "priceText": "From the low $500s",
+      "priceValue": 500000,
+      "hours": "Sunday 12-6pm\nMonday – Saturday 10am – 6pm"
+    },
+    {
+      "id": "highland-homes-plan-216",
+      "kind": "model-home",
+      "anchor": [
+        2048,
+        1402
+      ],
+      "images": [],
+      "address": "310 Cleveland Way, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/FAuNkn4WcL51SErX6",
+      "builderId": "highland-homes",
+      "name": "Plan 216",
+      "collection": "60' Series",
+      "squareFootage": 2978,
+      "beds": [
+        3,
+        4
+      ],
+      "baths": [
+        3,
+        4
+      ],
+      "garage": [
+        2,
+        3
+      ],
+      "stories": 1,
+      "priceText": "From the low $600s",
+      "priceValue": 600000,
+      "hours": "Sunday 12-6pm\nMonday – Saturday 10am – 6pm"
+    },
+    {
+      "id": "perry-homes-plan-2513-w",
+      "kind": "model-home",
+      "anchor": [
+        2103,
+        1402
+      ],
+      "images": [],
+      "address": "342 Cleveland Way, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/xk17z71oPDK7Qmsb6",
+      "builderId": "perry-homes",
+      "name": "Plan 2513 W",
+      "collection": "50' Series",
+      "squareFootage": 2513,
+      "beds": 4,
+      "baths": 3,
+      "garage": 2,
+      "stories": 1,
+      "priceText": "From the low $500s",
+      "priceValue": 500000,
+      "hours": "Monday – Saturday 10am – 7pm\nSunday 12-7pm"
+    },
+    {
+      "id": "perry-homes-plan-2944-w",
+      "kind": "model-home",
+      "anchor": [
+        2066,
+        1402
+      ],
+      "images": [],
+      "address": "314 Cleveland Way, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/1VofR8bbxXsmvqaf6",
+      "builderId": "perry-homes",
+      "name": "Plan 2944 W",
+      "collection": "60' Series",
+      "squareFootage": 2944,
+      "beds": 4,
+      "baths": 3.5,
+      "garage": 3,
+      "stories": 1,
+      "priceText": "From the high $500s",
+      "priceValue": 599000,
+      "hours": "Monday – Saturday 10am – 7pm\nSunday 12-7pm"
+    },
+    {
+      "id": "david-weekley-homes-gardenia",
+      "kind": "model-home",
+      "anchor": [
+        1895,
+        1139
+      ],
+      "images": [],
+      "address": "145 Radnor Rd, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/Dba4xiVRTw4ZZ25cA",
+      "builderId": "david-weekley-homes",
+      "name": "Gardenia",
+      "collection": "45' Series",
+      "squareFootage": [
+        1526,
+        2538
+      ],
+      "beds": [
+        2,
+        4
+      ],
+      "baths": [
+        2.5,
+        3
+      ],
+      "garage": 2,
+      "stories": 1,
+      "priceText": "From the high $300s",
+      "priceValue": 399000,
+      "hours": "Monday – Saturday 10am – 7pm\nSunday 12pm – 7pm"
+    },
+    {
+      "id": "scott-felder-homes-bluebonnet",
+      "kind": "model-home",
+      "anchor": [
+        1936,
+        1092
+      ],
+      "images": [],
+      "address": "147 Trifle Trail, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/DxYCnQnUxxsLcoMH6",
+      "builderId": "scott-felder-homes",
+      "name": "Bluebonnet",
+      "collection": "Cottage Series",
+      "squareFootage": 1194,
+      "beds": 3,
+      "baths": 2,
+      "garage": 1,
+      "stories": 1,
+      "priceText": "From the high $200s",
+      "priceValue": 299000,
+      "hours": ""
+    },
+    {
+      "id": "scott-felder-homes-upton",
+      "kind": "model-home",
+      "anchor": [
+        1910,
+        1142
+      ],
+      "images": [],
+      "address": "149 Radnor Road, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/rjAMxAH5uz7jTgAM6",
+      "builderId": "scott-felder-homes",
+      "name": "Upton",
+      "collection": "Arbor Series",
+      "squareFootage": 2060,
+      "beds": 4,
+      "baths": 3,
+      "garage": 2,
+      "stories": 1,
+      "priceText": "From the low $400s",
+      "priceValue": 400000,
+      "hours": ""
+    }
+  ],
+  "locations": [
+    {
+      "id": "village-at-mayfair",
+      "kind": "location",
+      "anchor": [
+        2097,
+        1717
+      ],
+      "images": [],
+      "address": "5430 Addante Street, New Braunfels, TX 78130",
+      "directionsUrl": "https://maps.app.goo.gl/kozzoffe3Jg5LxvS6",
+      "categoryId": "amenities",
+      "title": "Village At Mayfair",
+      "location": "",
+      "description": "If you’re interested in living in Mayfair but you’re not ready to buy, stop by the leasing office to learn about great for-lease options including single-family, cottage and apartment homes."
+    },
+    {
+      "id": "mayfair-swim-club",
+      "kind": "location",
+      "anchor": [
+        1535,
+        1273
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "amenities",
+      "title": "Mayfair Swim Club",
+      "location": "Midtown Mayfair",
+      "description": "The residents-only Swim Club features an ever-so-inviting pool with relaxing sun shelves and deeper water that lets you jump in with both feet and wash away the heat of the day. Plus, shady cabanas, a pavilion, lawn games, picnic tables and changing facilities."
+    },
+    {
+      "id": "celebration-hall",
+      "kind": "location",
+      "anchor": [
+        1300,
+        1265
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "amenities",
+      "title": "Celebration Hall",
+      "location": "Midtown Mayfair",
+      "description": "From live music to local markets, our open-air pavilion is a venue for events large and small. Even when no events are happening, it’s become a place to simply meet up and hang out."
+    },
+    {
+      "id": "welcome-cafe",
+      "kind": "location",
+      "anchor": [
+        1316,
+        1492
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "amenities",
+      "title": "Welcome Cafe",
+      "location": "Midtown Mayfair",
+      "description": "Drop in for barista-made drinks, tasty handmade sandwiches and crispy salads by local favorite Ollie’s Market. Artful, eclectic — the space is also home to our HOA office, Southstar’s New Braunfels’ headquarters and our welcome center, the place to start your new home journey."
+    },
+    {
+      "id": "ollies-market",
+      "kind": "location",
+      "anchor": [
+        1466,
+        1499
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "amenities",
+      "title": "Ollie's Market",
+      "location": "Midtown Mayfair",
+      "description": "Mayfair’s Welcome Café is operated by local favorite Ollie’s Market. Known for farm-fresh unprocessed food and personal service, Ollie’s unique offerings are a daily delight for residents — and a pleasant surprise for visitors popping in to explore the community."
+    },
+    {
+      "id": "mayfair-elementary-school",
+      "kind": "location",
+      "anchor": [
+        2094,
+        1125
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "schools",
+      "title": "Mayfair Elementary School",
+      "location": "",
+      "description": "This innovative new school for Pre-K through 5th grade features flexible maker spaces, promoting creativity and collaboration. Each grade level is housed in its own dedicated classroom wing. And the schoolyard itself inspires outdoor learning and play."
+    },
+    {
+      "id": "dr-jerry-s-major-middle-school",
+      "kind": "location",
+      "anchor": [
+        2232,
+        1044
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "schools",
+      "title": "Dr. Jerry S. Major Middle School",
+      "location": "",
+      "description": "The planned 6-8 middle school adjacent to Mayfair Elementary, will provide a well-rounded education for students in a state-of-the-art facility. And it’s an easy walk or bike ride from Mayfair’s newest neighborhoods."
+    },
+    {
+      "id": "dog-park",
+      "kind": "location",
+      "anchor": [
+        2425,
+        1318
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Dog Park",
+      "location": "Revelwood",
+      "description": "Dogs are family and they deserve a park of their own. This enclosed green lets dog parents unleash the fun and do some socializing themselves."
+    },
+    {
+      "id": "fairway-park",
+      "kind": "location",
+      "anchor": [
+        1783,
+        1115
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Fairway Park",
+      "location": "",
+      "description": "Featuring an 18-hole dice golf course, a pump track, playscape, walking paths and event parking, Mayfair’s first park is a sign of good things to come."
+    },
+    {
+      "id": "mayfair-park",
+      "kind": "location",
+      "anchor": [
+        2549,
+        1152
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Mayfair Park",
+      "location": "",
+      "description": "Mayfair’s signature public park is in the planning stages and sure to feature lots of wonderful things to do, places to go and reasons to get together."
+    },
+    {
+      "id": "prairie-park",
+      "kind": "location",
+      "anchor": [
+        2290,
+        1803
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Prairie Park",
+      "location": "",
+      "description": "This park is dedicated to the beauty of Texas’ native prairie landscape — aesthetically and ecologically — because nothing is more beautiful than nature itself."
+    },
+    {
+      "id": "ridgeway-park",
+      "kind": "location",
+      "anchor": [
+        2159,
+        1645
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Ridgeway Park",
+      "location": "Ridgeway",
+      "description": "Neighbors need places to meet, to chat and to get to know each other and nothing does that quite as well as a pocket park."
+    },
+    {
+      "id": "costco",
+      "kind": "location",
+      "anchor": [
+        2065,
+        1941
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "commercial",
+      "title": "Costco",
+      "location": "Gateway District",
+      "description": "Everyone’s favorite wholesaler, offering everything from tires to TP, isn’t just about buying in bulk. Costco is also the place to pick up a pizza and plan a vacation."
+    },
+    {
+      "id": "food-box",
+      "kind": "location",
+      "anchor": [
+        1807,
+        1241
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "commercial",
+      "title": "Food Box",
+      "location": "Midtown District",
+      "description": "This upscale convenience store and gas station it will feature a \"Deli Box\" kitchen serving made-to-order breakfast tacos, sandwiches, and BBQ, alongside standard snacks and organic grab-and-go options."
+    },
+    {
+      "id": "the-prep-school",
+      "kind": "location",
+      "anchor": [
+        1897,
+        1213
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "commercial",
+      "title": "The PREP School",
+      "location": "Midtown District",
+      "description": "Convenient, on-site childcare is essential to busy parents. This state-of-the-art facility gives you peace of mind that your little ones are in good hands while you’re out getting things done."
+    },
+    {
+      "id": "future-shopping-dining-retail",
+      "kind": "location",
+      "anchor": [
+        1861,
+        1297
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "commercial",
+      "title": "Future Shopping, Dining & Retail",
+      "location": "Midtown District",
+      "description": "More great places to eat, shop and get together are coming to Mayfair, putting residents just a short walk or bike ride from everything they need."
+    },
+    {
+      "id": "the-mayfair-stroll-bike-loop",
+      "kind": "location",
+      "anchor": [
+        2516,
+        1359
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "The Mayfair Stroll (Bike Loop)",
+      "location": "",
+      "description": "This XX-mile bike loop promotes getting out into the fresh air for leisurely rides through the countryside with friends."
+    },
+    {
+      "id": "bluebell-trailway",
+      "kind": "location",
+      "anchor": [
+        2191,
+        1170
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Bluebell Trailway",
+      "location": "",
+      "description": "Named for the native flower that colors the Texas prairie, Bluebell Trailway is a X-mile multimodal path that makes getting from A to B more beautiful and more fun."
+    },
+    {
+      "id": "pride-path",
+      "kind": "location",
+      "anchor": [
+        2288,
+        1112
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Pride Path",
+      "location": "",
+      "description": "When you take pride in your school you take pride in how you get there, too. This trailway gets Mayfair students walking and riding bikes to class."
+    },
+    {
+      "id": "jim-vater-trailway",
+      "kind": "location",
+      "anchor": [
+        2387,
+        1252
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Jim Vater Trailway",
+      "location": "",
+      "description": "Named for one of Mayfair’s favorite founders, this is one of Mayfair’s favorite trailways — a north-south route that crests at Mayfair’s highest point."
+    },
+    {
+      "id": "fairway-park-path",
+      "kind": "location",
+      "anchor": [
+        1943,
+        929
+      ],
+      "images": [],
+      "address": "",
+      "directionsUrl": "",
+      "categoryId": "parks-trails",
+      "title": "Fairway Park Path",
+      "location": "",
+      "description": "Wander around Fairway park on this meandering walking path, watch the disc golfers play and enjoy the day."
+    }
+  ],
+  "copy": {
+    "help": {
+      "heading": "Inmensae subtilitatis, obscuris et malesuada.",
+      "body": "Pellentesque habitant morbi tristique senectus et netus. Quo usque tandem abutere, Catilina, patientia nostra? Paullum deliquit, ponderibus modulisque suis ratio utitur. Praeterea iter est quasdam res quas ex communi."
+    },
+    "signup": {
+      "heading": "Sign up to receive Mayfair news, event invitations, and more",
+      "qrValue": "https://mayfairtx.com/"
+    }
+  }
+}
