@@ -17,7 +17,12 @@ export type Builder = {
   logo?: string;
   /** Short mark shown on the model-home balloon icon, e.g. "CH". */
   abbreviation: string;
+  /** Not shown yet; kept with the builder for a future builder view. */
+  description?: string;
 };
+
+/** A single value, or a [min, max] range for plans that vary, e.g. 3–4 beds. */
+export type NumberRange = number | readonly [number, number];
 
 /**
  * Nudge for a pin's icon, in map units — the same artwork-pixel space as
@@ -34,7 +39,7 @@ type BasePin = {
   /**
    * Where routes to this pin end, in artwork px (network.svg's viewBox,
    * y-down) — place it on the road the visitor should arrive by; the
-   * routing build snaps it to the nearest road and fails if it's far off.
+   * route planner snaps it to the nearest road and warns if it's far off.
    * The debug "Find points" mode reads these off the map. The icon sits
    * here too, plus iconOffset.
    */
@@ -51,10 +56,10 @@ export type ModelHome = BasePin & {
   builderId: Builder["id"];
   name: string;
   collection: string;
-  squareFootage: number;
-  beds: number;
-  baths: number;
-  garage: number;
+  squareFootage: NumberRange;
+  beds: NumberRange;
+  baths: NumberRange;
+  garage: NumberRange;
   stories: number;
   priceText: string;
   priceValue: number;

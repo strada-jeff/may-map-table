@@ -94,7 +94,8 @@ export default function LocationMarker({ pin, visible, active, fadeOut }: Locati
               </div>
             </div>
           </div>
-          {active && (
+          {/* No address yet (the CMS flags it): no label, rather than an empty one. */}
+          {active && pin.address && (
             <span className={ADDRESS_LABEL_CLASS} style={{ left: anchorLeft + ADDRESS_LABEL_POLE_GAP_PX }}>
               {postalAddress(pin.address)}
             </span>

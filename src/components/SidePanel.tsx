@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { CONFIG } from "../config";
+import { useCopy } from "../hooks/useCopy";
 import signupMark from "../assets/icons/signup-mark.svg";
 import iconClose from "../assets/icons/close.svg";
 import RotateArrowsIcon from "./RotateArrowsIcon";
@@ -16,13 +16,14 @@ const QR_SIZE_PX = 517;
  * WelcomeOverlay — a deliberate interruption of the map, not a sidebar.
  * Help is the pin legend (HelpLegend). Signup is a pitch line and a live-generated QR (qrcode.react,
  * same library DetailsView uses for directions) instead of a fixed image,
- * so its target lives in CONFIG.signup instead of a baked-in asset. Rotate
+ * so its target lives in the CMS (useCopy) instead of a baked-in asset. Rotate
  * is a confirm step for RotateControl — its CTA is what actually calls
  * RotationContext's `toggle`, not the corner button itself.
  */
 export default function SidePanel() {
   const { activeModal, close } = useSideModal();
   const { toggle } = useRotation();
+  const { signup } = useCopy();
   const isOpen = activeModal !== null;
 
   // Kept across activeModal -> null so the overlay still has content to
@@ -58,11 +59,11 @@ export default function SidePanel() {
       {lastModal === "signup" ? (
         <>
           <p className="side-panel-heading max-w-[470px] font-vision text-[30px] font-extrabold uppercase leading-[40px] tracking-[3px] text-white">
-            {CONFIG.signup.heading}
+            {signup.heading}
           </p>
 
           <QRCodeSVG
-            value={CONFIG.signup.qrValue}
+            value={signup.qrValue}
             size={QR_SIZE_PX}
             fgColor="#ffffff"
             bgColor="transparent"

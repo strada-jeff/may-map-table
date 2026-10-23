@@ -1,8 +1,8 @@
 import { QRCodeSVG } from "qrcode.react";
-import { CONFIG } from "../config";
 import helpLogo from "../assets/icons/help-logo.svg";
 import { useCategories } from "../hooks/useCategories";
 import { useBuilders } from "../hooks/useBuilders";
+import { useCopy } from "../hooks/useCopy";
 import DestinationFlagIcon from "./DestinationFlagIcon";
 
 // legend-balloon.svg is model-home-balloon.svg with a white string cropped
@@ -24,6 +24,7 @@ const ITEM_LABEL_CLASS =
 export default function HelpLegend() {
   const categories = useCategories();
   const builders = useBuilders();
+  const { help, signup } = useCopy();
   const landmarkCategories = categories.filter((c) => c.color);
 
   return (
@@ -31,10 +32,10 @@ export default function HelpLegend() {
       <img src={helpLogo} alt="Mayfair, New Braunfels, Texas" className="help-legend-logo h-[286px] w-[546px]" />
 
       <p className="help-legend-heading mt-[91px] max-w-[1101px] font-vision text-[80px] leading-[84px] text-white">
-        {CONFIG.help.heading}
+        {help.heading}
       </p>
       <p className="help-legend-body mt-[45px] max-w-[1239px] font-vision text-[30px] leading-[50px] text-white">
-        {CONFIG.help.body}
+        {help.body}
       </p>
 
       <div className="help-legend-table mt-[164px] flex w-[1606px] flex-col border-y-[1.5px] border-mayfair-blue text-left">
@@ -82,7 +83,7 @@ export default function HelpLegend() {
         sign up for the mayfair interest list
       </p>
       <QRCodeSVG
-        value={CONFIG.signup.qrValue}
+        value={signup.qrValue}
         size={200}
         fgColor="#ffffff"
         bgColor="transparent"

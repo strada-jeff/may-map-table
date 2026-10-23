@@ -12,6 +12,13 @@ import DetailsGallery from "./DetailsGallery";
 import ButtonFlagIcon from "./ButtonFlagIcon";
 import iconNewsletter from "../assets/icons/newsletter.svg";
 import { postalAddress } from "./postalAddress";
+import type { NumberRange } from "../types/pins";
+
+/** "2,450", or "1,526–2,538" for a range. */
+function formatRange(value: NumberRange): string {
+  if (typeof value === "number") return value.toLocaleString();
+  return value.map((n) => n.toLocaleString()).join("–");
+}
 
 function StatRow({ children }: { children: ReactNode }) {
   return (
@@ -85,19 +92,21 @@ export default function DetailsView() {
               <div className="details-view-modelhome-info flex flex-col pt-[160px]">
                 <p className="details-view-builder font-vision text-[40px] leading-[54px] text-mayfair-navy">{builderName}</p>
                 <p className="details-view-title font-vision text-[70px] leading-[84px] text-mayfair-navy">{pin.name}</p>
-                <p className="details-view-collection font-vision text-[30px] font-extrabold uppercase leading-[54px] tracking-[0.05em] text-[#e56b59]">
-                  {pin.collection}
-                </p>
+                {pin.collection && (
+                  <p className="details-view-collection font-vision text-[30px] font-extrabold uppercase leading-[54px] tracking-[0.05em] text-[#e56b59]">
+                    {pin.collection}
+                  </p>
+                )}
 
                 <div className="details-view-stats mt-[51px] flex w-[1260px] max-w-full flex-col">
-                  <StatRow>Square footage: {pin.squareFootage.toLocaleString()}</StatRow>
+                  <StatRow>Square footage: {formatRange(pin.squareFootage)}</StatRow>
                   <StatRow>
-                    <span className="details-view-stat-item">Beds: {pin.beds}</span>
+                    <span className="details-view-stat-item">Beds: {formatRange(pin.beds)}</span>
                     <StatDivider />
-                    <span className="details-view-stat-item">Baths: {pin.baths}</span>
+                    <span className="details-view-stat-item">Baths: {formatRange(pin.baths)}</span>
                   </StatRow>
                   <StatRow>
-                    <span className="details-view-stat-item">Garage: {pin.garage}-car</span>
+                    <span className="details-view-stat-item">Garage: {formatRange(pin.garage)}-car</span>
                     <StatDivider />
                     <span className="details-view-stat-item">Stories: {pin.stories}</span>
                   </StatRow>
@@ -107,9 +116,11 @@ export default function DetailsView() {
             ) : (
               <div className="details-view-location-info flex max-w-[1116px] flex-col pt-[155px]">
                 <p className="details-view-title font-vision text-[70px] leading-[84px] text-mayfair-navy">{pin.title}</p>
-                <p className="details-view-location mt-[10px] font-vision text-[30px] font-extrabold uppercase leading-[54px] tracking-[0.05em] text-mayfair-navy">
-                  {pin.location}
-                </p>
+                {pin.location && (
+                  <p className="details-view-location mt-[10px] font-vision text-[30px] font-extrabold uppercase leading-[54px] tracking-[0.05em] text-mayfair-navy">
+                    {pin.location}
+                  </p>
+                )}
                 <div className="details-view-description mt-[47px] flex flex-col gap-[20px] font-vision text-[30px] leading-[50px] text-mayfair-navy">
                   {pin.description.split(/\n\s*\n/).map((paragraph, i) => (
                     <p key={i} className="details-view-description-paragraph">
@@ -139,13 +150,19 @@ export default function DetailsView() {
             }`}
           >
             {pin.kind === "model-home" ? (
+              // Without hours the box stays, empty, so "show on map" below
+              // sits where it does on every other model home.
               <div className="details-view-hours flex h-[221px] flex-col gap-[17px]">
-                <p className="details-view-hours-label font-vision text-[26px] font-extrabold uppercase leading-[35px] tracking-[0.1em] text-mayfair-blue">
-                  model home hours
-                </p>
-                <p className="details-view-hours-text whitespace-pre-line font-vision text-[30px] font-extrabold leading-[42px] text-mayfair-navy">
-                  {pin.hours}
-                </p>
+                {pin.hours && (
+                  <>
+                    <p className="details-view-hours-label font-vision text-[26px] font-extrabold uppercase leading-[35px] tracking-[0.1em] text-mayfair-blue">
+                      model home hours
+                    </p>
+                    <p className="details-view-hours-text whitespace-pre-line font-vision text-[30px] font-extrabold leading-[42px] text-mayfair-navy">
+                      {pin.hours}
+                    </p>
+                  </>
+                )}
               </div>
             ) : (
               <div className="details-view-icon flex h-[244px] items-center justify-center">
@@ -176,25 +193,32 @@ export default function DetailsView() {
               </span>
             </button>
 
-            <p className="details-view-address mt-[34px] whitespace-pre-line font-vision text-[30px] font-extrabold leading-[42px] text-mayfair-navy">
-              {postalAddress(pin.address)}
-            </p>
-
-            <div className="details-view-directions mt-[33px] flex items-center justify-between border-t-[1.5px] border-mayfair-blue pt-[55px]">
-              <p className="details-view-directions-label w-[212px] font-vision text-[26px] font-extrabold uppercase leading-[35px] tracking-[0.1em] text-mayfair-navy">
-                send
-                <br />
-                directions
-                <br />
-                to phone
+            {/* Either can still be missing in the CMS (its dashboard flags them):
+                leave it out, rather than a blank line or a QR code that
+                scans to nothing. */}
+            {pin.address && (
+              <p className="details-view-address mt-[34px] whitespace-pre-line font-vision text-[30px] font-extrabold leading-[42px] text-mayfair-navy">
+                {postalAddress(pin.address)}
               </p>
-              <QRCodeSVG
-                value={pin.directionsUrl}
-                size={155}
-                fgColor="#254a5d"
-                className="details-view-qr shrink-0"
-              />
-            </div>
+            )}
+
+            {pin.directionsUrl && (
+              <div className="details-view-directions mt-[33px] flex items-center justify-between border-t-[1.5px] border-mayfair-blue pt-[55px]">
+                <p className="details-view-directions-label w-[212px] font-vision text-[26px] font-extrabold uppercase leading-[35px] tracking-[0.1em] text-mayfair-navy">
+                  send
+                  <br />
+                  directions
+                  <br />
+                  to phone
+                </p>
+                <QRCodeSVG
+                  value={pin.directionsUrl}
+                  size={155}
+                  fgColor="#254a5d"
+                  className="details-view-qr shrink-0"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -89,7 +89,8 @@ export default function ModelHomeMarker({ pin, visible, active, fadeOut }: Model
               </div>
             </div>
           </div>
-          {active && <span className={ADDRESS_LABEL_CLASS}>{postalAddress(pin.address)}</span>}
+          {/* No address yet (the CMS flags it): no label, rather than an empty one. */}
+          {active && pin.address && <span className={ADDRESS_LABEL_CLASS}>{postalAddress(pin.address)}</span>}
         </div>
       </KeepScale>
     </div>

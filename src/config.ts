@@ -63,16 +63,6 @@ export const CONFIG = {
   details: {
     panelWidthPx: 1728, // Figma Info_card_overlay's 2160 narrowed 20%; kiosk screen is fixed, so this is a constant, not measured
   },
-  help: {
-    // TODO: replace with the real help copy (Figma help_alt is still lorem ipsum).
-    heading: "Inmensae subtilitatis, obscuris et malesuada.",
-    body: "Pellentesque habitant morbi tristique senectus et netus. Quo usque tandem abutere, Catilina, patientia nostra? Paullum deliquit, ponderibus modulisque suis ratio utitur. Praeterea iter est quasdam res quas ex communi.",
-  },
-  signup: {
-    heading: "Sign up to receive Mayfair news, event invitations, and more",
-    // TODO: replace with the real sign-up destination.
-    qrValue: "https://mayfairtx.com/",
-  },
   debug: {
     // Temporary, for development on the table: a "Debug" button in the
     // top-right corner, since the kiosk has no address bar for ?debug=1.

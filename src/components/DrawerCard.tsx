@@ -55,9 +55,11 @@ export default function DrawerCard({
           <p className="font-vision text-[50px] leading-[52px] text-mayfair-navy">
             {title}
           </p>
-          <p className="truncate font-vision text-[20px] font-extrabold uppercase leading-none tracking-[0.05em] text-mayfair-navy">
-            {subtitle}
-          </p>
+          {subtitle && (
+            <p className="truncate font-vision text-[20px] font-extrabold uppercase leading-none tracking-[0.05em] text-mayfair-navy">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-3">

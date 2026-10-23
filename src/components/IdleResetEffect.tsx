@@ -5,6 +5,7 @@ import { useDetails } from "../hooks/DetailsContext";
 import { useRoute } from "../hooks/RouteContext";
 import { useSideModal } from "../hooks/SideModalContext";
 import { useRotation } from "../hooks/RotationContext";
+import { hasContentUpdate } from "../data/api";
 
 /**
  * Falling back to idle (the welcome screen reappearing) should hand the
@@ -31,6 +32,17 @@ export default function IdleResetEffect() {
     clearRoute();
     closeSideModal();
     resetRotation();
+
+    // Idle is also when to pick up CMS edits: nobody is mid-visit, and a
+    // reload lands back on this same welcome screen. Content loads once
+    // per page, so a reload is how new content arrives.
+    let cancelled = false;
+    hasContentUpdate().then((updated) => {
+      if (updated && !cancelled) window.location.reload();
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [isIdle, setOpen, closeDetails, clearRoute, closeSideModal, resetRotation]);
 
   return null;
