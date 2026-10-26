@@ -69,7 +69,7 @@ Field groups edited in the ACF admin save back to `cms/theme/acf-json/` — comm
 
 ### Importing content
 
-`cms/import/content.json` is the client's preliminary spreadsheet, normalized to the app's types. Photos go in `cms/import/images/<slug>/` (gitignored), added in filename order — prefix them `01-`, `02-`… The slug is the entry's id, e.g. `coventry-homes-groveton`, `mayfair-swim-club`, `highland-homes` (a builder's logo).
+`cms/import/content.json` (gitignored) is the client's spreadsheet, normalized to the app's types. Photos go in `cms/import/images/<slug>/` (gitignored), added in filename order — prefix them `01-`, `02-`… The slug is the entry's id, e.g. `coventry-homes-groveton`, `mayfair-swim-club`, `highland-homes` (a builder's logo).
 
 LocalWP's database is only reachable through its socket, so pass it to WP-CLI:
 

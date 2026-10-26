@@ -23,7 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-# CMS import images, pulled from Drive by hand (see cms/import)
+# CMS import content and images, from the client's spreadsheet (see cms/import)
+cms/import/content.json
 cms/import/images/
 
 # Env files (VITE_CONTENT_URL): local per machine, set in the build environment for production
