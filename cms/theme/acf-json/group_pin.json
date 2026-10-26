@@ -80,7 +80,7 @@
             "name": "address",
             "type": "text",
             "instructions": "Street, City, ST — the comma splits it onto two lines.",
-            "required": 1
+            "required": 0
         },
         {
             "key": "field_pin_directions_url",
@@ -88,7 +88,7 @@
             "name": "directions_url",
             "type": "url",
             "instructions": "Google Maps > Share > Copy link. Shown as a QR code.",
-            "required": 1
+            "required": 0
         },
         {
             "key": "field_pin_tab_photos",
@@ -135,5 +135,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1792770598
+    "modified": 1793016067
 }
