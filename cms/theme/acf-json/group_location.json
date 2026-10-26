@@ -23,8 +23,8 @@
             "label": "Neighborhood / area",
             "name": "location",
             "type": "text",
-            "instructions": "e.g. Midtown Mayfair",
-            "required": 1
+            "instructions": "e.g. Midtown Mayfair. Optional: left blank, the line is hidden.",
+            "required": 0
         },
         {
             "key": "field_location_description",
@@ -65,5 +65,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1792770598
+    "modified": 1793027120
 }
