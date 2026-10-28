@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { CONFIG } from "../config";
 import { useDetails } from "../hooks/DetailsContext";
@@ -8,6 +8,7 @@ import { useBuilders } from "../hooks/useBuilders";
 import { useRoute } from "../hooks/RouteContext";
 import { useSideModal } from "../hooks/SideModalContext";
 import { useTap } from "../hooks/useTap";
+import { useDrawerSwipe } from "../hooks/useDrawerSwipe";
 import DetailsGallery from "./DetailsGallery";
 import ButtonFlagIcon from "./ButtonFlagIcon";
 import iconNewsletter from "../assets/icons/newsletter.svg";
@@ -64,6 +65,22 @@ export default function DetailsView() {
   const keepInTouchTap = useTap(() => openSideModal("signup"));
   const showOnMapTap = useTap(() => showOnMap());
   const hideTap = useTap(closeDetails);
+  // Swiped left to close, like the drawer; nothing peeks out once closed.
+  const slideRef = useRef<HTMLDivElement | null>(null);
+  const swipe = useDrawerSwipe(slideRef, {
+    open: isOpen,
+    setOpen: (open) => {
+      if (!open) closeDetails();
+    },
+    panelWidth: CONFIG.details.panelWidthPx,
+    peekPx: 0,
+  });
+  // The photo carousel swipes sideways itself; a drag starting on it
+  // changes photos, not the panel.
+  const onSwipePointerDown: typeof swipe.onPointerDown = (e) => {
+    if (e.target instanceof Element && e.target.closest(".details-gallery-viewport")) return;
+    swipe.onPointerDown(e);
+  };
 
   if (!pin) return null;
 
@@ -75,6 +92,9 @@ export default function DetailsView() {
   return (
     <div className="details-view pointer-events-none absolute inset-0 z-50 flex h-full overflow-hidden">
       <div
+        ref={slideRef}
+        {...swipe}
+        onPointerDown={onSwipePointerDown}
         style={{
           width: CONFIG.details.panelWidthPx,
           transform: isOpen ? "translateX(0)" : "translateX(-100%)",
