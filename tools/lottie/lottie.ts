@@ -44,6 +44,12 @@ export type Part = {
    * bulbs (one dashed-stroke outline each) flashing in sequence.
    */
   subpathOpacity?: (center: Vec, index: number) => Anim<number>;
+  /**
+   * Draw this part's shapes just beneath shape `drawBelow` instead of in
+   * export order — for a limb the export stacks over clothing it should
+   * tuck under once it moves (the kite girl's back leg and her skirt).
+   */
+  drawBelow?: number;
   /** Emitted as the shape layer's `cl`, which lottie-web's SVG renderer puts on the layer's <g> as a class. */
   className?: string;
 };
@@ -187,7 +193,14 @@ export function buildLottie(name: string, model: SvgModel, rig: Rig) {
     });
   };
 
+  const ordered: Shape[] = [];
+  const moved = model.shapes.filter((s) => partFor(s)?.drawBelow !== undefined);
   for (const s of model.shapes) {
+    for (const m of moved) if (partFor(m)!.drawBelow === s.index) ordered.push(m);
+    if (!moved.includes(s)) ordered.push(s);
+  }
+
+  for (const s of ordered) {
     if (exclude.has(s.index)) continue;
     const part = partFor(s);
     if (!run || run.part !== part) {

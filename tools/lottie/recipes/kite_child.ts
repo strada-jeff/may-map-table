@@ -9,7 +9,15 @@ const TAU = Math.PI * 2;
 
 const STRIDE = 20; // frames per full leg cycle
 const LEG_SWING = 7; // degrees
-const BOB = sine(STRIDE / 2, 0.5, 0.25); // body rises twice per stride
+// Hips sit up under the skirt so the thighs' tops shift sideways out of
+// sight rather than dipping below the hem. The export stacks the back leg
+// over the skirt, so it's moved beneath it — swinging, it rode up over it —
+// with the lining beneath the leg as the art has it.
+const SKIRT = 31; // the skirt's fabric
+const SKIRT_LINING = 32; // its red underside, which the back leg covers
+const FRONT_HIP: Vec = [36, 69];
+const BACK_HIP: Vec = [25, 69];
+const BOB = sine(STRIDE, 0.5, 0.25); // body rises once per stride — twice read as jittery
 
 const SHOULDER: Vec = [35.5, 50]; // raised arm's pivot, where it leaves the sleeve
 const HAND: Vec = [47, 30.6]; // where the string leaves her fist
@@ -17,6 +25,7 @@ const ARM_SWING = sine(FRAMES, 6); // degrees; one slow raise/lower per loop
 
 const KITE_ANCHOR: Vec = [85, 15.5]; // where the string meets the kite
 const TAIL_ATTACH: Vec = [84, 24.5];
+const TAIL_PERIOD = 60; // frames per ripple
 const KITE_DRIFT = (f: number): Vec => [sine(FRAMES, 0.6, 0.1)(f), sine(FRAMES, 1.2, 0.35)(f)];
 
 /** The fist's displacement: arm rotation about the shoulder plus the body bob. */
@@ -39,8 +48,8 @@ function stringDeform(x: number, _y: number, f: number): Vec {
 /** Tail: rides the kite, plus a wave that grows with distance from where it's tied on. */
 function tailDeform(x: number, y: number, f: number): Vec {
   const s = Math.hypot(x - TAIL_ATTACH[0], y - TAIL_ATTACH[1]);
-  const amp = 1.8 * Math.min(1, s / 25);
-  const phase = TAU * (s / 40 - f / 30);
+  const amp = 1.3 * Math.min(1, s / 25);
+  const phase = TAU * (s / 40 - f / TAIL_PERIOD);
   const k = KITE_DRIFT(f);
   return [k[0] + amp * Math.sin(phase), k[1] + amp * 0.6 * Math.cos(phase)];
 }
@@ -60,14 +69,15 @@ export default function kiteChild(_model: SvgModel): Rig {
         name: "front-leg",
         parent: "runner",
         select: frontLeg,
-        pivot: [35, 77],
+        pivot: FRONT_HIP,
         rotation: { fn: sine(STRIDE, LEG_SWING) },
       },
       {
         name: "back-leg",
         parent: "runner",
         select: backLeg,
-        pivot: [24.5, 76],
+        pivot: BACK_HIP,
+        drawBelow: SKIRT,
         rotation: { fn: sine(STRIDE, LEG_SWING, 0.5) },
       },
       {
@@ -77,6 +87,7 @@ export default function kiteChild(_model: SvgModel): Rig {
         pivot: [19.5, 61],
         rotation: { fn: sine(STRIDE, 5, 0.5) },
       },
+      { name: "skirt-lining", parent: "runner", select: [SKIRT_LINING], drawBelow: SKIRT },
       { name: "raised-arm", parent: "runner", select: raisedArm, pivot: SHOULDER, rotation: { fn: ARM_SWING } },
       { name: "string", select: [72], deform: { fn: stringDeform, step: 2 } },
       { name: "kite", select: range(86, 91), offset: { fn: KITE_DRIFT } },
