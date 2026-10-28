@@ -3,7 +3,7 @@ import { bob, centerOf, range, spin } from "../motion";
 import type { SvgModel } from "../svg-model";
 
 // "The bike wheels rotate at a moderate speed. The bike and biker bob up
-// and down slightly."
+// and down slightly." Wheels slowed to one turn per loop after review.
 const FRAMES = 60;
 
 const SCENERY = range(0, 25); // bushes and the MAYFAIR STROLL sign stay put
@@ -16,8 +16,8 @@ export default function bikeMan({ shapes }: SvgModel): Rig {
     frames: FRAMES,
     parts: [
       { name: "rider", select: rider, offset: bob(20, 0.5) },
-      { name: "rear-wheel", parent: "rider", select: REAR_WHEEL, pivot: centerOf(shapes, [49]), rotation: spin(FRAMES, 2) },
-      { name: "front-wheel", parent: "rider", select: FRONT_WHEEL, pivot: centerOf(shapes, [43]), rotation: spin(FRAMES, 2) },
+      { name: "rear-wheel", parent: "rider", select: REAR_WHEEL, pivot: centerOf(shapes, [49]), rotation: spin(FRAMES, 1) },
+      { name: "front-wheel", parent: "rider", select: FRONT_WHEEL, pivot: centerOf(shapes, [43]), rotation: spin(FRAMES, 1) },
     ],
   };
 }
