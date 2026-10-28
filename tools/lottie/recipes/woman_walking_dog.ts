@@ -14,14 +14,21 @@ import type { SvgModel } from "../svg-model";
 const FRAMES = 60;
 
 
-// Her stride.
+// Her stride. She's drawn mid-stride, feet ~26px apart, so a swing about
+// that pose never brings them together. Instead each leg swings from its
+// drawn angle in toward vertical, the feet meeting under her hips at the
+// middle of each step, then back out.
 const STRIDE = 30;
-const LEG_SWING = 6; // degrees
-const FRONT_SWING = sine(STRIDE, LEG_SWING);
-const BACK_SWING = sine(STRIDE, LEG_SWING, 0.5);
+const FRONT_MEET = 22; // degrees back from the drawn pose (front foot x≈50 → ≈37)
+const BACK_MEET = 18; // degrees forward (back foot x≈24 → ≈34)
+const stepIn = (f: number) => (1 - Math.cos((2 * Math.PI * f) / STRIDE)) / 2; // 0 drawn, 1 together
+const FRONT_SWING = (f: number) => FRONT_MEET * stepIn(f);
+const BACK_SWING = (f: number) => -BACK_MEET * stepIn(f);
 const FRONT_HIP: Vec = [34, 47];
 const BACK_HIP: Vec = [30, 49];
 const HIP_RAMP = 7;
+const FRONT_ANKLE: Vec = [46, 78];
+const BACK_ANKLE: Vec = [24, 78];
 // The puff (82) overlaps her head (81), whose path also traces a thin
 // outline around the puff, so neither can move rigidly. Both take the same
 // deform: full at the back of the puff, fading to nothing at the seam, so
@@ -48,6 +55,10 @@ const DOG_RAMP = 5;
 // too. Marks higher up are on the torso and stay put.
 const FUR = range(141, 266);
 const LEG_FUR_TOP = 68;
+// Torso marks that sit below that line anyway — the fringe along the belly,
+// the back thigh's crease and a fleck above the front legs. Swung with the
+// far legs they drifted on (or off) the body.
+const TORSO_FUR = [...range(167, 173), 174, 258];
 const FAR_BACK_X: Vec = [69.5, 77.8];
 const FAR_FRONT_X: Vec = [77.8, 82.8];
 
@@ -66,7 +77,7 @@ function dogBody(x: number, y: number, f: number): Vec {
 export default function womanWalkingDog({ shapes }: SvgModel): Rig {
   const frontBend = bend(FRONT_HIP, FRONT_SWING, fadeBelow(FRONT_HIP, HIP_RAMP));
 
-  const legFur = FUR.filter((i) => shapes[i].bbox.y >= LEG_FUR_TOP);
+  const legFur = FUR.filter((i) => shapes[i].bbox.y >= LEG_FUR_TOP && !TORSO_FUR.includes(i));
   const cx = (i: number) => shapes[i].bbox.x + shapes[i].bbox.width / 2;
   const within = ([a, b]: Vec) => (i: number) => cx(i) >= a && cx(i) < b;
   const farBackFur = legFur.filter(within(FAR_BACK_X));
@@ -78,8 +89,12 @@ export default function womanWalkingDog({ shapes }: SvgModel): Rig {
     { name: "hair", select: [81, 82], deform: { fn: hairBob, step: 5 } },
     { name: "front-trousers", select: [41], deform: { fn: frontBend, step: 3 } },
     { name: "front-seam", select: [48], deform: { fn: frontBend, step: 3, rigid: true } },
-    { name: "front-foot", select: [26, 47, ...range(27, 38)], pivot: FRONT_HIP, rotation: { fn: FRONT_SWING } },
-    { name: "back-leg", select: [39, 49, 40, 14, ...range(15, 25)], pivot: BACK_HIP, rotation: { fn: BACK_SWING } },
+    { name: "front-foot", select: [26, 47], pivot: FRONT_HIP, rotation: { fn: FRONT_SWING } },
+    { name: "back-leg", select: [39, 49, 40, 14], pivot: BACK_HIP, rotation: { fn: BACK_SWING } },
+    // Shoes counter-rotate about the ankle so they stay flat on the ground
+    // through the swing instead of tipping with the leg.
+    { name: "front-shoe", parent: "front-foot", select: range(27, 38), pivot: FRONT_ANKLE, rotation: { fn: (f) => -FRONT_SWING(f) } },
+    { name: "back-shoe", parent: "back-leg", select: range(15, 25), pivot: BACK_ANKLE, rotation: { fn: (f) => -BACK_SWING(f) } },
 
     // The dog
     { name: "dog-body", select: [114], deform: { fn: dogBody, step: 3 } },
