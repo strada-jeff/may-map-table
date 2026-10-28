@@ -5,8 +5,11 @@ import type { SvgModel } from "../svg-model";
 // "String lights flash in sequence and loop. Dancers move their arms and
 // legs slightly as they dance. Their hair moves subtly as well. The woman on
 // the right's dress waves slightly in the breeze."
-const FRAMES = 60;
-const BEAT = 30; // two grooves per loop
+//
+// After review: everything ~20% slower, and the dancers' bouncy dip dropped
+// (it read as jitter) — they keep a gentle sway from the feet.
+const FRAMES = 72;
+const BEAT = 36; // two grooves per loop
 const TAU = Math.PI * 2;
 
 // String lights: each white shape is one swag of the strand (a compound
@@ -14,23 +17,16 @@ const TAU = Math.PI * 2;
 // right — a 4-phase marquee chase along the strand.
 const LIGHTS = range(324, 340);
 const CHASE_PHASES = 4;
-const CHASE_HOLD = 5;
+const CHASE_HOLD = 6;
 const CHASE: Anim<number>[] = Array.from({ length: CHASE_PHASES }, (_, phase) => ({
   fn: (f: number) => (Math.floor(f / CHASE_HOLD) % CHASE_PHASES === phase ? 100 : 35),
   step: CHASE_HOLD,
   hold: true,
 }));
 
-/** A dancer's whole-body groove: a dip and a sway from the feet, phase-offset per dancer. */
+/** A dancer's whole-body groove: a sway from the feet, phase-offset per dancer. */
 function groove(name: string, select: number[], feet: Vec, phase: number): Part {
-  const dip = sine(BEAT / 2, 0.5, phase);
-  return {
-    name,
-    select,
-    pivot: feet,
-    offset: { fn: (f) => [0, Math.abs(dip(f))] },
-    rotation: { fn: sine(BEAT, 2, phase) },
-  };
+  return { name, select, pivot: feet, rotation: { fn: sine(BEAT, 2, phase) } };
 }
 
 export default function celebrationHall(_model: SvgModel): Rig {
@@ -46,7 +42,7 @@ export default function celebrationHall(_model: SvgModel): Rig {
   // Right woman's skirt: flutters more toward the hem.
   const skirt = (x: number, y: number, f: number): Vec => {
     const w = clamp01((y - 60) / 20);
-    return [1.2 * w * Math.sin(TAU * (f / 20 + y / 15)), 0.4 * w * Math.sin(TAU * (f / 20 + x / 25))];
+    return [1.2 * w * Math.sin(TAU * (f / 24 + y / 15)), 0.4 * w * Math.sin(TAU * (f / 24 + x / 25))];
   };
 
   return {
@@ -58,13 +54,13 @@ export default function celebrationHall(_model: SvgModel): Rig {
         name: "left-arm",
         parent: "left-dancer",
         select: [281],
-        deform: { fn: leftArm, step: 5 },
+        deform: { fn: leftArm, step: 6 },
       },
       {
         name: "left-fingers",
         parent: "left-dancer",
         select: [314, 315, 316],
-        deform: { fn: leftArm, step: 5, rigid: true },
+        deform: { fn: leftArm, step: 6, rigid: true },
       },
       {
         name: "left-ponytail",
@@ -76,7 +72,7 @@ export default function celebrationHall(_model: SvgModel): Rig {
 
       // --- Man (239-270) ---
       groove("man", range(239, 270), [72, 92], 0.33),
-      { name: "man-arm", parent: "man", select: [265], deform: { fn: manArm, step: 5 } },
+      { name: "man-arm", parent: "man", select: [265], deform: { fn: manArm, step: 6 } },
       { name: "man-elbow-arm", parent: "man", select: [246], pivot: [82, 46], rotation: { fn: sine(BEAT, 5, 0.6) } },
       {
         name: "man-left-leg",
