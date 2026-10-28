@@ -1,5 +1,5 @@
 import type { Part, Rig, Vec } from "../lottie";
-import { bend, clamp01, fadeBelow, range, sine } from "../motion";
+import { bend, clamp01, fadeBelow, range, sine, stepIn } from "../motion";
 import type { SvgModel } from "../svg-model";
 
 // "The woman's legs move back and forth as she walks. Her hair bobs up and
@@ -21,9 +21,9 @@ const FRAMES = 60;
 const STRIDE = 30;
 const FRONT_MEET = 22; // degrees back from the drawn pose (front foot x≈50 → ≈37)
 const BACK_MEET = 18; // degrees forward (back foot x≈24 → ≈34)
-const stepIn = (f: number) => (1 - Math.cos((2 * Math.PI * f) / STRIDE)) / 2; // 0 drawn, 1 together
-const FRONT_SWING = (f: number) => FRONT_MEET * stepIn(f);
-const BACK_SWING = (f: number) => -BACK_MEET * stepIn(f);
+const STEP = stepIn(STRIDE);
+const FRONT_SWING = (f: number) => FRONT_MEET * STEP(f);
+const BACK_SWING = (f: number) => -BACK_MEET * STEP(f);
 const FRONT_HIP: Vec = [34, 47];
 const BACK_HIP: Vec = [30, 49];
 const HIP_RAMP = 7;

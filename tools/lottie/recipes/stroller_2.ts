@@ -8,8 +8,8 @@ import { strollerRig, type StrollerLayout } from "./stroller_1";
 // and recolored — same rig, but its own indices: the layer order diverges
 // from the front sneaker onward.
 const LAYOUT: StrollerLayout = {
-  frontLeg: [13, 79, 16, 12, ...range(148, 153)],
-  backLeg: [10, 81, 11, ...range(0, 9)],
+  frontLeg: { trousers: 13, seams: [79, 80], lower: [16, 12], shoe: range(148, 153) },
+  backLeg: { trousers: 10, seams: [81], lower: [11, 0], shoe: range(1, 9) },
   wheels: [
     [108, 82, 83, 117, 118, 120, 121, 122],
     [94, ...range(95, 101)],

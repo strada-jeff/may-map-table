@@ -15,6 +15,13 @@ const TAU = Math.PI * 2;
 export const sine = (period: number, amp: number, phase = 0) => (f: number) =>
   amp * Math.sin(TAU * (f / period + phase));
 
+/**
+ * 0 → 1 → 0 once per `period` frames, eased — for a walker drawn mid-stride,
+ * scaled by how far each leg turns from its drawn angle to meet the other
+ * under the hips (1 = together), so a single pose reads as a walk.
+ */
+export const stepIn = (period: number) => (f: number) => (1 - Math.cos(TAU * (f / period))) / 2;
+
 /** Vertical bob as a position offset. */
 export function bob(period: number, amp: number, phase = 0): Anim<Vec> {
   const s = sine(period, amp, phase);
