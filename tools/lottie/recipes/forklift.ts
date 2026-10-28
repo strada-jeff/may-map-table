@@ -1,5 +1,4 @@
 import type { Rig } from "../lottie";
-import { bob, range } from "../motion";
 import type { SvgModel } from "../svg-model";
 
 // No Figma annotation; the user chose: "the fork and load rise and lower
@@ -7,6 +6,7 @@ import type { SvgModel } from "../svg-model";
 // of the stack, so each cycle the fork drops to the box's base (the tines
 // draw in front of it, reading as sliding under), lifts it up the mast,
 // holds, sets it back down and returns to rest. The rest of the loop is idle.
+// The body's bounce was dropped after review; only the fork and box move.
 const FRAMES = 180;
 const REACH = 10.8; // fork drop from rest to the top box's base
 const LIFT = 6; // how high the box is carried
@@ -47,12 +47,8 @@ export default function forklift(_model: SvgModel): Rig {
   return {
     frames: FRAMES,
     parts: [
-      // Cab, seat, wheel, mast and counterweight bounce on the tires (25-40),
-      // which stay planted with the lower boxes (0-7).
-      { name: "truck", select: range(10, 24), offset: bob(30, 0.35) },
-      { name: "fork", parent: "truck", select: [10, 11, 12], offset: { fn: (f) => [0, forkY(f)], step: 2 } },
-      // The top box rides the fork while it's up; it isn't parented to the
-      // truck so it doesn't bounce while sitting on the stack.
+      { name: "fork", select: [10, 11, 12], offset: { fn: (f) => [0, forkY(f)], step: 2 } },
+      // The top box rides the fork while it's up.
       { name: "load", select: [8, 9], offset: { fn: (f) => [0, loadY(f)], step: 2 } },
     ],
   };
