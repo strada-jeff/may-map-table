@@ -1,12 +1,13 @@
 import type { Rig, Vec } from "../lottie";
+import { rotationOffset } from "../motion";
 import type { SvgModel } from "../svg-model";
 
 // "The man lifts the bag up and down intermittently as he loads it into the
 // car."
 //
-// His forearms swing up about the elbows; at the full lift both hands move
-// by ≈(1.1, -2.0), so the bag (with his fingers on its handles) translates
-// by that much and stays in his grip.
+// His forearms swing up about the elbows, and the bag (with his fingers on
+// its handles) translates by however far his hand moves, so it stays in
+// his grip.
 const FRAMES = 150;
 
 const BAG = [37, 38, 39, 40, 41, 119, 120, 121]; // bag, straps, fingers on the handles
@@ -14,8 +15,9 @@ const NEAR_FOREARM = 88;
 const FAR_FOREARM = 89;
 const NEAR_ELBOW: Vec = [32.1, 35];
 const FAR_ELBOW: Vec = [39.3, 33.6];
-const ARM_LIFT = -10; // degrees at full lift (counter-clockwise raises the hands)
-const BAG_LIFT: Vec = [1.1, -2.0];
+const NEAR_HAND: Vec = [43, 42.3]; // at the handles
+const ARM_LIFT = -15; // degrees at full lift (counter-clockwise raises the hands); was -10, made more apparent after review
+const BAG_LIFT = rotationOffset(NEAR_ELBOW, NEAR_HAND[0], NEAR_HAND[1], ARM_LIFT);
 
 // Two heaves per loop, then a pause: [start, up, hold-until, down] in frames.
 const HEAVES = [
