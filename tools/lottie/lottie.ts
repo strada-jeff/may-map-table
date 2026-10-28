@@ -45,6 +45,13 @@ export type Part = {
    */
   subpathOpacity?: (center: Vec, index: number) => Anim<number>;
   /**
+   * A halo in the shape's own color, drawn beneath it as stacked round-joined
+   * strokes of its outline (wide and faint to narrow and denser — a cheap
+   * soft edge, no blur filter), faded by `opacity` (percent). The shape
+   * itself stays at full strength: a sign's letters "lighting up".
+   */
+  glow?: { opacity: Anim<number>; rings: { width: number; strength: number }[] };
+  /**
    * Draw this part's shapes just beneath shape `drawBelow` instead of in
    * export order — for a limb the export stacks over clothing it should
    * tuck under once it moves (the kite girl's back leg and her skirt).
@@ -165,6 +172,7 @@ export function buildLottie(name: string, model: SvgModel, rig: Rig) {
     } else {
       groups = mergedGroups(run.shapes);
     }
+    if (part?.glow) groups = [...glowGroups(run.shapes, part.glow, op), ...groups];
     shapeLayers.push({
       ddd: 0,
       ind: nextInd++,
@@ -372,6 +380,30 @@ function subpathOpacityGroups(
       ],
     };
   });
+}
+
+/** Part.glow's halo rings, widest first so the denser inner rings paint over them. */
+function glowGroups(shapes: Shape[], glow: NonNullable<Part["glow"]>, op: number): object[] {
+  const rings = [...glow.rings].sort((a, b) => b.width - a.width);
+  return shapes.flatMap((s) =>
+    rings.map(({ width, strength }) => ({
+      ty: "gr",
+      nm: `${s.id}#${s.index}-glow${width}`,
+      it: [
+        ...pathsOf(s.path).map((path, i) => staticPath(path, `p${i}`)),
+        {
+          ty: "st",
+          c: { a: 0, k: [...s.fill, 1] },
+          o: prop(glow.opacity, op, (v) => [round(v * strength)]),
+          w: { a: 0, k: width },
+          lc: 2,
+          lj: 2,
+          ml: 4,
+        },
+        transform({ a: 0, k: [0, 0] }),
+      ],
+    })),
+  );
 }
 
 function staticPath(path: paper.Path, nm: string) {

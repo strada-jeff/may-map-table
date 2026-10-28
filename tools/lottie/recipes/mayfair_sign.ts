@@ -8,10 +8,16 @@ import type { SvgModel } from "../svg-model";
 const FRAMES = 120;
 
 // Letter fills left to right (each sits under its own gray outline shape).
+// After review the letters stay at full color and "light up" with a halo
+// in their own color instead of fading in and out.
 const LETTERS = [24, 34, 26, 30, 28, 22, 32];
 const LETTER_STAGGER = 8; // frames between letters lighting
 const ALL_ON_UNTIL = 96; // then everything drops out together
-const LETTER_OFF = 30; // percent — "unlit" still reads as the letter
+const GLOW_RINGS = [
+  { width: 10, strength: 0.18 },
+  { width: 6, strength: 0.28 },
+  { width: 3, strength: 0.45 },
+];
 
 // The neon M's bulbs: each white shape is a dashed-stroke outline, one
 // subpath per bulb, in order along the stroke. Classic 3-phase marquee chase.
@@ -44,7 +50,7 @@ export default function mayfairSign(_model: SvgModel): Rig {
     return {
       name: `letter-${i}`,
       select: [index],
-      opacity: pulseWindow(FRAMES, start, ALL_ON_UNTIL - start, { on: 100, off: LETTER_OFF, fade: 3 }),
+      glow: { opacity: pulseWindow(FRAMES, start, ALL_ON_UNTIL - start, { fade: 3 }), rings: GLOW_RINGS },
     };
   });
 
