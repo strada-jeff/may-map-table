@@ -5,7 +5,7 @@ export const CONFIG = {
   map: {
     width: 3840, // pixel dimension of base artwork
     height: 2160,
-    minZoom: 0, // furthest the map controls can zoom out; 0 = the 3840px artwork exactly fills the 4K viewport
+    minZoom: Math.log2(1.15), // furthest the map controls can zoom out: the artwork 10% larger than the 4K viewport, so there's always room to pan (0 would fill it exactly, leaving none)
     maxZoom: 3, // furthest the map controls can zoom in; build:tiles matches this
     initialCenter: "main" as string | readonly [number, number], // network.svg #origins anchor id or [x, y] point
     initialZoom: 1.4, // zoom once the welcome screen is dismissed; Figma's 4K comps draw the map at ~1.43 (scale ~2.69)

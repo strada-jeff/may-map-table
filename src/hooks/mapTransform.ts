@@ -147,18 +147,34 @@ export function clampScale(scale: number): number {
 }
 
 /** Clamps scale to the zoom range and position so the artwork always
- * covers the wrapper — no background showing past its edges. User gestures
- * only; programmatic moves (e.g. the details panel offset) may go past. */
+ * covers the wrapper — no background showing past its edges. User input
+ * only; programmatic moves (e.g. the details panel offset) may go past.
+ * Given `from`, the transform being moved from, whatever gap that already
+ * shows past an edge is allowed to remain (never grow), so touching a map
+ * a programmatic move left past an edge doesn't snap it back — moving
+ * toward the edge just closes the gap. */
 export function clampTransform(
   t: Transform,
   wrapperSize: { width: number; height: number },
+  from?: Transform,
 ): Transform {
   const scale = clampScale(t.scale);
   const minX = wrapperSize.width - CONFIG.map.width * scale;
   const minY = wrapperSize.height - CONFIG.map.height * scale;
+  const gap = from ? edgeGaps(from, wrapperSize) : { left: 0, top: 0, right: 0, bottom: 0 };
   return {
     scale,
-    x: Math.min(0, Math.max(minX, t.x)),
-    y: Math.min(0, Math.max(minY, t.y)),
+    x: Math.min(gap.left, Math.max(minX - gap.right, t.x)),
+    y: Math.min(gap.top, Math.max(minY - gap.bottom, t.y)),
+  };
+}
+
+/** Screen px of background `t` shows past each edge of the artwork (0 where it's covered). */
+function edgeGaps(t: Transform, wrapperSize: { width: number; height: number }) {
+  return {
+    left: Math.max(0, t.x),
+    top: Math.max(0, t.y),
+    right: Math.max(0, wrapperSize.width - (t.x + CONFIG.map.width * t.scale)),
+    bottom: Math.max(0, wrapperSize.height - (t.y + CONFIG.map.height * t.scale)),
   };
 }

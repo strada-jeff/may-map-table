@@ -1,7 +1,7 @@
 import { useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { useMapControls, useMapTransformEffect } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
-import { centeredTransform, contentCenter, scaleToZoom, zoomToScale } from "../hooks/mapTransform";
+import { centeredTransform, clampTransform, contentCenter, scaleToZoom, zoomToScale } from "../hooks/mapTransform";
 
 const STEP = 0.05;
 // The thumb's travel stops a radius short of each end, so it stays on the
@@ -47,7 +47,8 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
     );
     const fraction = rotated ? 1 - screenFraction : screenFraction;
     // top (+) = maxZoom (zoomed in), bottom (−) = minZoom (zoomed out).
-    return round(maxZoom - fraction * (maxZoom - minZoom));
+    // Clamped after rounding: minZoom needn't sit on a STEP.
+    return clamp(round(maxZoom - fraction * (maxZoom - minZoom)), minZoom, maxZoom);
   }
 
   // Zooms around whatever content point currently sits at the wrapper's
@@ -63,8 +64,10 @@ export default function ZoomSlider({ rotated }: { rotated: boolean }) {
     const wrapper = controls.wrapper;
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
+    // Clamped like a pinch (see useMapGestures): zooming out about the
+    // center would otherwise pull the artwork's edge into view.
     const target = centeredTransform({ width, height }, center, zoomToScale(targetZoom));
-    controls.setTransform(target);
+    controls.setTransform(clampTransform(target, { width, height }, controls.state));
   }
 
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {

@@ -86,7 +86,9 @@ export function useMapGestures(wrapperRef: RefObject<HTMLDivElement | null>) {
     const el = wrapperRef.current!;
     return { width: el.clientWidth, height: el.clientHeight };
   };
-  const apply = (t: Transform) => controls.setTransform(clampTransform(t, wrapperSize()));
+  // Clamped from the current transform, so a map a programmatic move left
+  // past an edge isn't snapped back on touch (see clampTransform).
+  const apply = (t: Transform) => controls.setTransform(clampTransform(t, wrapperSize(), controls.state));
 
   const stopMotion = () => {
     if (motion.current !== null) cancelAnimationFrame(motion.current);
