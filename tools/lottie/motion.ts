@@ -47,6 +47,64 @@ export function stopMotionScale(values: number[], hold: number): Anim<Vec> {
 }
 
 /**
+ * The radiating lines as one part each, scaling about the burst's `center`
+ * so each pushes in and out along its own ray. Every line steps through its
+ * own sequence of `values`, on its own beat (offset up to a hold), so the
+ * burst flickers line by line instead of pulsing as one block. Seeded, so
+ * rebuilds are stable. `frames` must be a multiple of `hold`.
+ */
+export function burstLines(opts: {
+  lines: number[];
+  center: Vec;
+  frames: number;
+  hold: number;
+  values?: number[];
+  className?: string;
+  parent?: string;
+}): Part[] {
+  const { lines, center, frames, hold, values = [98, 100, 102, 104, 106, 108], className, parent } = opts;
+  if (frames % hold) throw new Error(`burstLines: ${frames} frames isn't a multiple of hold ${hold}`);
+  const steps = frames / hold;
+  return lines.map((index, n) => {
+    const rand = mulberry32(index * 7919 + n);
+    const offset = Math.floor(rand() * hold);
+    const seq: number[] = [];
+    for (let i = 0; i < steps; i++) {
+      // Never hold the same size twice running (or across the loop seam).
+      const avoid = new Set([seq[i - 1], i === steps - 1 ? seq[0] : undefined]);
+      const pool = values.filter((v) => !avoid.has(v));
+      seq.push(pool[Math.floor(rand() * pool.length)]);
+    }
+    return {
+      name: `line-${index}`,
+      select: [index],
+      pivot: center,
+      parent,
+      className,
+      scale: {
+        fn: (f) => {
+          const v = seq[Math.floor((((f + offset) % frames) + frames) % frames / hold)];
+          return [v, v];
+        },
+        step: 1,
+        hold: true,
+      },
+    };
+  });
+}
+
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
  * Opacity that's `on` for a window of the loop and `off` otherwise, with
  * `fade` frames of ramp — the sequenced string lights / sign letters.
  * `start`/`length` are in frames, may wrap past the loop end.

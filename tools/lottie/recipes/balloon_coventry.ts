@@ -1,5 +1,5 @@
 import type { Part, Rig, Vec } from "../lottie";
-import { centerOf, range, sine, stopMotionScale } from "../motion";
+import { burstLines, centerOf, range, sine } from "../motion";
 import type { SvgModel } from "../svg-model";
 
 // "Balloon sways and bobs slightly. Outer lines expand and contract in a
@@ -50,12 +50,7 @@ export default function balloonCoventry({ shapes }: SvgModel): Rig {
       className: "balloon-body",
     },
     { name: "string", select: [STRING], deform: { fn: stringDeform, step: 2 } },
-    {
-      name: "lines",
-      select: LINES,
-      pivot: centerOf(shapes, [BODY]),
-      scale: stopMotionScale([100, 106, 102, 108, 98, 104], 5),
-    },
+    ...burstLines({ lines: LINES, center: centerOf(shapes, [BODY]), frames: FRAMES, hold: 9 }),
   ];
   // Lines reach the frame edge; at 108% they overshoot it by ~5px.
   return { frames: FRAMES, parts, exclude: [LABEL_PLACEHOLDER], pad: 10 };

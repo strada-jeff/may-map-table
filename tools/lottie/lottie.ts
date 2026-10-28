@@ -218,7 +218,16 @@ function prop<T>(anim: Anim<T>, op: number, toK: (v: T) => number[]) {
   const unwrap = (k: number[]) => (k.length === 1 ? k[0] : k);
   if (!isAnimated(anim)) return { a: 0, k: unwrap(toK(anim as T)) };
   const { fn, step = 2, hold = false } = anim;
-  const frames = sampleFrames(op, step);
+  let frames = sampleFrames(op, step);
+  // A hold keyframe repeating the one before it changes nothing; dropping
+  // them lets stepped values be sampled every frame (for off-beat steps)
+  // without bloating the output.
+  if (hold) {
+    const same = (a: number[], b: number[]) => a.every((v, i) => v === b[i]);
+    frames = frames.filter(
+      (t, i) => i === 0 || i === frames.length - 1 || !same(toK(fn(t)), toK(fn(frames[i - 1]))),
+    );
+  }
   return {
     a: 1,
     k: frames.map((t, i) => {
