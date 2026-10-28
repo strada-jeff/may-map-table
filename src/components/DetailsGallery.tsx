@@ -1,42 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useTap } from "../hooks/useTap";
-import iconClose from "../assets/icons/close.svg";
 import iconNext from "../assets/icons/gallery-next.svg";
 
 type DetailsGalleryProps = {
   images: string[];
   alt: string;
-  onClose: () => void;
 };
 
 // Figma's side fades: 40% black easing to clear, 872px in from each edge of
 // its 2160px panel (kept as that share of the width, so the two don't meet
-// in the middle on a narrower panel) — what keeps the white close/arrow
-// glyphs legible over bright photos.
+// in the middle on a narrower panel) — what keeps the white arrow glyphs
+// legible over bright photos, so only a multi-photo gallery has them.
 const fadeClass =
   "details-gallery-fade pointer-events-none absolute inset-y-0 w-[40.37%] opacity-40";
 
-function GalleryChrome({ onClose }: { onClose: () => void }) {
-  const closeTap = useTap(onClose);
-
+function GalleryFades() {
   return (
     <>
       <div className={`${fadeClass} left-0 bg-gradient-to-r from-black to-transparent`} />
       <div className={`${fadeClass} right-0 bg-gradient-to-l from-black to-transparent`} />
-      <button
-        type="button"
-        {...closeTap}
-        aria-label="Close"
-        className="details-gallery-close absolute right-[54px] top-[50px] z-10 h-[57px] w-[58px]"
-      >
-        <img src={iconClose} alt="" className="details-gallery-close-icon size-full" />
-      </button>
     </>
   );
 }
 
-export default function DetailsGallery({ images, alt, onClose }: DetailsGalleryProps) {
+export default function DetailsGallery({ images, alt }: DetailsGalleryProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: images.length > 1 });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -62,7 +50,6 @@ export default function DetailsGallery({ images, alt, onClose }: DetailsGalleryP
         {images[0] && (
           <img src={images[0]} alt={alt} className="details-gallery-image size-full object-cover" />
         )}
-        <GalleryChrome onClose={onClose} />
       </div>
     );
   }
@@ -81,7 +68,7 @@ export default function DetailsGallery({ images, alt, onClose }: DetailsGalleryP
         </div>
       </div>
 
-      <GalleryChrome onClose={onClose} />
+      <GalleryFades />
 
       <button
         type="button"
