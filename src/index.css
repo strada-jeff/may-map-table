@@ -177,10 +177,12 @@ body {
 .zoom-slider-track {
   position: absolute;
   right: 65px;
-  top: 72px;
+  /* Below RotateControl (top 72px, 65px tall) with the same 40px gap the
+     column had; the bottom stays at 1514px. */
+  top: 177px;
   z-index: 40;
   width: 62px;
-  height: 1442px;
+  height: 1337px;
   cursor: pointer;
   touch-action: none;
 }
