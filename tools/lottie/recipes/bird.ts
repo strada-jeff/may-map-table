@@ -10,10 +10,10 @@ import type { SvgModel } from "../svg-model";
 // wingtip and fades to nothing over the body and head. Everything drawn over
 // that region (orange wing, feather marks) gets the same field so it stays
 // glued. The far wing is its own shapes, drawn behind, and just rotates.
-const FRAMES = 40;
+const FRAMES = 60;
 
 const SHOULDER: Vec = [19, 17];
-const FLAP = sine(20, 9); // degrees; two flaps per loop
+const FLAP = sine(30, 9); // degrees; two flaps per loop, one a second
 const NEAR_WING = [4, 5, 6, ...range(12, 19), 20];
 const FAR_WING = [2, 3, 24, 25];
 const FAR_WING_ROOT: Vec = [22, 20];
