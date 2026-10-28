@@ -1,20 +1,6 @@
 import { useRef, type HTMLAttributes } from "react";
 import { useMapTransformEffect } from "../hooks/MapControlsContext";
-import { scaleToZoom } from "../hooks/mapTransform";
-import { CONFIG } from "../config";
-
-/**
- * Pins' on-screen size relative to full: 1 from CONFIG.map.pinFullSizeZoom
- * in, easing linearly down to pinMinScale at pinMinSizeZoom and held there
- * further out, so the zoomed-out overview isn't crowded with full-size flags.
- */
-function pinSize(scale: number): number {
-  const { pinFullSizeZoom, pinMinSizeZoom, pinMinScale } = CONFIG.map;
-  const zoom = scaleToZoom(scale);
-  if (zoom >= pinFullSizeZoom) return 1;
-  const t = Math.max(0, (zoom - pinMinSizeZoom) / (pinFullSizeZoom - pinMinSizeZoom));
-  return pinMinScale + (1 - pinMinScale) * t;
-}
+import { pinSize } from "../hooks/mapTransform";
 
 /**
  * Counter-scales its children against the map's zoom, so markers stay the

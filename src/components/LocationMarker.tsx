@@ -4,15 +4,12 @@ import { usePinClick } from "../hooks/usePinClick";
 import LottieFlag, { FLAG_BODY_HEIGHT, FLAG_BODY_WIDTH } from "./LottieFlag";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
 import { postalAddress } from "./postalAddress";
+import { FLAG_ANCHOR_X as ANCHOR_X, FLAG_ANCHOR_Y as ANCHOR_Y } from "./markerBoxes";
 
 // The animated flag's body size (see LottieFlag — its radiating lines
-// overflow this box) and its pole-base anchor point (measured from the
-// base-shadow ellipse path) — the flag "plants" there, not at its
-// bottom-center, since the fabric waves off to the right of the pole.
+// overflow this box) and its pole-base anchor point (see markerBoxes).
 const NATURAL_WIDTH = FLAG_BODY_WIDTH;
 const NATURAL_HEIGHT = FLAG_BODY_HEIGHT;
-const ANCHOR_X = 14;
-const ANCHOR_Y = 213;
 // Native artwork height — Figma's 4K comps draw every flag at 215px.
 const DISPLAY_HEIGHT = 215;
 // The active route's destination. Figma's directions overlay shows it at

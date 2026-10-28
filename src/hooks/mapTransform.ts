@@ -40,10 +40,33 @@ export function centeredTransform(
   return { x: sx - point[0] * scale, y: sy - point[1] * scale, scale };
 }
 
+/**
+ * Pins' on-screen size relative to full: 1 from CONFIG.map.pinFullSizeZoom
+ * in, easing linearly down to pinMinScale at pinMinSizeZoom and held there
+ * further out, so the zoomed-out overview isn't crowded with full-size flags.
+ */
+export function pinSize(scale: number): number {
+  const { pinFullSizeZoom, pinMinSizeZoom, pinMinScale } = CONFIG.map;
+  const zoom = scaleToZoom(scale);
+  if (zoom >= pinFullSizeZoom) return 1;
+  const t = Math.max(0, (zoom - pinMinSizeZoom) / (pinFullSizeZoom - pinMinSizeZoom));
+  return pinMinScale + (1 - pinMinScale) * t;
+}
+
+/**
+ * A marker drawn at a fixed screen size (see KeepScale) around a map
+ * point: its full-size box in screen px relative to that point, as
+ * [left, top, right, bottom] — e.g. a flag rising above its pole's foot.
+ */
+export type MarkerBox = { point: Point; box: readonly [number, number, number, number] };
+
 /** Transform that fits `points` inside the wrapper with `paddingPx` of
  * screen-space breathing room, clamped to [minScale, maxScale].
  * `leftInsetPx` leaves that much of the wrapper's left edge out of the fit
- * (e.g. under the details panel), fitting into what's right of it. */
+ * (e.g. under the details panel), fitting into what's right of it.
+ * `markers` are fitted whole, not just their points: a marker's extent in
+ * map units depends on the scale being chosen, so the fit is redone with
+ * their boxes at the previous pass's scale until it settles. */
 export function fitTransform(
   wrapperSize: { width: number; height: number },
   points: readonly Point[],
@@ -51,6 +74,28 @@ export function fitTransform(
   minScale: number,
   maxScale: number,
   leftInsetPx = 0,
+  markers: readonly MarkerBox[] = [],
+): Transform {
+  const fit = (pts: readonly Point[]) => fitPoints(wrapperSize, pts, paddingPx, minScale, maxScale, leftInsetPx);
+  let t = fit([...points, ...markers.map((m) => m.point)]);
+  for (let pass = 0; pass < 4 && markers.length > 0; pass++) {
+    const k = pinSize(t.scale) / t.scale;
+    const corners = markers.flatMap(({ point: [x, y], box: [l, top, r, b] }): Point[] => [
+      [x + l * k, y + top * k],
+      [x + r * k, y + b * k],
+    ]);
+    t = fit([...points, ...corners]);
+  }
+  return t;
+}
+
+function fitPoints(
+  wrapperSize: { width: number; height: number },
+  points: readonly Point[],
+  paddingPx: number,
+  minScale: number,
+  maxScale: number,
+  leftInsetPx: number,
 ): Transform {
   const xs = points.map((p) => p[0]);
   const ys = points.map((p) => p[1]);

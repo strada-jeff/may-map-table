@@ -1,6 +1,8 @@
 import { useLayoutEffect, useMemo, useState } from "react";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { useDetails } from "../hooks/DetailsContext";
+import { useDestinationPins } from "../hooks/useDestinationPins";
+import { markerBox } from "./markerBoxes";
 import gsap from "gsap";
 import { CONFIG } from "../config";
 import { distance, resolveMapPoint } from "../routing";
@@ -118,6 +120,12 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
   const { activePinId } = useDetails();
   const detailsOpenForRoute = activePinId === route.destinationId;
 
+  // The route ends at the destination's foot on the road; the flag or
+  // balloon rises above it, so it's fitted whole too, with room around it
+  // for the place's art.
+  const { pins } = useDestinationPins();
+  const destination = pins.find((p) => p.id === route.destinationId);
+
   // Fits the route's bounds into view, then starts the draw-in animation
   // once that settle finishes — mirrors the old flyToBounds-then-moveend
   // sequencing, just driven by our own GSAP tween instead of Leaflet's.
@@ -137,6 +145,7 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
       zoomToScale(CONFIG.map.minZoom),
       zoomToScale(CONFIG.map.maxZoom),
       detailsOpenForRoute ? CONFIG.details.panelWidthPx : 0,
+      destination ? [markerBox(destination, CONFIG.routing.destinationBufferPx)] : [],
     );
     const fitTween = tweenTransform(controls, target);
 

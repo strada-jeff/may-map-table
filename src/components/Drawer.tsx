@@ -8,6 +8,7 @@ import { drawerTransform, useDrawerSwipe } from "../hooks/useDrawerSwipe";
 import DrawerCard from "./DrawerCard";
 import FilterChip from "./FilterChip";
 import { useTap } from "../hooks/useTap";
+import { CONFIG } from "../config";
 import iconHideChevrons from "../assets/icons/drawer-hide-chevrons.svg";
 import iconShowChevrons from "../assets/icons/drawer-show-chevrons.svg";
 
@@ -15,7 +16,7 @@ import iconShowChevrons from "../assets/icons/drawer-show-chevrons.svg";
 // the flag) — this is only the dot shown on its filter chip.
 const MODEL_HOMES_CHIP_COLOR = "#82b1dd";
 const ALL_CHIP_COLOR = "#82b1dd";
-const PANEL_WIDTH = 826;
+const PANEL_WIDTH = CONFIG.drawer.panelWidthPx;
 // How much of the panel still shows at the screen edge while closed.
 const PEEK_PX = 35;
 
