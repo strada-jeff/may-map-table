@@ -1,4 +1,3 @@
-import balloonCoventry from "./balloon_coventry.json";
 import bikeKid from "./bike_kid.json";
 import bikeMan from "./bike_man.json";
 import bird from "./bird.json";
@@ -11,7 +10,6 @@ import concert from "./concert.json";
 import ctaViewmap from "./cta_viewmap.json";
 import deer from "./deer.json";
 import dog from "./dog.json";
-import flagRed from "./flag_red.json";
 import foodBeverage from "./food_beverage.json";
 import forklift from "./forklift.json";
 import helloSign from "./hello_sign.json";
@@ -37,7 +35,6 @@ import womanWalkingDog from "./woman_walking_dog.json";
  * and run `npm run build:lottie`, don't hand-edit it.
  */
 export const LOTTIE_ANIMATIONS = {
-  balloon_coventry: balloonCoventry,
   bike_kid: bikeKid,
   bike_man: bikeMan,
   bird: bird,
@@ -50,7 +47,6 @@ export const LOTTIE_ANIMATIONS = {
   cta_viewmap: ctaViewmap,
   deer: deer,
   dog: dog,
-  flag_red: flagRed,
   food_beverage: foodBeverage,
   forklift: forklift,
   hello_sign: helloSign,

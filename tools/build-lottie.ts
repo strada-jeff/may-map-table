@@ -19,7 +19,7 @@ const IOU_WARN = 0.9;
  * from the matching Figma SVG export in tools/lottie/source, and — for
  * scenery listed in artwork-map.ts — fits it over its base.svg art and
  * updates its entry in src/data/lottie-markers.json. Pass names to build a
- * subset: `npm run build:lottie -- car_1 flag_red`. `--no-markers` writes
+ * subset: `npm run build:lottie -- car_1 dog`. `--no-markers` writes
  * only the animation JSON — no base.svg fitting, markers file untouched —
  * for fast iteration on a recipe (and safe to run several at once).
  */

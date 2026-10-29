@@ -49,7 +49,7 @@ export default function FilterEffects() {
       zoomToScale(CONFIG.map.minZoom),
       zoomToScale(CONFIG.map.maxZoom),
       drawerOpen ? CONFIG.drawer.panelWidthPx : 0,
-      visible.map(markerBox),
+      visible.map((pin) => markerBox(pin)),
     );
     tweenTransform(controls, target);
     // Not drawerOpen: opening/closing the drawer alone shouldn't refit.

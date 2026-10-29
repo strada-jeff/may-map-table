@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useCopy } from "../hooks/useCopy";
-import signupMark from "../assets/icons/signup-mark.svg";
-import iconClose from "../assets/icons/close.svg";
+import rotateViewRing from "../assets/icons/rotate-view-ring.svg";
 import RotateArrowsIcon from "./RotateArrowsIcon";
 import HelpLegend from "./HelpLegend";
+import RoundCloseButton from "./RoundCloseButton";
 import { useSideModal, type SideModalKey } from "../hooks/SideModalContext";
 import { useRotation } from "../hooks/RotationContext";
 import { useTap } from "../hooks/useTap";
@@ -19,6 +19,9 @@ const QR_SIZE_PX = 517;
  * so its target lives in the CMS (useCopy) instead of a baked-in asset. Rotate
  * is a confirm step for RotateControl — its CTA is what actually calls
  * RotationContext's `toggle`, not the corner button itself.
+ *
+ * Each closes from a RoundCloseButton under its content (Figma help_alt,
+ * interest list, rotate_view), not a corner ×.
  */
 export default function SidePanel() {
   const { activeModal, close } = useSideModal();
@@ -33,7 +36,6 @@ export default function SidePanel() {
   if (activeModal && activeModal !== lastModal) {
     setLastModal(activeModal);
   }
-  const closeTap = useTap(close);
   const rotateConfirmTap = useTap(() => {
     toggle();
     close();
@@ -47,15 +49,6 @@ export default function SidePanel() {
         isOpen ? "opacity-100" : "pointer-events-none opacity-0"
       }`}
     >
-      <button
-        type="button"
-        {...closeTap}
-        aria-label="Close"
-        className="side-panel-close absolute right-[50px] top-[50px] h-[57px] w-[58px]"
-      >
-        <img src={iconClose} alt="" className="side-panel-close-icon size-full" />
-      </button>
-
       {lastModal === "signup" ? (
         <>
           <p className="side-panel-heading max-w-[470px] font-vision text-[30px] font-extrabold uppercase leading-[40px] tracking-[3px] text-white">
@@ -67,28 +60,32 @@ export default function SidePanel() {
             size={QR_SIZE_PX}
             fgColor="#ffffff"
             bgColor="transparent"
-            className="side-panel-qr mt-[56px]"
+            className="side-panel-qr mt-[48px]"
           />
 
-          <img src={signupMark} alt="" className="side-panel-mark mt-[79px] h-[149px] w-[172px]" />
+          <RoundCloseButton onClose={close} className="mt-[99px]" />
         </>
       ) : lastModal === "rotate" ? (
         <>
-          <p className="side-panel-heading max-w-[1041px] font-vision text-[80px] leading-[84px] text-white">
-            This will rotate the screen view 180º, continue?
-          </p>
-
+          {/* As tall as the close button and its gap below, so the ring
+              stays centered on the screen, as in Figma. */}
+          <div className="side-panel-rotate-spacer h-[283px]" aria-hidden />
           <button
             type="button"
             {...rotateConfirmTap}
-            aria-label="Confirm rotation"
-            className="side-panel-rotate-confirm mt-[95px] flex size-[181px] items-center justify-center rounded-full border-[3.5px] border-mayfair-blue"
+            aria-label="Rotate the view"
+            className="side-panel-rotate-confirm relative flex size-[341px] items-center justify-center"
           >
-            <RotateArrowsIcon color="#ffffff" className="h-[36.5px] w-[45px]" />
+            <img src={rotateViewRing} alt="" className="rotate-ring-spin absolute inset-0 size-full" />
+            <span className="flex size-[181px] items-center justify-center rounded-full border-[3.5px] border-mayfair-blue">
+              <RotateArrowsIcon color="#ffffff" className="h-[36.5px] w-[45px]" />
+            </span>
           </button>
+
+          <RoundCloseButton onClose={close} className="mt-[151px]" />
         </>
       ) : (
-        <HelpLegend />
+        <HelpLegend onClose={close} />
       )}
     </div>
   );

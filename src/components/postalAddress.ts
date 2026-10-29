@@ -7,3 +7,8 @@ export function postalAddress(address: string) {
   if (comma === -1) return address;
   return `${address.slice(0, comma)}\n${address.slice(comma + 1).trim()}`;
 }
+
+/** Just the street line of an address, for where one line fits (the directions label). */
+export function streetAddress(address: string) {
+  return postalAddress(address).split("\n")[0];
+}

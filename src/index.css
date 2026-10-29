@@ -103,10 +103,40 @@ body {
   pointer-events: none;
 }
 
-/* LottieFlag: flag_red's recipe tags the fabric and radiating-lines layers
-   with this class; a stylesheet fill beats lottie-web's fill attribute. */
-.lottie-flag .flag-color path {
-  fill: var(--flag-color);
+/* PulseCircle: the white circle behind every flag and balloon (map and key),
+   Figma flag_new/balloon_new's "Ellipse 17": 1 -> 0.92 -> 1 over 2s, on a
+   loop. Every circle mounts together and runs the same timing, so they
+   breathe in step, as Figma's shared timeline does. Paused while the map
+   moves, like the Lottie scenery (lottiePlayback), so gesture frames move
+   painted layers instead of re-rendering 30-odd animations. */
+@keyframes marker-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.92);
+  }
+}
+
+.marker-pulse {
+  animation: marker-pulse 2s ease-in-out infinite;
+}
+
+.map-moving .marker-pulse {
+  animation-play-state: paused;
+}
+
+/* The rotate overlay's "ROTATE VIEW" ring (Figma rotate_view): one turn
+   every 20s. */
+@keyframes rotate-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotate-ring-spin {
+  animation: rotate-ring-spin 20s linear infinite;
 }
 
 .destination-marker-inner {

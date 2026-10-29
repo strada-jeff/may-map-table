@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type MutableRefObject,
   type ReactNode,
 } from "react";
 import { CONFIG } from "../config";
@@ -14,6 +15,7 @@ import { network, origins } from "../routing/generated";
 import { useDestinationPins } from "./useDestinationPins";
 import type { ActiveRoute } from "../types/routing";
 import { ROUTE_EXIT_FADE_MS } from "../components/routePanes";
+import type { LabelSide, LabelSize } from "../components/directionsLabel";
 
 export type { ActiveRoute };
 
@@ -37,6 +39,20 @@ type RouteContextValue = {
   /** Reusable everywhere — a map pin, an info card, a future list view. */
   routeTo: (destinationId: string) => void;
   clearRoute: () => void;
+  /**
+   * Which side of the destination's circle its directions label hangs on:
+   * RouteLine picks it while framing the route (chooseLabelSide), PinMarker
+   * draws it there.
+   */
+  labelSide: LabelSide;
+  setLabelSide: (side: LabelSide) => void;
+  /**
+   * The label's full-size px, measured by PinMarker as it mounts — in the
+   * same commit as, and before, RouteLine's framing reads it (markers come
+   * first in MapView). Starts as a generous guess.
+   */
+  labelSize: Readonly<MutableRefObject<LabelSize>>;
+  reportLabelSize: (size: LabelSize) => void;
 };
 
 const RouteContext = createContext<RouteContextValue | null>(null);
@@ -45,6 +61,11 @@ export function RouteProvider({ children }: { children: ReactNode }) {
   const [activeRoute, setActiveRoute] = useState<ActiveRoute | null>(null);
   const [displayedRoute, setDisplayedRoute] = useState<ActiveRoute | null>(null);
   const [exiting, setExiting] = useState(false);
+  const [labelSide, setLabelSide] = useState<LabelSide>("below");
+  const labelSize = useRef<LabelSize>({ width: 402, height: 400 });
+  const reportLabelSize = useCallback((size: LabelSize) => {
+    labelSize.current = size;
+  }, []);
   const displayedRouteRef = useRef(displayedRoute);
 
   // Routed from the pins as loaded, so a pin moved in the CMS routes from
@@ -104,7 +125,7 @@ export function RouteProvider({ children }: { children: ReactNode }) {
 
   return (
     <RouteContext.Provider
-      value={{ activeRoute, displayedRoute, exiting, routeTo, clearRoute }}
+      value={{ activeRoute, displayedRoute, exiting, routeTo, clearRoute, labelSide, setLabelSide, labelSize, reportLabelSize }}
     >
       {children}
     </RouteContext.Provider>

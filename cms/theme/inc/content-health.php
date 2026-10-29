@@ -42,16 +42,17 @@ function maytable_issue_types(): array {
 const MAYTABLE_PLACEHOLDER = '/\bX{1,3}\b|\bTBD\b|\b(lorem|ipsum|pellentesque|consectetur|adipiscing)\b/i';
 
 /**
- * Pin icons' on-screen size in px (bottom-anchored), from LottieFlag.tsx
- * (FLAG_BODY_*, LocationMarker's ANCHOR_X) and LottieBalloon.tsx
- * (BALLOON_BODY_*). Checked for overlap at the map's opening zoom
+ * Pin icons' on-screen box in px and where in it each meets the map (the
+ * flag's pole base, the balloon's tail tip), from src/components/
+ * MarkerIcons.tsx (MARKER_SIZE, FLAG_ANCHOR, BALLOON_ANCHOR): the circle
+ * and its flag or balloon. Checked for overlap at the map's opening zoom
  * (CONFIG.map.initialZoom 1.4 => 2^1.4 screen px per map unit), where
  * icons are full size. A pair counts as overlapping when they share at
  * least MAYTABLE_OVERLAP_SHARE of the smaller icon, not just a grazed corner.
  */
 const MAYTABLE_ICON_BOX = [
-	'location'   => [ 'width' => 173, 'height' => 215, 'anchor_x' => 14 ],
-	'model-home' => [ 'width' => 48, 'height' => 222, 'anchor_x' => 24 ],
+	'location'   => [ 'width' => 134, 'height' => 134, 'anchor_x' => 37.7, 'anchor_y' => 109 ],
+	'model-home' => [ 'width' => 134, 'height' => 134, 'anchor_x' => 65.7, 'anchor_y' => 119 ],
 ];
 const MAYTABLE_OPENING_SCALE = 2.639; // 2 ** 1.4
 const MAYTABLE_OVERLAP_SHARE  = 0.2;
@@ -178,7 +179,8 @@ function maytable_icon_box( array $pin ): array {
 	$x    = $pin['anchor'][0] + ( $pin['iconOffset']['x'] ?? 0 );
 	$y    = $pin['anchor'][1] + ( $pin['iconOffset']['y'] ?? 0 );
 	$left = $x - $size['anchor_x'] / MAYTABLE_OPENING_SCALE;
-	return [ $left, $y - $size['height'] / MAYTABLE_OPENING_SCALE, $left + $size['width'] / MAYTABLE_OPENING_SCALE, $y ];
+	$top  = $y - $size['anchor_y'] / MAYTABLE_OPENING_SCALE;
+	return [ $left, $top, $left + $size['width'] / MAYTABLE_OPENING_SCALE, $top + $size['height'] / MAYTABLE_OPENING_SCALE ];
 }
 
 function maytable_boxes_overlap( array $a, array $b ): bool {

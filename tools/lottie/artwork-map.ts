@@ -20,8 +20,8 @@
  * Ids are base.svg's layer names, spaces as underscores (see the README's
  * "Artwork naming"); a renamed layer has to be renamed here too.
  *
- * The interactive pieces (flag_red, balloon_coventry, cta_viewmap) aren't
- * here: they replace app UI, not base art.
+ * The interactive piece (cta_viewmap) isn't here: it's app UI, not base
+ * art.
  */
 export const ARTWORK_MAP: Record<string, string | string[]> = {
   bike_kid: "Kid_on_bike",

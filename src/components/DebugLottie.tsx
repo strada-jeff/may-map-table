@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import lottie, { type AnimationItem } from "lottie-web/build/player/lottie_light";
 import { LOTTIE_ANIMATIONS, type LottieAnimationId } from "../data/lottie";
 import { setDisabledByDebug, setPausedByDebug, useDisabledByDebug, usePausedByDebug } from "../hooks/lottiePlayback";
@@ -14,8 +14,7 @@ import { useTap } from "../hooks/useTap";
  * every generated Lottie (npm run build:lottie) away from the map: a grid
  * of loops; tap one to expand it with play/pause, a frame scrubber, and a
  * contact strip of frames across its loop — for checking joints and seams
- * at a glance. The flag gets category-color swatches to check its
- * "flag-color" recolor. Measure with the previews closed: they're ~30 more
+ * at a glance. Measure with the previews closed: they're ~30 more
  * animations of their own.
  */
 
@@ -25,7 +24,6 @@ const STRIP_FRAMES = 8;
 const GRID_HEIGHT = 220;
 const DETAIL_HEIGHT = 520;
 const STRIP_HEIGHT = 200;
-const FLAG_COLORS = ["#e56b59", "#82b1dd", "#e5ae29", "#2f7d5b"];
 
 const ids = Object.keys(LOTTIE_ANIMATIONS) as LottieAnimationId[];
 const dataOf = (id: LottieAnimationId) => LOTTIE_ANIMATIONS[id] as LottieData;
@@ -179,7 +177,6 @@ function LottieSwitch({ id, on, disabled }: { id: LottieAnimationId; on: boolean
 
 function LottiePreviews() {
   const [selected, setSelected] = useState<LottieAnimationId | null>(null);
-  const [flagColor, setFlagColor] = useState(FLAG_COLORS[0]);
 
   return (
     <div className="debug-lottie pointer-events-auto absolute inset-x-12 bottom-48 top-40 z-[100] touch-pan-y overflow-y-auto rounded-3xl bg-black/85 px-10 py-8 font-mono text-[28px] text-white">
@@ -189,18 +186,12 @@ function LottiePreviews() {
       </div>
 
       {selected && (
-        <LottieDetail
-          key={selected}
-          id={selected}
-          flagColor={flagColor}
-          onFlagColor={setFlagColor}
-          onClose={() => setSelected(null)}
-        />
+        <LottieDetail key={selected} id={selected} onClose={() => setSelected(null)} />
       )}
 
       <div className="debug-lottie-grid mt-8 flex flex-wrap gap-6">
         {ids.map((id) => (
-          <LottieCard key={id} id={id} selected={id === selected} flagColor={flagColor} onSelect={() => setSelected(id)} />
+          <LottieCard key={id} id={id} selected={id === selected} onSelect={() => setSelected(id)} />
         ))}
       </div>
     </div>
@@ -210,12 +201,10 @@ function LottiePreviews() {
 function LottieCard({
   id,
   selected,
-  flagColor,
   onSelect,
 }: {
   id: LottieAnimationId;
   selected: boolean;
-  flagColor: string;
   onSelect: () => void;
 }) {
   const tap = useTap(onSelect);
@@ -225,23 +214,13 @@ function LottieCard({
       className={`debug-lottie-card rounded-2xl p-4 text-left ${selected ? "bg-[#FACC15] text-black" : "bg-white/10"}`}
       {...tap}
     >
-      <LottieView id={id} height={GRID_HEIGHT} playing flagColor={flagColor} />
+      <LottieView id={id} height={GRID_HEIGHT} playing />
       <span className="debug-lottie-card-name mt-2 block text-[24px]">{id}</span>
     </button>
   );
 }
 
-function LottieDetail({
-  id,
-  flagColor,
-  onFlagColor,
-  onClose,
-}: {
-  id: LottieAnimationId;
-  flagColor: string;
-  onFlagColor: (color: string) => void;
-  onClose: () => void;
-}) {
+function LottieDetail({ id, onClose }: { id: LottieAnimationId; onClose: () => void }) {
   const data = dataOf(id);
   const [playing, setPlaying] = useState(true);
   const [frame, setFrame] = useState(0);
@@ -268,7 +247,6 @@ function LottieDetail({
           playing={playing}
           frame={playing ? undefined : frame}
           onFrame={setFrame}
-          flagColor={flagColor}
         />
       </div>
 
@@ -290,43 +268,17 @@ function LottieDetail({
         <span className="debug-lottie-frame w-32 text-right">f{frame}</span>
       </div>
 
-      {id === "flag_red" && <FlagSwatches value={flagColor} onChange={onFlagColor} />}
-
       <div className="debug-lottie-strip mt-6 flex flex-wrap gap-4">
         {stripFrames.map((f) => (
           <figure key={f} className="debug-lottie-strip-cell m-0">
             <div className="debug-lottie-strip-stage bg-[#dfdfdf]">
-              <LottieView id={id} height={STRIP_HEIGHT} playing={false} frame={f} flagColor={flagColor} />
+              <LottieView id={id} height={STRIP_HEIGHT} playing={false} frame={f} />
             </div>
             <figcaption className="debug-lottie-strip-frame text-[22px] text-white/60">f{f}</figcaption>
           </figure>
         ))}
       </div>
     </section>
-  );
-}
-
-function FlagSwatches({ value, onChange }: { value: string; onChange: (color: string) => void }) {
-  return (
-    <div className="debug-lottie-swatches mt-4 flex items-center gap-4">
-      <span className="debug-lottie-swatches-label text-white/60">Category color</span>
-      {FLAG_COLORS.map((color) => (
-        <FlagSwatch key={color} color={color} selected={color === value} onTap={() => onChange(color)} />
-      ))}
-    </div>
-  );
-}
-
-function FlagSwatch({ color, selected, onTap }: { color: string; selected: boolean; onTap: () => void }) {
-  const tap = useTap(onTap);
-  return (
-    <button
-      type="button"
-      aria-label={`Flag color ${color}`}
-      className={`debug-lottie-swatch size-16 rounded-full border-4 ${selected ? "border-white" : "border-transparent"}`}
-      style={{ background: color }}
-      {...tap}
-    />
   );
 }
 
@@ -341,14 +293,12 @@ function LottieView({
   playing,
   frame,
   onFrame,
-  flagColor,
 }: {
   id: LottieAnimationId;
   height: number;
   playing: boolean;
   frame?: number;
   onFrame?: (frame: number) => void;
-  flagColor: string;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<AnimationItem | null>(null);
@@ -382,8 +332,8 @@ function LottieView({
   return (
     <div
       ref={containerRef}
-      className={`debug-lottie-view ${id === "flag_red" ? "lottie-flag" : ""}`}
-      style={{ height, width: (height * data.w) / data.h, "--flag-color": flagColor } as CSSProperties}
+      className="debug-lottie-view"
+      style={{ height, width: (height * data.w) / data.h }}
     />
   );
 }

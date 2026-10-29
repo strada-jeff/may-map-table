@@ -2,7 +2,11 @@ import { useLayoutEffect, useMemo, useState } from "react";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { useDetails } from "../hooks/DetailsContext";
 import { useDestinationPins } from "../hooks/useDestinationPins";
-import { markerBox } from "./markerBoxes";
+import { markerAnchor, markerBox } from "./markerBoxes";
+import { chooseLabelSide, type LabelSide } from "./directionsLabel";
+import { artworkPiece } from "../data/artwork";
+import { useRoute } from "../hooks/RouteContext";
+import { useDebugMode } from "../hooks/useDebugMode";
 import gsap from "gsap";
 import { CONFIG } from "../config";
 import { distance, resolveMapPoint } from "../routing";
@@ -122,9 +126,12 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
 
   // The route ends at the destination's foot on the road; the flag or
   // balloon rises above it, so it's fitted whole too, with room around it
-  // for the place's art.
+  // for the place's art — and its directions label, on whichever side of
+  // it covers the least of this route and the place's art.
   const { pins } = useDestinationPins();
   const destination = pins.find((p) => p.id === route.destinationId);
+  const { setLabelSide, labelSize } = useRoute();
+  const debug = useDebugMode();
 
   // Fits the route's bounds into view, then starts the draw-in animation
   // once that settle finishes — mirrors the old flyToBounds-then-moveend
@@ -138,15 +145,38 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
     const padding = CONFIG.routing.fitPaddingPx;
-    const target = fitTransform(
-      { width, height },
-      points,
-      padding,
-      zoomToScale(CONFIG.map.minZoom),
-      zoomToScale(CONFIG.map.maxZoom),
-      detailsOpenForRoute ? CONFIG.details.panelWidthPx : 0,
-      destination ? [markerBox(destination, CONFIG.routing.destinationBufferPx)] : [],
-    );
+    const fitWith = (side: LabelSide) =>
+      fitTransform(
+        { width, height },
+        points,
+        padding,
+        zoomToScale(CONFIG.map.minZoom),
+        zoomToScale(CONFIG.map.maxZoom),
+        detailsOpenForRoute ? CONFIG.details.panelWidthPx : 0,
+        destination
+          ? [markerBox(destination, CONFIG.routing.destinationBufferPx, { side, size: labelSize.current })]
+          : [],
+      );
+    // The label keeps a fixed screen size while the map zooms, so what it
+    // covers depends on the framing's scale: frame with it below (Figma's
+    // place for it), choose its side at that scale, and reframe only if it
+    // moves.
+    let target = fitWith("below");
+    let side: LabelSide = "below";
+    if (destination) {
+      const choice = chooseLabelSide({
+        position: destination.position,
+        anchor: markerAnchor(destination),
+        route: points,
+        piece: artworkPiece(destination.artwork),
+        scale: target.scale,
+        size: labelSize.current,
+      });
+      side = choice.side;
+      if (debug.enabled) console.info(`Directions label for "${destination.id}": ${side}`, choice.costs);
+      if (side !== "below") target = fitWith(side);
+    }
+    setLabelSide(side);
     const fitTween = tweenTransform(controls, target);
 
     let timeline: gsap.core.Timeline | null = null;
