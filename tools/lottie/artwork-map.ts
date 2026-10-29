@@ -4,49 +4,53 @@
  * the hole its group leaves (see register.ts).
  *
  * Figma's frame names and Illustrator's layer names don't line up — match by
- * looking, not by name (Figma's car_1 is the dark blue car, which is base's
- * Car-3; base's "Car" is the red one, Figma's car_3).
+ * looking, not by name (Figma's car_1 is base's "Car dark blue"; Figma's
+ * car_3 is "Car red").
  *
  * A list places the same animation over several copies of the art (the map
  * has three playgrounds). A recolored copy gets its own recipe that reuses
  * the original's export (see recipes/playground_blue.ts).
  *
- * Some ids are a nested child, not the obvious group: "pool" is the swim
- * club scene (Swim_club is the clubhouse building beside it). The small
- * *_copy / *-2 groups (Celebration_Hall_copy, Swim_club-2...) are miniature
- * duplicates with no Figma counterpart and stay static.
+ * Some ids are a nested child, not the obvious group: the swim club's
+ * animation replaces only "Swim club pool", not the clubhouse beside it in
+ * PIN_Swim_club. The "Mini ..." layers (Mini_celebration_hall,
+ * Mini_swim_club...) are miniature duplicates with no Figma counterpart and
+ * stay static.
+ *
+ * Ids are base.svg's layer names, spaces as underscores (see the README's
+ * "Artwork naming"); a renamed layer has to be renamed here too.
  *
  * The interactive pieces (flag_red, balloon_coventry, cta_viewmap) aren't
  * here: they replace app UI, not base art.
  */
 export const ARTWORK_MAP: Record<string, string | string[]> = {
   bike_kid: "Kid_on_bike",
-  bike_man: "Man_on_bike",
-  bird: "bird",
-  car_1: "Car-3",
-  car_2: "Car-2",
-  car_3: "Car",
+  bike_man: "PIN_Man_on_bike",
+  bird: "Bird",
+  car_1: "Car_dark_blue",
+  car_2: "Car_light_blue",
+  car_3: "Car_red",
   car_packing: "Person_packing_car",
-  celebrationhall: "Celebration_Hall",
-  concert: "Concert_icon",
-  deer: "deer",
-  dog: "dog",
-  food_beverage: "Food_beverage",
-  forklift: "industrial_icon",
-  hello_sign: "Hello_Friends",
+  celebrationhall: "PIN_Celebration_Hall",
+  concert: "PIN_Concert",
+  deer: "Deer",
+  dog: "PIN_Dog",
+  food_beverage: "PIN_Food_and_beverage",
+  forklift: "PIN_Forklift",
+  hello_sign: "PIN_Hello_Friends_sign",
   hotairballoon_midtown: "Balloon",
-  kite_child: "girl_with_kite",
-  lions_megaphone: "Megaphone",
+  kite_child: "PIN_Girl_with_kite",
+  lions_megaphone: "PIN_Go_Lions_megaphone",
   mayfair_sign: "Mayfair_sign",
-  playground: ["Layer_197", "Layer_196"],
-  playground_blue: "Layer_199",
-  schoolbus: "school_bus",
+  playground: ["PIN_Playground_green_east", "PIN_Fairway_Park_playground"],
+  playground_blue: "PIN_Playground_blue",
+  schoolbus: "School_bus",
   scooter_child: "Child_on_scooter",
-  stroller_1: "lady_with_stroll",
-  stroller_2: "lady_with_stroll_2",
-  swimclub: "pool",
-  woman_shopping: "lady_with_shopping_bags",
-  woman_walking_dog: "Lady_with_dof",
+  stroller_1: "Woman_with_stroller_red",
+  stroller_2: "Woman_with_stroller_blue",
+  swimclub: "Swim_club_pool",
+  woman_shopping: "Woman_with_shopping_bags",
+  woman_walking_dog: "Woman_walking_dog",
 };
 
 /**
@@ -55,5 +59,5 @@ export const ARTWORK_MAP: Record<string, string | string[]> = {
  * is its own group there; the Figma balloon animates its own.
  */
 export const ALSO_HIDDEN: Record<string, string[]> = {
-  hotairballoon_midtown: ["Midtown_Label"],
+  hotairballoon_midtown: ["Midtown_balloon_banner"],
 };

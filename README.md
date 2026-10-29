@@ -56,6 +56,19 @@ When the table goes idle (welcome screen), it rechecks the CMS and reloads if th
 
 `build:network` and `build:artwork` write files the CMS uses too: commit what they change under `cms/theme/assets/`, or the admin places pins on stale roads or artwork.
 
+### Artwork naming
+
+`public/base.svg` is exported from the Illustrator template, `may-map-artwork-template-YYYY-MM-DD.ai` (kept outside the repo; save each new version with that day's date at the end). Every layer name becomes an SVG id (spaces → underscores) that the build looks up, so:
+
+- **Name every layer, uniquely.** No `Layer 197`, `Isolation Mode` or repeated `Tree`s: number or place them (`Tree 7`, `House icon west`). Illustrator suffixes duplicates (`Car-2`) in an order nobody controls.
+- **Letters, digits and spaces only.** `&` and `'` export as `_x26_`-style codes, and a trailing `-2` reads like Illustrator's duplicate suffix.
+- **`PIN ` marks art the CMS can attach to a pin** (`PIN Swim club`). A place drawn as several layers gets one `PIN` layer around them; its children aren't prefixed.
+- **Patterns:** `Label …` for place signs, `Street …` for street names, `<parent> part N` for unnamed pieces inside a named layer, `… unused` for hidden or empty layers kept around.
+- **Renaming or regrouping changes no artwork** (Illustrator draws by stacking order, not name), but moving art to another layer can: it lands above or below different neighbors.
+- **Animated scenery** finds its art by these ids (`tools/lottie/artwork-map.ts`). Renaming one of those layers means renaming it there too; `build:artwork` stops on an id it can't find.
+
+Export with File → Export → Export As… → SVG, **Use Artboards** on: Styling *Internal CSS*, Font *Convert to Outlines*, Images *Embed*, Object IDs *Layer Names*, Decimal *2*, Minify and Responsive off.
+
 ## CMS
 
 ### Local setup
