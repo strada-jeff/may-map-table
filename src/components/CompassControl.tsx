@@ -75,8 +75,8 @@ function frameToContent(frame: HTMLElement, x: number, y: number): Point {
 type Drag = { pointerId: number; startX: number; startY: number; startCenter: Point; moved: boolean };
 
 /**
- * A static overview image (public/overview.jpg — a small, manually-exported
- * version of the artwork) plus a live rectangle + dot, positioned by plain
+ * A static overview image (public/overview.jpg — a small render of base.svg,
+ * from build:overview) plus a live rectangle + dot, positioned by plain
  * percentage math rather than a second map instance — this never needed
  * Leaflet's own mapping features to begin with, just its current
  * viewport/center, which MapControls exposes just as directly.

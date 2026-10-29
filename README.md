@@ -11,7 +11,7 @@ may-map-table/
 │   ├── data/            api.ts (CMS loading), schema.ts (validation), content.json (fallback snapshot)
 │   ├── routing/         road graph, snapping, runtime route planner
 │   └── types/pins.ts    content types: the source of truth for the CMS fields and endpoint
-├── public/              artwork (base.svg → artwork-tiles/), road network (network.svg), icons
+├── public/              artwork (base.svg → artwork-tiles/, overview.jpg), road network (network.svg), icons
 ├── tools/               build scripts (network, artwork tiles, Lottie, CMS map, content snapshot)
 ├── cms/
 │   ├── theme/           WordPress theme: post types, ACF fields, endpoint, admin map field, content health
@@ -48,8 +48,9 @@ When the table goes idle (welcome screen), it rechecks the CMS and reloads if th
 |---|---|
 | `npm run build` | Snapshot content (if reachable), build the network, typecheck, build the app |
 | `npm run build:network` | `public/network.svg` → `src/data/generated/` (roads, origins) and `cms/theme/assets/map-data.json` |
-| `npm run build:artwork` | `public/base.svg` → `public/artwork-tiles/`, then `build:cms-map` |
+| `npm run build:artwork` | `public/base.svg` → `public/artwork-tiles/`, then `build:cms-map` and `build:overview` |
 | `npm run build:cms-map` | Zoom-0 tiles → `cms/theme/assets/map.webp`, the admin map field's image |
+| `npm run build:overview` | `public/base.svg` → `public/overview.jpg`, the minimap's image |
 | `npm run build:lottie` | Lottie animations from `tools/lottie/` |
 | `npm run snapshot:content` | CMS content → `src/data/content.json` (from `VITE_CONTENT_URL` or `-- <url>`) |
 
