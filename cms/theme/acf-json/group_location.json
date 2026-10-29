@@ -35,17 +35,6 @@
             "required": 1,
             "rows": 6,
             "new_lines": ""
-        },
-        {
-            "key": "field_location_illustration",
-            "label": "Illustration",
-            "name": "illustration",
-            "type": "image",
-            "instructions": "Optional artwork for the right column (e.g. the swim club's pool). Without one, the category flag shows.",
-            "required": 0,
-            "return_format": "id",
-            "preview_size": "medium",
-            "library": "all"
         }
     ],
     "location": [
@@ -65,5 +54,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1793027120
+    "modified": 1793291250
 }

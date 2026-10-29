@@ -68,6 +68,22 @@
             ]
         },
         {
+            "key": "field_pin_artwork",
+            "label": "Artwork",
+            "name": "artwork",
+            "type": "select",
+            "instructions": "Optional piece of the map art for this place: shown in the details panel, and kept bright while directions to it are on. The choices are the map art's \"PIN\" layers; the chosen one is outlined on the map above.",
+            "required": 0,
+            "choices": {},
+            "default_value": false,
+            "allow_null": 1,
+            "multiple": 0,
+            "ui": 1,
+            "ajax": 0,
+            "return_format": "value",
+            "placeholder": "None"
+        },
+        {
             "key": "field_pin_tab_visit",
             "label": "Visit",
             "name": "",
@@ -135,5 +151,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1793016067
+    "modified": 1793291250
 }

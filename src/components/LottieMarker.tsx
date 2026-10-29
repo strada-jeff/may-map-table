@@ -9,8 +9,11 @@ import type { LottieMarkerConfig } from "../types/lottie";
  * `matrix` — scale, the art's rotation where it follows a road, position —
  * and *not* wrapped in KeepScale, so it scales with the artwork as the
  * shared transform zooms, the same as the tile art it replaces.
+ *
+ * `raised` lifts it above the route SVG (dim overlay and line) while it's
+ * part of the route destination's artwork, as the active pin lifts itself.
  */
-export default function LottieMarker({ marker }: { marker: LottieMarkerConfig }) {
+export default function LottieMarker({ marker, raised }: { marker: LottieMarkerConfig; raised: boolean }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   useLottieAnimation(containerRef, marker.file);
 
@@ -19,7 +22,7 @@ export default function LottieMarker({ marker }: { marker: LottieMarkerConfig })
   return (
     <div
       ref={containerRef}
-      className="lottie-marker pointer-events-none absolute left-0 top-0 origin-top-left"
+      className={`lottie-marker pointer-events-none absolute left-0 top-0 origin-top-left ${raised ? "z-30" : ""}`}
       style={{ width, height, transform: `matrix(${marker.matrix.join(",")})` }}
     />
   );

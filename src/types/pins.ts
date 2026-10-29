@@ -49,6 +49,13 @@ type BasePin = {
   /** Destination URL — encoded into a QR code at render time, not stored pre-rendered. */
   directionsUrl: string;
   iconOffset?: MapOffset;
+  /**
+   * A "PIN " layer of the map art (ArtworkPiece["id"] in
+   * src/data/generated/artwork.json), picked in the CMS: shown in the
+   * details view and lit above the dim overlay while directions to this pin
+   * are on. An id the art no longer has is ignored (the CMS flags it).
+   */
+  artwork?: string;
 };
 
 export type ModelHome = BasePin & {
@@ -73,8 +80,6 @@ export type Location = BasePin & {
   location: string;
   /** Blank-line-separated paragraphs; each renders as its own <p>. */
   description: string;
-  /** Optional artwork for the details view's right column (e.g. the swim club's pool); falls back to the category flag. */
-  illustration?: string;
 };
 
 export type MapPin = ModelHome | Location;

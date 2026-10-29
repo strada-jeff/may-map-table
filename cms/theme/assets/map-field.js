@@ -6,12 +6,17 @@
  * map units: the 3840 x 2160 artwork's pixels, y down — the same space as
  * the app's `anchor` and `iconOffset`. Writes go into the ACF inputs, which
  * remain what's saved.
+ *
+ * The piece the Artwork field is set to is outlined on the map and shown
+ * under the field (its cut-out: the map image lacks the parts the kiosk
+ * animates); clicking that centers the map on it.
  */
 (function () {
   const config = window.maytableMapField;
   const SVG_NS = "http://www.w3.org/2000/svg";
   const MAX_ZOOM = 4; // map units per screen px at full zoom-in: 1 unit = 4 px
   const CLICK_SLOP_PX = 4; // pointer travel beyond which a press is a pan, not a click
+  const PREVIEW_PX = 160; // the Artwork field's preview fits in this square
 
   acf.addAction("ready", () => {
     const field = document.querySelector('.acf-field[data-key="field_pin_anchor"]');
@@ -26,6 +31,9 @@
       offsetX: input("field_pin_icon_offset_x"),
       offsetY: input("field_pin_icon_offset_y"),
     };
+    const artworkSelect = document.querySelector('.acf-field[data-key="field_pin_artwork"] select');
+    const pieces = new Map((config.artwork ?? []).map((piece) => [piece.id, piece]));
+    const piece = () => pieces.get(artworkSelect?.value ?? "") ?? null;
 
     const ui = element("div", "maytable-map");
     ui.innerHTML = `
@@ -47,6 +55,7 @@
           <img src="${config.mapImage}" alt="" draggable="false" width="${data.width}" height="${data.height}">
           <svg viewBox="0 0 ${data.width} ${data.height}" width="${data.width}" height="${data.height}">
             <g class="maytable-map__roads"></g>
+            <rect class="maytable-map__artwork"></rect>
             <g class="maytable-map__others"></g>
             <line class="maytable-map__snap-line"></line>
             <line class="maytable-map__offset-line"></line>
@@ -67,6 +76,38 @@
     const anchorMarker = ui.querySelector(".maytable-map__anchor");
     const iconMarker = ui.querySelector(".maytable-map__icon");
     const status = ui.querySelector(".maytable-map__status");
+    const artworkOutline = ui.querySelector(".maytable-map__artwork");
+
+    // Under the Artwork field: the chosen piece.
+    const preview = element("button", "maytable-map__artwork-preview");
+    preview.type = "button";
+    preview.title = "Show on the map";
+    const previewImage = element("img", "");
+    previewImage.alt = "";
+    preview.append(previewImage);
+    artworkSelect?.closest(".acf-input")?.append(preview);
+    preview.addEventListener("click", () => {
+      const p = piece();
+      if (p) centerOn([p.box[0] + p.box[2] / 2, p.box[1] + p.box[3] / 2], Math.max(view.scale, fitScale() * 4));
+    });
+    function renderArtwork() {
+      const p = piece();
+      artworkOutline.style.display = p ? "" : "none";
+      preview.style.display = p ? "" : "none";
+      if (!p) return;
+      const [x, y, w, h] = p.box;
+      artworkOutline.setAttribute("x", x);
+      artworkOutline.setAttribute("y", y);
+      artworkOutline.setAttribute("width", w);
+      artworkOutline.setAttribute("height", h);
+      const scale = Math.min(PREVIEW_PX / w, PREVIEW_PX / h);
+      previewImage.src = `${config.artworkDir}${p.id}.svg`;
+      previewImage.width = w * scale;
+      previewImage.height = h * scale;
+    }
+    // ACF's select2 reports changes through jQuery, which native listeners don't hear.
+    if (artworkSelect) window.jQuery(artworkSelect).on("change", renderArtwork);
+    renderArtwork();
 
     for (const road of data.roads) {
       const line = svg("polyline");

@@ -30,6 +30,7 @@ const basePin = {
   address: z.string(),
   directionsUrl: z.string(),
   iconOffset: z.object({ x: z.number(), y: z.number() }).optional(),
+  artwork: z.string().optional(),
 };
 
 const modelHome: z.ZodType<ModelHome> = z.object({
@@ -55,7 +56,6 @@ const location: z.ZodType<Location> = z.object({
   title: z.string(),
   location: z.string(),
   description: z.string(),
-  illustration: z.string().optional(),
 });
 
 /** GET /wp-json/maytable/v1/content (cms/theme/inc/rest.php). */

@@ -22,6 +22,7 @@ function maytable_issue_types(): array {
 		'no-builder'     => [ 'problem', 'No builder' ],
 		'no-category'    => [ 'problem', 'No category' ],
 		'missing-text'   => [ 'problem', 'Missing kiosk text' ],
+		'gone-artwork'   => [ 'problem', 'Artwork no longer on the map' ],
 		// To finish
 		'no-directions'  => [ 'warning', 'No directions link (no QR code shown)' ],
 		'no-address'     => [ 'warning', 'No address' ],
@@ -92,6 +93,8 @@ function maytable_content_issues( int $include_post_id = 0 ): array {
 		if ( in_array( $near['road'], $map['unreachableRoads'], true ) ) $flag( 'unreachable' );
 
 		if ( ! $pin['images'] ) $flag( 'no-photos' );
+		// A "PIN" layer renamed or removed in the art since it was picked.
+		if ( isset( $pin['artwork'] ) && ! isset( maytable_artwork_pieces()[ $pin['artwork'] ] ) ) $flag( 'gone-artwork', $pin['artwork'] );
 
 		if ( $pin['kind'] === 'model-home' ) {
 			if ( $pin['builderId'] === '' ) $flag( 'no-builder' );

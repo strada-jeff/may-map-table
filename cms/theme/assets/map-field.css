@@ -129,3 +129,25 @@
   color: #d63638;
   font-weight: 600;
 }
+
+.maytable-map__artwork {
+  fill: none;
+  stroke: #d63638;
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.maytable-map__artwork-preview {
+  display: block;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid #c3c4c7;
+  background: #f1f0ee;
+  cursor: zoom-in;
+}
+
+.maytable-map__artwork-preview img {
+  display: block;
+}

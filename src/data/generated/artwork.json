@@ -1,0 +1,546 @@
+[
+  {
+    "id": "PIN_ABC_blocks",
+    "label": "ABC blocks",
+    "box": [
+      1874,
+      1188,
+      53,
+      43
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Birdhouse",
+    "label": "Birdhouse",
+    "box": [
+      2612,
+      1200,
+      41,
+      69
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Cafe_and_Friends",
+    "label": "Cafe and Friends",
+    "box": [
+      1239,
+      1461,
+      161,
+      88
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Celebration_Hall",
+    "label": "Celebration Hall",
+    "box": [
+      1220,
+      1220,
+      149,
+      106
+    ],
+    "map": "none",
+    "lottie": [
+      "celebrationhall"
+    ]
+  },
+  {
+    "id": "PIN_Coffee",
+    "label": "Coffee",
+    "box": [
+      1858,
+      1468,
+      48,
+      42
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Concert",
+    "label": "Concert",
+    "box": [
+      1322,
+      1374,
+      60,
+      58
+    ],
+    "map": "none",
+    "lottie": [
+      "concert"
+    ]
+  },
+  {
+    "id": "PIN_Costco",
+    "label": "Costco",
+    "box": [
+      1998,
+      1904,
+      163,
+      66
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Dog",
+    "label": "Dog",
+    "box": [
+      2405,
+      1294,
+      40,
+      39
+    ],
+    "map": "none",
+    "lottie": [
+      "dog"
+    ]
+  },
+  {
+    "id": "PIN_Elementary_School",
+    "label": "Elementary School",
+    "box": [
+      1983,
+      1091,
+      216,
+      70
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Fairway_Park_disc_golf",
+    "label": "Fairway Park disc golf",
+    "box": [
+      1735,
+      1048,
+      23,
+      59
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Fairway_Park_playground",
+    "label": "Fairway Park playground",
+    "box": [
+      1802,
+      1163,
+      57,
+      44
+    ],
+    "map": "none",
+    "lottie": [
+      "playground-2"
+    ]
+  },
+  {
+    "id": "PIN_Farmers_Market",
+    "label": "Farmers Market",
+    "box": [
+      1211,
+      1320,
+      54,
+      43
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Food_and_beverage",
+    "label": "Food and beverage",
+    "box": [
+      1716,
+      773,
+      86,
+      91
+    ],
+    "map": "none",
+    "lottie": [
+      "food_beverage"
+    ]
+  },
+  {
+    "id": "PIN_Forklift",
+    "label": "Forklift",
+    "box": [
+      1345,
+      485,
+      128,
+      90
+    ],
+    "map": "none",
+    "lottie": [
+      "forklift"
+    ]
+  },
+  {
+    "id": "PIN_Girl_with_kite",
+    "label": "Girl with kite",
+    "box": [
+      2548,
+      1121,
+      93,
+      94
+    ],
+    "map": "none",
+    "lottie": [
+      "kite_child"
+    ]
+  },
+  {
+    "id": "PIN_Go_Lions_megaphone",
+    "label": "Go Lions megaphone",
+    "box": [
+      2141,
+      988,
+      46,
+      28
+    ],
+    "map": "none",
+    "lottie": [
+      "lions_megaphone"
+    ]
+  },
+  {
+    "id": "PIN_Hello_Friends_sign",
+    "label": "Hello Friends sign",
+    "box": [
+      1249,
+      1353,
+      57,
+      106
+    ],
+    "map": "none",
+    "lottie": [
+      "hello_sign"
+    ]
+  },
+  {
+    "id": "PIN_Man_on_bike",
+    "label": "Man on bike",
+    "box": [
+      2418,
+      1341,
+      118,
+      99
+    ],
+    "map": "none",
+    "lottie": [
+      "bike_man"
+    ]
+  },
+  {
+    "id": "PIN_Middle_School",
+    "label": "Middle School",
+    "box": [
+      2122,
+      1014,
+      216,
+      74
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Midtown_balloon",
+    "label": "Midtown balloon",
+    "box": [
+      1322,
+      941,
+      178,
+      358
+    ],
+    "map": "none",
+    "lottie": [
+      "hotairballoon_midtown"
+    ]
+  },
+  {
+    "id": "PIN_Model_home_1",
+    "label": "Model home 1",
+    "box": [
+      2018,
+      1517,
+      87,
+      51
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Model_home_2",
+    "label": "Model home 2",
+    "box": [
+      2114,
+      1390,
+      81,
+      48
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Model_home_3",
+    "label": "Model home 3",
+    "box": [
+      1820,
+      1111,
+      74,
+      43
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Model_home_4",
+    "label": "Model home 4",
+    "box": [
+      2192,
+      1415,
+      85,
+      43
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Model_home_5",
+    "label": "Model home 5",
+    "box": [
+      1884,
+      1097,
+      80,
+      40
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Model_home_6",
+    "label": "Model home 6",
+    "box": [
+      2029,
+      1420,
+      85,
+      41
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Ollies_Market",
+    "label": "Ollies Market",
+    "box": [
+      1421,
+      1468,
+      93,
+      80
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Park_bench",
+    "label": "Park bench",
+    "box": [
+      2338,
+      1895,
+      63,
+      53
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Pickleball",
+    "label": "Pickleball",
+    "box": [
+      2269,
+      1766,
+      60,
+      53
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Picnic_basket",
+    "label": "Picnic basket",
+    "box": [
+      2428,
+      1126,
+      32,
+      33
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Plate_and_cutlery",
+    "label": "Plate and cutlery",
+    "box": [
+      1944,
+      1854,
+      43,
+      39
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Playground_blue",
+    "label": "Playground blue",
+    "box": [
+      2109,
+      1577,
+      82,
+      63
+    ],
+    "map": "none",
+    "lottie": [
+      "playground_blue"
+    ]
+  },
+  {
+    "id": "PIN_Playground_green_east",
+    "label": "Playground green east",
+    "box": [
+      2557,
+      998,
+      82,
+      63
+    ],
+    "map": "none",
+    "lottie": [
+      "playground-1"
+    ]
+  },
+  {
+    "id": "PIN_Sandwich",
+    "label": "Sandwich",
+    "box": [
+      1784,
+      1217,
+      50,
+      48
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_School_backpack",
+    "label": "School backpack",
+    "box": [
+      912,
+      1206,
+      40,
+      48
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Shopping_bags_north",
+    "label": "Shopping bags north",
+    "box": [
+      1834,
+      827,
+      78,
+      51
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Shopping_bags_south",
+    "label": "Shopping bags south",
+    "box": [
+      1890,
+      1614,
+      78,
+      52
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Shopping_bags_west",
+    "label": "Shopping bags west",
+    "box": [
+      1485,
+      861,
+      78,
+      52
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Shopping_cart",
+    "label": "Shopping cart",
+    "box": [
+      1910,
+      1685,
+      62,
+      56
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Stethoscope",
+    "label": "Stethoscope",
+    "box": [
+      2078,
+      1814,
+      51,
+      69
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Swim_club",
+    "label": "Swim club",
+    "box": [
+      1484,
+      1213,
+      133,
+      179
+    ],
+    "map": "separate",
+    "lottie": [
+      "swimclub"
+    ]
+  },
+  {
+    "id": "PIN_Taco",
+    "label": "Taco",
+    "box": [
+      2150,
+      1982,
+      65,
+      43
+    ],
+    "map": "whole",
+    "lottie": []
+  },
+  {
+    "id": "PIN_Village_at_Mayfair",
+    "label": "Village at Mayfair",
+    "box": [
+      2027,
+      1646,
+      78,
+      46
+    ],
+    "map": "whole",
+    "lottie": []
+  }
+]

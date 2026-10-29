@@ -48,9 +48,10 @@ When the table goes idle (welcome screen), it rechecks the CMS and reloads if th
 |---|---|
 | `npm run build` | Snapshot content (if reachable), build the network, typecheck, build the app |
 | `npm run build:network` | `public/network.svg` → `src/data/generated/` (roads, origins) and `cms/theme/assets/map-data.json` |
-| `npm run build:artwork` | `public/base.svg` → `public/artwork-tiles/`, then `build:cms-map` and `build:overview` |
-| `npm run build:cms-map` | Zoom-0 tiles → `cms/theme/assets/map.webp`, the admin map field's image |
+| `npm run build:artwork` | `public/base.svg` → `public/artwork-tiles/`, then `build:cms-map`, `build:overview` and `build:pieces` |
+| `npm run build:cms-map` | `public/base.svg` → `cms/theme/assets/map.webp`, the admin map field's image (animated art included) |
 | `npm run build:overview` | `public/base.svg` → `public/overview.jpg`, the minimap's image |
+| `npm run build:pieces` | `public/base.svg`'s `PIN` layers → `public/artwork-pieces/` and the catalog the app and CMS Artwork field read |
 | `npm run build:lottie` | Lottie animations from `tools/lottie/` |
 | `npm run snapshot:content` | CMS content → `src/data/content.json` (from `VITE_CONTENT_URL` or `-- <url>`) |
 

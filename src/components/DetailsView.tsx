@@ -13,6 +13,7 @@ import DetailsGallery from "./DetailsGallery";
 import ButtonFlagIcon from "./ButtonFlagIcon";
 import iconNewsletter from "../assets/icons/newsletter.svg";
 import { postalAddress } from "./postalAddress";
+import { artworkPiece, pieceUrl } from "../data/artwork";
 import type { NumberRange } from "../types/pins";
 
 /** "2,450", or "1,526–2,538" for a range. */
@@ -53,6 +54,7 @@ export default function DetailsView() {
 
   const isOpen = activePinId !== null;
   const pin = lastPin;
+  const piece = artworkPiece(pin?.artwork);
 
   function showOnMap() {
     if (!pin) return;
@@ -211,8 +213,8 @@ export default function DetailsView() {
                 </div>
               ) : (
                 <div className="details-view-icon flex h-[244px] items-center justify-center">
-                  {pin.illustration ? (
-                    <img src={pin.illustration} alt="" className="details-view-illustration h-[244px] w-[362px] object-contain" />
+                  {piece ? (
+                    <img src={pieceUrl(piece)} alt="" className="details-view-illustration h-[244px] w-[362px] object-contain" />
                   ) : category?.color ? (
                     <ButtonFlagIcon color={category.color} className="h-[180px] w-[262px]" />
                   ) : (

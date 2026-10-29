@@ -112,16 +112,13 @@ function maytable_model_home( WP_Post $post ): array {
 
 function maytable_location( WP_Post $post ): array {
 	$category = get_field( 'category', $post );
-	$location = maytable_pin( $post ) + [
+	return maytable_pin( $post ) + [
 		'kind'        => 'location',
 		'categoryId'  => $category ? $category->slug : '',
 		'title'       => $post->post_title,
 		'location'    => (string) get_field( 'location', $post ),
 		'description' => (string) get_field( 'description', $post ),
 	];
-	$illustration = get_field( 'illustration', $post );
-	if ( $illustration ) $location['illustration'] = wp_get_attachment_url( $illustration );
-	return $location;
 }
 
 /** The fields every pin shares (BasePin in pins.ts). */
@@ -144,6 +141,9 @@ function maytable_pin( WP_Post $post ): array {
 	$x      = (float) ( $offset['x'] ?? 0 );
 	$y      = (float) ( $offset['y'] ?? 0 );
 	if ( $x || $y ) $pin['iconOffset'] = [ 'x' => $x, 'y' => $y ];
+
+	$artwork = (string) get_field( 'artwork', $post );
+	if ( $artwork !== '' ) $pin['artwork'] = $artwork;
 
 	return $pin;
 }
