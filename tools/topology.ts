@@ -205,23 +205,29 @@ function findSplitPoints(paths: WorkingPath[], epsilon: number) {
     }
   }
 
-  // T-junctions: an endpoint of one path resting on the interior of another.
+  // T-junctions: an endpoint of one path resting on the interior of another
+  // — or of itself, further along: one Illustrator path can leave a road,
+  // loop round and come back past its own start (the Bluebell connector
+  // did), and that touch is a junction too. On its own path an end is only
+  // looked for past the stretch right beside it, which it trivially touches.
   for (let i = 0; i < paths.length; i++) {
     const path = paths[i]!
     if (path.closed) continue
-    for (const end of [path.points[0]!, path.points.at(-1)!]) {
+    for (const [end, atStart] of [[path.points[0]!, true], [path.points.at(-1)!, false]] as const) {
       for (let j = 0; j < paths.length; j++) {
-        if (i === j) continue
         const other = paths[j]!
         if (path.kind === 'bridge' && other.kind === 'bridge') continue
-        const hit = nearestOnPath(other.points, end)
+        const hit =
+          i === j
+            ? nearestOnPath(other.points, end, awayFromEnd(other.points, atStart, SELF_TOUCH_SKIP))
+            : nearestOnPath(other.points, end)
         if (!hit || hit.distance > epsilon) continue
-        if (
-          distance(hit.point, other.points[0]!) <= epsilon ||
-          distance(hit.point, other.points.at(-1)!) <= epsilon
-        ) {
-          continue
-        }
+        // Landing on the other path's own end is already a junction (the
+        // ends merge as nodes). On its own path the end it's touching from
+        // is where it lands, by definition, so only the opposite end counts.
+        const otherEnds =
+          i === j ? [atStart ? other.points.at(-1)! : other.points[0]!] : [other.points[0]!, other.points.at(-1)!]
+        if (otherEnds.some((e) => distance(hit.point, e) <= epsilon)) continue
         intersectionsFound++
         splits[j]!.push({ segmentIndex: hit.segmentIndex, t: hit.t, point: end })
       }
@@ -453,13 +459,35 @@ export function segmentIntersection(
   return { point: [a1[0] + t1 * rx, a1[1] + t1 * ry], t1, t2 }
 }
 
+/** How far along its own path an end must be from where it touches it, in map units. */
+const SELF_TOUCH_SKIP = 20
+
+/**
+ * The segment indices of `points` more than `skip` along the path from its
+ * start (or end): where one of its ends could genuinely meet it again.
+ */
+function awayFromEnd(points: readonly Point[], fromStart: boolean, skip: number): [number, number] {
+  const last = points.length - 2 // segment i runs from points[i] to points[i + 1]
+  const length = (i: number) => distance(points[i]!, points[i + 1]!)
+  let walked = 0
+  if (fromStart) {
+    let i = 0
+    while (i <= last && walked < skip) walked += length(i++)
+    return [i, last]
+  }
+  let i = last
+  while (i >= 0 && walked < skip) walked += length(i--)
+  return [0, i]
+}
+
 function nearestOnPath(
   points: readonly Point[],
   p: Point,
+  [from, to]: readonly [number, number] = [0, points.length - 2],
 ): { segmentIndex: number; t: number; point: Point; distance: number } | null {
   let best: { segmentIndex: number; t: number; point: Point; distance: number } | null =
     null
-  for (let i = 0; i + 1 < points.length; i++) {
+  for (let i = Math.max(0, from); i <= Math.min(to, points.length - 2); i++) {
     const a = points[i]!
     const b = points[i + 1]!
     const abx = b[0] - a[0]
