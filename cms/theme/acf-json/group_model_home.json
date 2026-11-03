@@ -129,7 +129,7 @@
             "label": "Garage",
             "name": "garage",
             "type": "group",
-            "instructions": "Leave Max blank for a single value; fill it in for a range (e.g. 3–4).",
+            "instructions": "Optional: leave blank to hide it on the table. Leave Max blank for a single value; fill it in for a range (e.g. 1–2).",
             "required": 0,
             "layout": "table",
             "sub_fields": [
@@ -139,7 +139,7 @@
                     "name": "min",
                     "type": "number",
                     "instructions": "",
-                    "required": 1,
+                    "required": 0,
                     "step": 1,
                     "min": 0,
                     "append": "cars"
@@ -162,8 +162,8 @@
             "label": "Stories",
             "name": "stories",
             "type": "number",
-            "instructions": "",
-            "required": 1,
+            "instructions": "Optional: leave blank to hide it on the table.",
+            "required": 0,
             "min": 1,
             "step": 1
         },
@@ -213,5 +213,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1792770598
+    "modified": 1793730411
 }

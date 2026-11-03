@@ -67,8 +67,8 @@ foreach ( $content['modelHomes'] as $order => $home ) {
 		maytable_write_range( $id, 'square_footage', $home['squareFootage'] );
 		maytable_write_range( $id, 'beds', $home['beds'] );
 		maytable_write_range( $id, 'baths', $home['baths'] );
-		maytable_write_range( $id, 'garage', $home['garage'] );
-		update_field( 'field_model_home_stories', $home['stories'], $id );
+		maytable_write_range( $id, 'garage', $home['garage'] ?? null );
+		update_field( 'field_model_home_stories', $home['stories'] ?? '', $id );
 		update_field( 'field_model_home_price_text', $home['priceText'], $id );
 		update_field( 'field_model_home_price_value', $home['priceValue'], $id );
 		update_field( 'field_model_home_hours', $home['hours'], $id );
@@ -152,9 +152,9 @@ function maytable_write_pin( int $id, array $pin ): void {
 	update_field( 'field_pin_directions_url', $pin['directionsUrl'], $id );
 }
 
-/** A NumberRange: a number, or [min, max]. */
+/** A NumberRange: a number, or [min, max]; null (an optional one left out) clears both. */
 function maytable_write_range( int $id, string $name, $value ): void {
-	[ $min, $max ] = is_array( $value ) ? $value : [ $value, '' ];
+	[ $min, $max ] = is_array( $value ) ? $value : [ $value ?? '', '' ];
 	update_field( "field_model_home_$name", [
 		"field_model_home_{$name}_min" => $min,
 		"field_model_home_{$name}_max" => $max,

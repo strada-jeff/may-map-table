@@ -94,7 +94,7 @@ function maytable_builder( WP_Post $post ): array {
 
 function maytable_model_home( WP_Post $post ): array {
 	$builder = get_field( 'builder', $post );
-	return maytable_pin( $post ) + [
+	$home    = maytable_pin( $post ) + [
 		'kind'          => 'model-home',
 		'builderId'     => $builder ? get_post_field( 'post_name', $builder ) : '',
 		'name'          => $post->post_title,
@@ -102,12 +102,18 @@ function maytable_model_home( WP_Post $post ): array {
 		'squareFootage' => maytable_range( get_field( 'square_footage', $post ) ),
 		'beds'          => maytable_range( get_field( 'beds', $post ) ),
 		'baths'         => maytable_range( get_field( 'baths', $post ) ),
-		'garage'        => maytable_range( get_field( 'garage', $post ) ),
-		'stories'       => (float) get_field( 'stories', $post ),
 		'priceText'     => (string) get_field( 'price_text', $post ),
 		'priceValue'    => (float) get_field( 'price_value', $post ),
 		'hours'         => (string) get_field( 'hours', $post ),
 	];
+
+	// Optional: left out when blank, and the table drops them from the details.
+	$garage = get_field( 'garage', $post ) ?: [];
+	if ( ! in_array( $garage['min'] ?? null, [ null, '' ], true ) ) $home['garage'] = maytable_range( $garage );
+	$stories = get_field( 'stories', $post );
+	if ( ! in_array( $stories, [ null, '', false ], true ) ) $home['stories'] = (float) $stories;
+
+	return $home;
 }
 
 function maytable_location( WP_Post $post ): array {

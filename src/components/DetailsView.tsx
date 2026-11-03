@@ -156,11 +156,19 @@ export default function DetailsView() {
                       <StatDivider />
                       <span className="details-view-stat-item">Baths: {formatRange(pin.baths)}</span>
                     </StatRow>
-                    <StatRow>
-                      <span className="details-view-stat-item">Garage: {formatRange(pin.garage)}-car</span>
-                      <StatDivider />
-                      <span className="details-view-stat-item">Stories: {pin.stories}</span>
-                    </StatRow>
+                    {/* Both optional in the CMS: whichever is set, and no row
+                        at all when neither is. */}
+                    {(pin.garage !== undefined || pin.stories !== undefined) && (
+                      <StatRow>
+                        {pin.garage !== undefined && (
+                          <span className="details-view-stat-item">Garage: {formatRange(pin.garage)}-car</span>
+                        )}
+                        {pin.garage !== undefined && pin.stories !== undefined && <StatDivider />}
+                        {pin.stories !== undefined && (
+                          <span className="details-view-stat-item">Stories: {pin.stories}</span>
+                        )}
+                      </StatRow>
+                    )}
                     <StatRow>Price: {pin.priceText}</StatRow>
                   </div>
                 </div>

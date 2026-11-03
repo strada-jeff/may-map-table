@@ -66,8 +66,10 @@ export type ModelHome = BasePin & {
   squareFootage: NumberRange;
   beds: NumberRange;
   baths: NumberRange;
-  garage: NumberRange;
-  stories: number;
+  /** Cars. Optional in the CMS; left off the details view when absent. */
+  garage?: NumberRange;
+  /** Optional in the CMS; left off the details view when absent. */
+  stories?: number;
   priceText: string;
   priceValue: number;
   hours: string;
