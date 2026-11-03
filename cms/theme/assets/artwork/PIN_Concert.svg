@@ -50,19 +50,19 @@
       .cls-305 {
         isolation: isolate;
       }
-      .cls-350 {
+      .cls-349 {
         clip-path: url(#clippath-30);
       }
-      .cls-354 {
+      .cls-353 {
         clip-path: url(#clippath-27);
       }
-      .cls-355 {
+      .cls-354 {
         clip-path: url(#clippath-29);
       }
-      .cls-356 {
+      .cls-355 {
         clip-path: url(#clippath-26);
       }
-      .cls-357 {
+      .cls-356 {
         clip-path: url(#clippath-28);
       }
       .cls-88 {
@@ -701,7 +701,6 @@
     
     
     
-    
   </defs>
   <g class="cls-305">
     
@@ -717,10 +716,10 @@
           
           
           <g id="PIN_Concert" data-name="PIN Concert">
-            <g class="cls-356">
+            <g class="cls-355">
               <path class="cls-233" d="M1354.6,1381.08c13.3,0,24.1,10.77,24.1,24.04s-10.8,24.04-24.1,24.04-24.1-10.77-24.1-24.04,10.8-24.04,24.1-24.04Z" />
               <path class="cls-167" d="M1355.45,1379.72c13.3,0,24.1,10.77,24.1,24.04s-10.8,24.04-24.1,24.04-24.1-10.77-24.1-24.04,10.8-24.04,24.1-24.04Z" />
-              <g class="cls-354">
+              <g class="cls-353">
                 <path class="cls-52" d="M1344.67,1409.39s3.29-10.73,8.69-11.36c5.4-.62,9.76,3.17,13.29.46,3.52-2.71,5.94-8.76,5.94-8.76" />
                 <path class="cls-52" d="M1345.7,1411.72s3.29-10.73,8.69-11.36c5.4-.62,9.76,3.17,13.29.46,3.52-2.71,6.19-9.34,6.19-9.34" />
                 <path class="cls-52" d="M1346.73,1414.05s3.29-10.73,8.69-11.36c5.4-.62,9.76,3.17,13.29.46,3.52-2.71,6.47-9.52,6.47-9.52" />
@@ -743,10 +742,10 @@
               <path class="cls-44" d="M1355.39,1381.6c12.35,0,22.37,9.95,22.37,22.21s-10.03,22.21-22.37,22.21-22.37-9.95-22.37-22.21,10.03-22.21,22.37-22.21Z" />
               <path class="cls-233" d="M1355.84,1381.53c-.16-.78-.1-1.63.21-2.45.82-2.12,3.08-3.23,5.03-2.47,1.96.76,2.88,3.1,2.06,5.22-.32.83-.86,1.5-1.52,1.97l-6.01,11.8c-1.44.41-2.56-.1-3.45-1.27l3.67-12.79Z" />
               <path class="cls-195" d="M1356.56,1381.4c-.16-.78-.1-1.63.21-2.45.82-2.12,3.08-3.23,5.03-2.47,1.96.76,2.88,3.1,2.06,5.22-.32.83-.86,1.5-1.52,1.97l-6.01,11.8c-1.44.41-2.56-.1-3.45-1.27l3.67-12.79Z" />
-              <g class="cls-357">
+              <g class="cls-356">
                 <path class="cls-221" d="M1361.97,1376c2.33.9,3.57,3.31,2.77,5.38-.8,2.07-3.34,3.01-5.67,2.11-2.33-.9-3.57-3.31-2.77-5.38.8-2.07,3.34-3.01,5.67-2.11Z" />
-                <g class="cls-355">
-                  <g class="cls-350">
+                <g class="cls-354">
+                  <g class="cls-349">
                     <image width="30" height="29" transform="translate(1356.3247 1376.2368) scale(.2656)" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAeCAYAAAA/xX6fAAAACXBIWXMAACmtAAAprQE599cQAAAFZklEQVRIib3WbczXVRkH8M99cyOYCg1QdNS0QYgKYsI0zZ4UPdtx1SFbL9wqLWiVmS1HtVpOzCVt5coyF9U09EXD3M5aHjuhQYU2KtJMWiEPaokGqKBTsXjoxe/83c97SL7qvPn9/+fh+l7ne77Xw5BDjFryKlyCo/A0dmIubsEVWBti2ltLHg4x7T+UrcEYfhWgmbXke3BhiOlxbMSvsAE7QkxzMQcjEGLaX0s+qpZ87/8CHDoYGN6MA1jdvgvwInaFmNa3feNxOb6L0zEdazEjxPTL13TDWvLZGA4x3Yk1eAd+hNUhpnswoZY8uW0fwWO4CPeHmFaEmLZgYy35LYcErCUP1ZIX4/AQ09/a2kScgSUhpufb3G+wqpZ8Bk7Bz3AS9g0MhpgewTG15FtryaeOBhxp37diFc6rJR+GE3AsvtYALggx7cVYrMPEENOq5uxXsbKW/P52gXN04npIJ7RXjKFa8jzsDjFtqiUfgYV4MsR0dzM4AbPwBD6GZTgTm0NM/+ztuQrH4bIQ065a8hDOxUMhpn/1KZ0SYtrU/h/Z6Pljj6Jn8UbMx9IQ055G7RW15PG15GGdYu/ALSGmXe3cAZ2y59SSf9EHvK694Xh8Ez/Fvc2QWvLcdrt3YlzP2JdwF5ZjS4jpd9haS57VY3A6ZuMrfUpPwB58DxeHmPbUkqdiRpt/LsS0sZZ8OBaHmG5ojkzFt3BbU7U2fxrGYDK2h5ge6L/hMB7FH7Co0aVxfjLGh5g2trkXUWrJM5rRmbgYG2rJp/RsPo5bsa0PVkseMwCcgw/rVDlYnI5NuHmwsY1H8FEcGWL6bYjpQAuDybXkSc2R+Y3Gce051JKP03QxjMkhptVYWkse0wJ7Ups7E2f3PPwxrsOJteSJPUfu0+XXvSGmu0JM+1tG2ltLvl4nxtMHgGvaoU/pgnk51jcan8GLteQ34UP4dIjpOdyMq1v+HMYSXIpZteRjmoMTcSO+0b6vGwAe3gCf0in00lGZfz1ux6rmgLa+BHe2G38/xPSULjTOaantvTgvxLQNER8cAM5vht+ny50LvXK8red9P9nv14ntA3i2OXIAW/B23BdiGqS8fTpxGm48n4SHQ0xP6mJweqPlZPwnxPQXbMW72vwYfB3X6kS3opY80rLWML6DI2vJ81uq/AIepIvDIxptJzUP1ZIvwD8w0sC0+Zm6kvZxXDVI6rXk12tFOcT0aG//1OboCSGm7YMbztVV9Uk9utbokvTfR9G7GddgZa+C0CWJL6PWksc1sAm6anIszq8lHz0A3KmLkWt7Bi7CiVg0eLemxh9iUft/fPtO05W1DTgVt7Xs9Rmc3XLxHSGmHQPAh1vpuaGWPK29569DTE/ocuVZzYmz8LkQ03MhpnWY1ig+V1fphZj+jY/g51gRYtrXwmPl4CbDg3dr9C3D9CZlIaat2F1LfjdeGoRFG3/ShdHG3tuPwd2Yh2NryefjeqSXAQc/Wmw9jmW15JGe4cd0Mn95b6N3ua4j2FZLTu3M57EgxPSSTpXX4Jl+XA/1jByva5iebgevbuvrdB3BTBwWYnqgtRibW7APVLoW7wkxba0lj22ApzXwl8dAEGNxk678HKglT9FV+RfwWIhpZ9s3E9PwVIjpwZ6z83Rd3WJ8G1fii6OU/Mobjh615PmYHWK6pTc3Vtc63o4bWxN8NN4QYrq/KfoS7EA5WHP8ao3wED6LTbXkBb2UtgAX4gdYV0uepBPJn9v6DF3l+P2rdeIHBWyquzLEtBZ/xU9qybN177Y7xPSCTjBLsbB13uPxSZ1qtx/MLoegdNSNJ+uC/hODDqyWfBa2YQqex+Uhpstei73/6/gvkNFpIe3i+w4AAAAASUVORK5CYII=" />
                   </g>
                 </g>
@@ -759,7 +758,6 @@
               <polygon class="cls-159" points="1336.48 1380.01 1338.34 1387.49 1345.25 1384.3 1340.66 1390.45 1347.42 1393.96 1339.83 1394.14 1341.35 1401.7 1336.48 1395.78 1331.62 1401.7 1333.13 1394.14 1325.55 1393.96 1332.31 1390.45 1327.71 1384.3 1334.62 1387.49 1336.48 1380.01" />
             </g>
           </g>
-          
           
           
           

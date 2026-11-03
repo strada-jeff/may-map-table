@@ -130,10 +130,14 @@ export default function DetailsView() {
         </button>
 
         <div className="details-view-card relative flex h-full flex-col bg-white shadow-[0_4px_10px_0_rgba(0,0,0,0.2)]">
-          <DetailsGallery images={pin.images} alt={title} />
+          {/* Keyed by pin so each location starts on its first photo: kept
+              mounted, Embla would hold the last one's scroll position. */}
+          <DetailsGallery key={`gallery-${pin.id}`} images={pin.images} alt={title} />
 
-          {/* Only the body scrolls; the photo above stays put. */}
-          <div className="details-view-body flex min-h-0 flex-1 overflow-y-auto">
+          {/* Only the body scrolls; the photo above stays put. Keyed by pin,
+              like the gallery, so each location opens scrolled to the top
+              (keys distinct from the gallery's: they're siblings). */}
+          <div key={`body-${pin.id}`} className="details-view-body flex min-h-0 flex-1 overflow-y-auto">
             <div className="details-view-primary flex min-w-0 flex-1 flex-col pb-[84px] pl-[154px] pr-[131px]">
               {pin.kind === "model-home" ? (
                 <div className="details-view-modelhome-info flex flex-col pt-[160px]">

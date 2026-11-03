@@ -1,10 +1,11 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { ARTWORK_MAP } from "./lottie/artwork-map";
-import { buildLottie, DEFAULT_PAD, type Rig } from "./lottie/lottie";
+import { ARTWORK_MAP, FOREGROUND } from "./lottie/artwork-map";
+import { baseShapes, transformShapes } from "./lottie/base-shapes";
+import { buildLottie, type Rig } from "./lottie/lottie";
 import { OUTPUT_DIR, ROOT, SOURCE_DIR } from "./lottie/paths";
-import { compToMapMatrix, register } from "./lottie/register";
+import { compToMapMatrix, mapToFrameMatrix, register, type Registration } from "./lottie/register";
 import { loadSvgModel, type SvgModel } from "./lottie/svg-model";
 import type { LottieMarkerConfig } from "../src/types/lottie";
 
@@ -47,26 +48,47 @@ async function main(): Promise<void> {
     // A recipe can reuse another piece's export (a recolored variant).
     const model = loadSvgModel(resolve(SOURCE_DIR, `${recipe.source ?? name}.svg`));
     const rig = recipe.default(model);
-    const lottie = buildLottie(name, model, rig);
+    const artworkIds = [ARTWORK_MAP[name] ?? []].flat();
+    const foregroundIds = FOREGROUND[name] ?? [];
+
+    // Fitting is skipped with --no-markers, except where foreground art
+    // needs it: that art goes into the animation at the fitted position.
+    const regs: Registration[] = [];
+    if (placeMarkers || foregroundIds.length) {
+      for (const artworkId of artworkIds) {
+        baseSvg ??= readFileSync(BASE_SVG, "utf8");
+        regs.push(await register(baseSvg, artworkId, model));
+      }
+    }
+    if (foregroundIds.length && regs.length !== 1) {
+      throw new Error(`${name}: FOREGROUND art needs exactly one placement in ARTWORK_MAP, not ${regs.length}`);
+    }
+    const foreground = foregroundIds.length
+      ? transformShapes(
+          foregroundIds.flatMap((id) => baseShapes(baseSvg!, id)),
+          mapToFrameMatrix(regs[0]),
+        )
+      : [];
+
+    const { lottie, origin } = buildLottie(name, model, rig, foreground);
     const json = JSON.stringify(lottie);
     writeFileSync(resolve(OUTPUT_DIR, `${name}.json`), json);
     let line = `${name}: ${model.shapes.length} shapes, ${(json.length / 1024).toFixed(0)}KB`;
+    if (foreground.length) line += ` (+ ${foreground.length} foreground shapes from ${foregroundIds.join(", ")})`;
 
     console.log(line);
 
-    const artworkIds = [ARTWORK_MAP[name] ?? []].flat();
     if (!placeMarkers) continue;
     for (const [id] of markers) if (markers.get(id)!.file === name) markers.delete(id);
     for (const [i, artworkId] of artworkIds.entries()) {
-      baseSvg ??= readFileSync(BASE_SVG, "utf8");
-      const reg = await register(baseSvg, artworkId, model);
+      const reg = regs[i];
       // One marker per placement; repeated pieces (the playgrounds) share a file.
       const id = artworkIds.length > 1 ? `${name}-${i + 1}` : name;
       markers.set(id, {
         id,
         file: name as LottieMarkerConfig["file"],
         size: [lottie.w, lottie.h],
-        matrix: compToMapMatrix(reg, rig.pad ?? DEFAULT_PAD) as LottieMarkerConfig["matrix"],
+        matrix: compToMapMatrix(reg, origin) as LottieMarkerConfig["matrix"],
       });
       console.log(
         `  -> ${artworkId} at ${reg.mapBox.x},${reg.mapBox.y} ` +

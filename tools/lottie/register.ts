@@ -66,19 +66,31 @@ export async function register(baseSvg: string, artworkId: string, model: SvgMod
   };
 }
 
-/** CSS matrix() taking Lottie comp pixels (frame + `pad` margin) to map units. */
-export function compToMapMatrix(reg: Registration, pad: number): number[] {
+/**
+ * CSS matrix() taking Lottie comp pixels to map units, `origin` being where
+ * the frame's (0, 0) sits in the comp (buildLottie's: the `pad` margin, plus
+ * room for any foreground art). `[0, 0]` gives frame coordinates to map.
+ */
+export function compToMapMatrix(reg: Registration, origin: [number, number], round = true): number[] {
   const t = (reg.rotation * Math.PI) / 180;
   const sx = reg.scale * (reg.mirror ? -1 : 1);
   const a = Math.cos(t) * sx;
   const b = Math.sin(t) * sx;
   const c = -Math.sin(t) * reg.scale;
   const d = Math.cos(t) * reg.scale;
-  const ox = pad + reg.frameCentroid[0];
-  const oy = pad + reg.frameCentroid[1];
+  const ox = origin[0] + reg.frameCentroid[0];
+  const oy = origin[1] + reg.frameCentroid[1];
   const e = reg.mapCentroid[0] - (a * ox + c * oy);
   const f = reg.mapCentroid[1] - (b * ox + d * oy);
-  return [a, b, c, d, e, f].map((n) => Math.round(n * 10000) / 10000);
+  const m = [a, b, c, d, e, f];
+  return round ? m.map((n) => Math.round(n * 10000) / 10000) : m;
+}
+
+/** compToMapMatrix's inverse for frame coordinates: map units to Figma frame pixels. */
+export function mapToFrameMatrix(reg: Registration): number[] {
+  const [a, b, c, d, e, f] = compToMapMatrix(reg, [0, 0], false);
+  const det = a * d - b * c;
+  return [d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det];
 }
 
 function silhouette(model: SvgModel): string {

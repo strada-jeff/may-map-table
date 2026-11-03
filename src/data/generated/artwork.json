@@ -27,13 +27,15 @@
     "id": "PIN_Cafe_and_Friends",
     "label": "Cafe and Friends",
     "box": [
-      1239,
-      1461,
-      161,
-      88
+      1231,
+      1359,
+      169,
+      190
     ],
-    "map": "whole",
-    "lottie": []
+    "map": "none",
+    "lottie": [
+      "hello_sign"
+    ]
   },
   {
     "id": "PIN_Celebration_Hall",
@@ -205,20 +207,6 @@
     "map": "none",
     "lottie": [
       "lions_megaphone"
-    ]
-  },
-  {
-    "id": "PIN_Hello_Friends_sign",
-    "label": "Hello Friends sign",
-    "box": [
-      1249,
-      1353,
-      57,
-      106
-    ],
-    "map": "none",
-    "lottie": [
-      "hello_sign"
     ]
   },
   {

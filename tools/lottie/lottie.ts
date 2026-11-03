@@ -83,15 +83,24 @@ type LottieLayer = Record<string, unknown>;
 
 const LINEAR = { o: { x: 0, y: 0 }, i: { x: 1, y: 1 } };
 
-export function buildLottie(name: string, model: SvgModel, rig: Rig) {
+/**
+ * `foreground` is static art drawn over everything else, in frame
+ * coordinates (FOREGROUND in artwork-map.ts: base.svg art stacked in front
+ * of the scenery). The comp grows to hold it, so `origin` — where frame
+ * (0, 0) lands in comp pixels — is `pad` only when it fits in the frame.
+ */
+export function buildLottie(name: string, model: SvgModel, rig: Rig, foreground: Shape[] = []) {
   const fps = rig.fps ?? 30;
   const op = rig.frames;
   const partsByName = new Map(rig.parts.map((p) => [p.name, p]));
   const exclude = new Set(rig.exclude ?? []);
+  const front = foreground.map((s, i) => ({ ...s, index: model.shapes.length + i }));
+  const isFront = new Set(front);
 
   // Later parts win, so a recipe can list a broad "body" first and carve
   // wheels/limbs out of it after.
   const partFor = (s: Shape): Part | null => {
+    if (isFront.has(s)) return null;
     for (let i = rig.parts.length - 1; i >= 0; i--) {
       const p = rig.parts[i];
       if (Array.isArray(p.select) ? p.select.includes(s.index) : p.select(s)) return p;
@@ -100,12 +109,18 @@ export function buildLottie(name: string, model: SvgModel, rig: Rig) {
   };
 
   const pad = rig.pad ?? DEFAULT_PAD;
+  const minX = Math.min(0, ...front.map((s) => s.bbox.x));
+  const minY = Math.min(0, ...front.map((s) => s.bbox.y));
+  const maxX = Math.max(model.width, ...front.map((s) => s.bbox.x + s.bbox.width));
+  const maxY = Math.max(model.height, ...front.map((s) => s.bbox.y + s.bbox.height));
+  const origin: Vec = [pad - minX, pad - minY];
   const ROOT_IND = 1;
   const nullInd = new Map<string, number>();
   let nextInd = ROOT_IND + 1;
   for (const p of rig.parts) nullInd.set(p.name, nextInd++);
 
-  // Everything hangs off one root null that shifts the art in by `pad`, so
+  // Everything hangs off one root null that shifts the art in by `origin`
+  // (`pad`, plus room for foreground art left of or above the frame), so
   // parts keep working in plain frame coordinates.
   const layers: LottieLayer[] = [
     {
@@ -116,7 +131,7 @@ export function buildLottie(name: string, model: SvgModel, rig: Rig) {
       sr: 1,
       ks: {
         a: { a: 0, k: [0, 0, 0] },
-        p: { a: 0, k: [pad, pad, 0] },
+        p: { a: 0, k: [origin[0], origin[1], 0] },
         r: { a: 0, k: 0 },
         s: { a: 0, k: [100, 100, 100] },
         o: { a: 0, k: 100 },
@@ -207,6 +222,7 @@ export function buildLottie(name: string, model: SvgModel, rig: Rig) {
     for (const m of moved) if (partFor(m)!.drawBelow === s.index) ordered.push(m);
     if (!moved.includes(s)) ordered.push(s);
   }
+  ordered.push(...front);
 
   for (const s of ordered) {
     if (exclude.has(s.index)) continue;
@@ -220,19 +236,20 @@ export function buildLottie(name: string, model: SvgModel, rig: Rig) {
   flush();
 
   // Lottie's layer order is top-first.
-  return {
+  const lottie = {
     v: "5.9.6",
     fr: fps,
     ip: 0,
     op,
-    w: Math.round(model.width + pad * 2),
-    h: Math.round(model.height + pad * 2),
+    w: Math.round(maxX - minX + pad * 2),
+    h: Math.round(maxY - minY + pad * 2),
     nm: name,
     ddd: 0,
     assets: [],
     layers: [...shapeLayers.reverse(), ...layers],
     markers: [],
   };
+  return { lottie, origin };
 }
 
 function prop<T>(anim: Anim<T>, op: number, toK: (v: T) => number[]) {

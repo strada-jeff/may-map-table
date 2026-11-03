@@ -13,7 +13,8 @@
  *
  * Some ids are a nested child, not the obvious group: the swim club's
  * animation replaces only "Swim club pool", not the clubhouse beside it in
- * PIN_Swim_club. The "Mini ..." layers (Mini_celebration_hall,
+ * PIN_Swim_club, and the Hello Friends sign is part of PIN_Cafe_and_Friends
+ * (stacked behind the building). The "Mini ..." layers (Mini_celebration_hall,
  * Mini_swim_club...) are miniature duplicates with no Figma counterpart and
  * stay static.
  *
@@ -37,7 +38,7 @@ export const ARTWORK_MAP: Record<string, string | string[]> = {
   dog: "PIN_Dog",
   food_beverage: "PIN_Food_and_beverage",
   forklift: "PIN_Forklift",
-  hello_sign: "PIN_Hello_Friends_sign",
+  hello_sign: "Hello_Friends_sign",
   hotairballoon_midtown: "Balloon",
   kite_child: "PIN_Girl_with_kite",
   lions_megaphone: "PIN_Go_Lions_megaphone",
@@ -60,4 +61,19 @@ export const ARTWORK_MAP: Record<string, string | string[]> = {
  */
 export const ALSO_HIDDEN: Record<string, string[]> = {
   hotairballoon_midtown: ["Midtown_balloon_banner"],
+};
+
+/**
+ * base.svg groups baked into an animation, drawn on top of its own art —
+ * for art Illustrator stacks in front of the scenery. The animations sit
+ * above the tiles, so without this they'd paint over it (the Hello Friends
+ * sign's pole and shrub over the Cafe's roof). build-lottie converts each
+ * group to Lottie shapes exactly where it sits on the map, and the group
+ * leaves the tiles and map pieces like the art the animation replaces.
+ * List groups bottom to top, and bring along anything stacked above them
+ * that they overlap — it'd end up beneath them otherwise (the Cafe's label
+ * sits on the building's ground plate). Only for animations placed once.
+ */
+export const FOREGROUND: Record<string, string[]> = {
+  hello_sign: ["Cafe_and_Friends_building", "Cafe_and_Friends_label"],
 };

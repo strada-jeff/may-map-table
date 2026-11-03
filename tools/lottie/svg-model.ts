@@ -149,10 +149,11 @@ function toPathItem(d: string, evenOdd: boolean): paper.PathItem {
   return item;
 }
 
-function parseColor(value: string): Rgb {
+export function parseColor(value: string): Rgb {
   if (value === "white") return [1, 1, 1];
   if (value === "black") return [0, 0, 0];
-  const hex = value.match(/^#([0-9a-f]{6})$/i)?.[1];
+  const short = value.match(/^#([0-9a-f]{3})$/i)?.[1];
+  const hex = short ? short.replace(/./g, "$&$&") : value.match(/^#([0-9a-f]{6})$/i)?.[1];
   if (!hex) throw new Error(`unsupported fill ${value}`);
   return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255) as Rgb;
 }

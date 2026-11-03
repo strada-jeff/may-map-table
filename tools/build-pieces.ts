@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 import type { ArtworkPiece } from "../src/types/artwork";
 import { onlyGroup, parseSvg } from "./lottie/artwork";
-import { ALSO_HIDDEN, ARTWORK_MAP } from "./lottie/artwork-map";
+import { ALSO_HIDDEN, ARTWORK_MAP, FOREGROUND } from "./lottie/artwork-map";
 
 // Cuts every "PIN " layer out of base.svg (README: Artwork naming) as its
 // own SVG, for the CMS's Artwork field: the details panel shows it, and
@@ -142,7 +142,7 @@ function main(): void {
     return list.map((group, i) => ({
       group,
       marker: list.length > 1 ? `${name}-${i + 1}` : name,
-      hidden: [group, ...(ALSO_HIDDEN[name] ?? [])],
+      hidden: [group, ...(ALSO_HIDDEN[name] ?? []), ...(FOREGROUND[name] ?? [])],
     }));
   });
 
