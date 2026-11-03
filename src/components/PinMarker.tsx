@@ -120,7 +120,7 @@ export default function PinMarker({
               className={`pin-marker-directions absolute flex flex-col text-white ${placement.className}`}
               style={{ ...placement.style, width: LABEL_WIDTH }}
             >
-              <p className="pin-marker-directions-name font-vision text-[70px] leading-[74px]">{name}</p>
+              <p className="pin-marker-directions-name font-vision text-[66px] leading-[70px]">{name}</p>
               {/* No address yet (the CMS flags it): no line, rather than an empty one. */}
               {address && (
                 <p

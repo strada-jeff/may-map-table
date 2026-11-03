@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from "react";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { ROUTE_EXIT_FADE_MS } from "./routePanes";
 
-const MAX_OPACITY = 0.5;
+const MAX_OPACITY = 0.6;
 
 // Extra margin, in *screen* pixels, beyond the viewport-covering rect below
 // — so a fast pan/zoom mid-gesture can't expose a sliver of undimmed (and
