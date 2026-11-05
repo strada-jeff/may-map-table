@@ -4,6 +4,8 @@
  * content bundle. Replaces the help and signup entries in src/config.ts.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 add_action( 'acf/init', function () {
 	acf_add_options_page( [
 		'page_title' => 'Kiosk Settings',

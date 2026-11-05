@@ -19,6 +19,8 @@
  * rest. Unset, reporting is off.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 const MAYTABLE_MONITOR_CAP         = 'view_table_monitor';
 const MAYTABLE_MONITOR_PAGE        = 'table-monitor';
 const MAYTABLE_MONITOR_OPTION      = 'maytable_monitor_state';

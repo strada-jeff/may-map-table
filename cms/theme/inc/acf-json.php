@@ -4,6 +4,8 @@
  * groups created in the ACF admin UI are auto-saved there and stay in git.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 add_filter( 'acf/settings/save_json', function () {
 	return get_stylesheet_directory() . '/acf-json';
 } );

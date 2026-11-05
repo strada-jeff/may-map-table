@@ -13,6 +13,8 @@
  * it's set to, and assets/artwork/<id>.svg previews it.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 /** The map art's "PIN" pieces: [ id => [ 'id', 'label', 'box' => [x, y, w, h] ] ]. */
 function maytable_artwork_pieces(): array {
 	static $pieces = null;

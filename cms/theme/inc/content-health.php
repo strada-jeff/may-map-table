@@ -12,6 +12,8 @@
  * address line without an address), so the visitor just gets less.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 /** Every issue type, in display order. */
 function maytable_issue_types(): array {
 	return [

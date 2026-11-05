@@ -7,6 +7,8 @@
  * ACF fields; menu order sets the order in the app's drawer.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 /** Matches MODEL_HOMES_CATEGORY_ID in src/types/pins.ts. */
 const MAYTABLE_MODEL_HOMES_CATEGORY = 'model-homes';
 

@@ -7,6 +7,8 @@
  * as one bundle shaped exactly like src/types/pins.ts.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 require_once __DIR__ . '/inc/acf-json.php';
 require_once __DIR__ . '/inc/headless.php';
 require_once __DIR__ . '/inc/content-types.php';

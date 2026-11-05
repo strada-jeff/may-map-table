@@ -8,6 +8,8 @@
  * Published entries only, so drafts are a safe place to work.
  */
 
+defined( 'ABSPATH' ) || exit; // Only ever loaded by WordPress.
+
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'maytable/v1', '/content', [
 		'methods'             => 'GET',
