@@ -1,8 +1,8 @@
 import { useTap } from "../hooks/useTap";
 
 /**
- * Temporary dev-only way into debug on the kiosk, which has no address bar
- * for ?debug=1. Shown while CONFIG.debug.showEntryButton is on; above the
+ * The way into debug, shown only when the page was opened with ?debug
+ * (see useDebugMode); on the kiosk, via its launch URL. Above the
  * welcome overlay so it works from any screen. Left of the right-edge
  * column, clear of RotateControl at its top.
  */

@@ -67,10 +67,4 @@ export const CONFIG = {
   details: {
     panelWidthPx: 1728, // Figma Info_card_overlay's 2160 narrowed 20%; kiosk screen is fixed, so this is a constant, not measured
   },
-  debug: {
-    // Temporary, for development on the table: a "Debug" button in the
-    // top-right corner, since the kiosk has no address bar for ?debug=1.
-    // Turn off before handover; ?debug=1 still works without it.
-    showEntryButton: true,
-  },
 } as const;

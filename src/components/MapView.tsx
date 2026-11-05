@@ -2,7 +2,7 @@ import { useCallback, useRef } from "react";
 import { CONFIG } from "../config";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { useMapGestures } from "../hooks/useMapGestures";
-import { useDebugMode } from "../hooks/useDebugMode";
+import { debugAvailable, useDebugMode } from "../hooks/useDebugMode";
 import { useLottieMotionPause } from "../hooks/lottiePlayback";
 import { useMapMovingLayers } from "../hooks/useMapMovingLayers";
 import ArtworkTiles from "./ArtworkTiles";
@@ -104,7 +104,7 @@ function MapView({ rotated }: { rotated: boolean }) {
           onExit={debug.exit}
         />
       )}
-      {!debug.enabled && CONFIG.debug.showEntryButton && <DebugEntryButton onEnter={debug.enter} />}
+      {!debug.enabled && debugAvailable && <DebugEntryButton onEnter={debug.enter} />}
     </>
   );
 }

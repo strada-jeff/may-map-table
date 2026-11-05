@@ -32,7 +32,7 @@ Content comes from `VITE_CONTENT_URL`. For local work against the Local CMS, cre
 VITE_CONTENT_URL=http://maytable.local/wp-json/maytable/v1/content
 ```
 
-Without it, the app runs on the bundled snapshot. Add `?debug=1` (or use the on-screen Debug button) for the network, point-finding, touch and Lottie debug views.
+Without it, the app runs on the bundled snapshot. Add `?debug=1` to show the on-screen Debug button, which opens the network, point-finding, touch and Lottie debug views. Visitors never see it without the flag; on the kiosk, add it to the launch URL (`?debug=menu` or `?debug=<mode>` opens straight in).
 
 ### Where content comes from
 
