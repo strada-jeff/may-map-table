@@ -14,3 +14,4 @@ require_once __DIR__ . '/inc/map-field.php';
 require_once __DIR__ . '/inc/options.php';
 require_once __DIR__ . '/inc/rest.php';
 require_once __DIR__ . '/inc/content-health.php';
+require_once __DIR__ . '/inc/monitor.php';

@@ -12,6 +12,7 @@ import { RotationProvider, useRotation } from './hooks/RotationContext'
 import MapView from './components/MapView'
 import WelcomeOverlay from './components/WelcomeOverlay'
 import IdleResetEffect from './components/IdleResetEffect'
+import MonitorEffect from './components/MonitorEffect'
 import Drawer from './components/Drawer'
 import DetailsView from './components/DetailsView'
 import SidePanel from './components/SidePanel'
@@ -66,6 +67,7 @@ function MapExperience() {
           <HelpCta />
           <WelcomeOverlay />
           <IdleResetEffect />
+          <MonitorEffect />
         </div>
       </MapControlsProvider>
     </div>
