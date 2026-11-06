@@ -32,7 +32,7 @@ Content comes from `VITE_CONTENT_URL`. For local work against the Local CMS, cre
 VITE_CONTENT_URL=http://maytable.local/wp-json/maytable/v1/content
 ```
 
-Without it, the app runs on the bundled snapshot. Add `?debug=1` to show the on-screen Debug button, which opens the network, point-finding, touch and Lottie debug views. Visitors never see it without the flag; on the kiosk, add it to the launch URL (`?debug=menu` or `?debug=<mode>` opens straight in).
+Without it, the app runs on the bundled snapshot. Add `?debug=1` to show the on-screen Debug button, which opens the network, point-finding, touch and Lottie debug views. Visitors never see it without the flag; on the kiosk, add it to the launch URL alongside `kiosk=1` (`&debug=menu` or `&debug=<mode>` opens straight in).
 
 ### Where content comes from
 
@@ -110,7 +110,7 @@ Re-running is safe: entries already in WordPress are left alone and only gain ph
 Staff who can't see the table can watch **Table Monitor** in the WordPress admin. A large status dot shows **green while someone's using the table**, with a list of what they've opened (pins, directions, filters, help, sign-up), and **red when it's idle**, with the list cleared. There's a full-screen admin page (in the menu, `wp-admin/admin.php?page=table-monitor`) and a smaller dashboard widget.
 
 - **Who sees it:** administrators, editors, and the **Table Monitor** role (Users → Add New). That role sees only the monitor and their profile, and lands on the monitor at login.
-- **The table** (`src/monitor/report.ts`, `src/components/MonitorEffect.tsx`) POSTs to `/wp-json/maytable/v1/activity`: a session start when woken and an end when it idles, the things opened in between, and a heartbeat (every 30 s in use, every 5 min idle). It's off unless the build sets `VITE_MONITOR_KEY`. The endpoint defaults to `VITE_CONTENT_URL` with `/content` swapped for `/activity`; `VITE_MONITOR_URL` overrides it.
+- **The table** (`src/monitor/report.ts`, `src/components/MonitorEffect.tsx`) POSTs to `/wp-json/maytable/v1/activity`: a session start when woken and an end when it idles, the things opened in between, and a heartbeat (every 30 s in use, every 5 min idle). It's off unless the build sets `VITE_MONITOR_KEY` **and** the page is opened with `?kiosk` (e.g. `?kiosk=1`), which only the kiosk's launch URL has: the CMS keeps one shared visit, so any other open copy of the app would start and end visits over the kiosk's and wipe its list. The endpoint defaults to `VITE_CONTENT_URL` with `/content` swapped for `/activity`; `VITE_MONITOR_URL` overrides it.
 - **The CMS** (`cms/theme/inc/monitor.php`) takes reports only with the matching key, set in `wp-config.php` as `define( 'MAYTABLE_KIOSK_KEY', '…' );`. It keeps just the current visit, in one option, with no history. The key ships in the app's JS, so it only keeps out casual noise: the CMS also accepts known event types only, caps label length and rate-limits.
 - **The views** (`cms/theme/assets/monitor.js`, `monitor.css`) poll every 3 s. The dot turns grey with a warning if the table stops checking in (90 s in use, 11 min idle) or the server can't be reached, so red always means idle. When the login or its REST nonce expires, the page reloads into the login screen.
 - **Sound:** the Sound on/off button chimes when a visit starts, and is remembered per browser. It plays with the tab in the background: polling runs from a Web Worker, so Chrome's background-tab throttling doesn't delay it. Browsers allow sound only after a click on the page, so after a reload the monitor asks for one. A locked phone stops the page entirely, so alerts in a pocket need push notifications (not built yet).
@@ -127,6 +127,6 @@ The app is static files served from **https://maytable.wpenginepowered.com/table
 | `VITE_CONTENT_URL` | `https://maytable.wpenginepowered.com/wp-json/maytable/v1/content` |
 | `VITE_MONITOR_KEY` | Same value as `MAYTABLE_KIOSK_KEY` in the CMS's `wp-config.php` |
 
-The kiosk's launch URL is `https://maytable.wpenginepowered.com/table/` (plus any `?debug=…` flag).
+The kiosk's launch URL is `https://maytable.wpenginepowered.com/table/?kiosk=1` (plus any `&debug=…` flag). `kiosk` turns on Table Monitor reporting; leave it off everywhere else.
 
 `.github/workflows/deploy-theme.yml` deploys `cms/theme/` to `wp-content/themes/maytable/` the same way, on pushes to `main` that change the theme, using the same SSH key secret. It never deletes on the server, so a file removed from the repo has to be removed there by hand. It does overwrite: field groups edited in the production ACF admin are replaced by the repo's `acf-json/` on the next theme deploy, so make field changes locally and commit them.

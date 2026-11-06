@@ -5,8 +5,13 @@
  * and nothing here ever throws into the app.
  *
  * Off unless VITE_MONITOR_KEY is set (it must match MAYTABLE_KIOSK_KEY in the
- * CMS's wp-config.php). The endpoint defaults to the content endpoint's
- * sibling, so VITE_MONITOR_URL is only needed if that changes.
+ * CMS's wp-config.php) and the page was opened with `?kiosk` in its URL. The
+ * CMS keeps one shared visit, so any other copy of the app reporting (a
+ * laptop tab, a phone, an old deployment) would start and end visits over
+ * the kiosk's and wipe its list; only the kiosk's launch URL carries the
+ * flag. Reloads keep the URL, so the idle content check keeps it too. The
+ * endpoint defaults to the content endpoint's sibling, so VITE_MONITOR_URL
+ * is only needed if that changes.
  */
 
 export type MonitorEventType =
@@ -29,7 +34,9 @@ const ENDPOINT: string | undefined =
   (import.meta.env.VITE_CONTENT_URL as string | undefined)?.replace(/\/content\/?$/, "/activity") ||
   undefined;
 
-export const monitorEnabled = Boolean(KEY && ENDPOINT);
+const IS_KIOSK = new URLSearchParams(window.location.search).has("kiosk");
+
+export const monitorEnabled = Boolean(KEY && ENDPOINT && IS_KIOSK);
 
 const FLUSH_DELAY_MS = 500; // gathers a tap's burst of state changes into one request
 const RETRY_DELAY_MS = 15_000;
