@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useMapControls, useMapTransformEffect, type MapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
+import { publicUrl } from "../data/publicUrl";
 
 const MAX_LEVEL = CONFIG.map.maxZoom;
 // How far past a whole zoom step (in zoom steps) a level may be drawn
@@ -136,7 +137,7 @@ export default function ArtworkTiles() {
       return (
         <img
           key={key}
-          src={`/artwork-tiles/${l.level}/${row}-${col}.webp`}
+          src={publicUrl(`artwork-tiles/${l.level}/${row}-${col}.webp`)}
           alt=""
           draggable={false}
           decoding="async"

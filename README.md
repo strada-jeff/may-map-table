@@ -2,7 +2,7 @@
 
 Interactive 4K touch map of Mayfair (New Braunfels, TX) for a kiosk table: pins for model homes and community locations, details with photos and a directions QR code, and routes drawn from "you are here".
 
-- **App** (repo root): React + Vite, served from WP Engine's headless hosting.
+- **App** (repo root): React + Vite, served as static files from `/table/` on the CMS's WP Engine install.
 - **CMS** (`cms/`): headless WordPress on WP Engine (`maytable`). Editors manage pins, builders, categories and kiosk copy; the app reads them from one REST endpoint.
 
 ```
@@ -117,4 +117,16 @@ Staff who can't see the table can watch **Table Monitor** in the WordPress admin
 
 ## Deploy
 
-_To do: GitHub Actions deploying `cms/theme/` to the `maytable` WP Engine install, and the app to WP Engine's headless platform with `VITE_CONTENT_URL` set in the build environment._
+The app is static files served from **https://maytable.wpenginepowered.com/table/**, on the same WP Engine install as the CMS, so it reads the CMS same-origin. Vite builds for `/table/` (`base` in `vite.config.ts`). Files in `public/` are addressed with `publicUrl()` (`src/data/publicUrl.ts`), never a bare `/path`, and so are CMS app paths such as a category's icon. `npm run dev` still serves at `/`; `npm run preview` serves the build at `/table/`.
+
+`.github/workflows/deploy-app.yml` runs on every push to `main` that touches the app (or by hand from the Actions tab). It builds, then deploys `dist/` to `table/` with WP Engine's [site deploy action](https://github.com/wpengine/github-action-wpe-site-deploy), removing files the new build doesn't have and clearing WP Engine's cache. It needs these repo secrets:
+
+| Secret | Value |
+|---|---|
+| `WPE_SSHG_KEY_PRIVATE` | Private half of an SSH key whose public half is added in the WP Engine portal (SSH Gateway) |
+| `VITE_CONTENT_URL` | `https://maytable.wpenginepowered.com/wp-json/maytable/v1/content` |
+| `VITE_MONITOR_KEY` | Same value as `MAYTABLE_KIOSK_KEY` in the CMS's `wp-config.php` |
+
+The kiosk's launch URL is `https://maytable.wpenginepowered.com/table/` (plus any `?debug=…` flag).
+
+_To do: deploy `cms/theme/` the same way._

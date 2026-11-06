@@ -3,6 +3,7 @@ import type { LottieMarkerConfig } from "../types/lottie";
 import { contentSchema, type Content, type Copy } from "./schema";
 import snapshotData from "./content.json";
 import lottieMarkersData from "./lottie-markers.json";
+import { publicUrl } from "./publicUrl";
 
 // Lottie markers are placed against the artwork, so they ship with it
 // rather than coming from the CMS.
@@ -82,7 +83,10 @@ export async function hasContentUpdate(): Promise<boolean> {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  return (await getContent()).categories;
+  // Icons are stored as app paths ("/icons/model-homes.svg"), from the base.
+  return (await getContent()).categories.map((category) =>
+    category.icon ? { ...category, icon: publicUrl(category.icon) } : category,
+  );
 }
 
 export async function getBuilders(): Promise<Builder[]> {

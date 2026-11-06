@@ -1,0 +1,50 @@
+# Builds the app and deploys dist/ to /table/ on the maytable WP Engine install.
+# Secrets: WPE_SSHG_KEY_PRIVATE (SSH Gateway key), VITE_CONTENT_URL, VITE_MONITOR_KEY.
+name: Deploy app
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "public/**"
+      - "tools/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - "tsconfig*.json"
+      - ".github/workflows/deploy-app.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-app
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          VITE_CONTENT_URL: ${{ secrets.VITE_CONTENT_URL }}
+          VITE_MONITOR_KEY: ${{ secrets.VITE_MONITOR_KEY }}
+
+      - name: Deploy to WP Engine
+        uses: wpengine/github-action-wpe-site-deploy@v3
+        with:
+          WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
+          WPE_ENV: maytable
+          SRC_PATH: "dist/"
+          REMOTE_PATH: "table/"
+          FLAGS: "-azvr --inplace --delete --exclude=.*"
+          CACHE_CLEAR: TRUE

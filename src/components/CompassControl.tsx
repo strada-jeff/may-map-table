@@ -1,6 +1,7 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { useMapControls, useMapTransformEffect, type MapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
+import { publicUrl } from "../data/publicUrl";
 import { centeredTransform, clampTransform, tweenTransform } from "../hooks/mapTransform";
 import type { Point } from "../routing/types";
 import compassPoints from "../assets/icons/compass-points.svg";
@@ -184,7 +185,7 @@ export default function CompassControl() {
         {/* Nothing inside takes pointer events, so offsetX/Y are always
             relative to the frame itself. */}
         <img
-          src="/overview.jpg"
+          src={publicUrl("overview.jpg")}
           alt=""
           className="compass-control-overview pointer-events-none absolute inset-0 size-full object-cover"
         />
