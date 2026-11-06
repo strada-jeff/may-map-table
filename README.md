@@ -129,4 +129,4 @@ The app is static files served from **https://maytable.wpenginepowered.com/table
 
 The kiosk's launch URL is `https://maytable.wpenginepowered.com/table/` (plus any `?debug=…` flag).
 
-_To do: deploy `cms/theme/` the same way._
+`.github/workflows/deploy-theme.yml` deploys `cms/theme/` to `wp-content/themes/maytable/` the same way, on pushes to `main` that change the theme, using the same SSH key secret. It never deletes on the server, so a file removed from the repo has to be removed there by hand. It does overwrite: field groups edited in the production ACF admin are replaced by the repo's `acf-json/` on the next theme deploy, so make field changes locally and commit them.

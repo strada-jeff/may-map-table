@@ -1,0 +1,36 @@
+# Deploys cms/theme/ to wp-content/themes/maytable/ on the maytable WP Engine
+# install (the same folder name setup.sh links locally). No build step: the
+# theme's generated assets are built locally and committed (see README).
+# Secret: WPE_SSHG_KEY_PRIVATE (shared with deploy-app.yml).
+name: Deploy theme
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cms/theme/**"
+      - ".github/workflows/deploy-theme.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-theme
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # No --delete: a file removed from the repo stays on the server until
+      # removed by hand, but nothing written there (e.g. ACF JSON saved from the
+      # production admin) is silently wiped. Files in the repo always win.
+      - name: Deploy to WP Engine
+        uses: wpengine/github-action-wpe-site-deploy@v3
+        with:
+          WPE_SSHG_KEY_PRIVATE: ${{ secrets.WPE_SSHG_KEY_PRIVATE }}
+          WPE_ENV: maytable
+          SRC_PATH: "cms/theme/"
+          REMOTE_PATH: "wp-content/themes/maytable/"
+          FLAGS: "-azvr --inplace --exclude=.*"
+          CACHE_CLEAR: TRUE
