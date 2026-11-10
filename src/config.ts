@@ -7,6 +7,10 @@ const BEZEL_PX = 80;
 export const CONFIG = {
   layout: {
     bezelPx: BEZEL_PX,
+    // Screen px the right-hand control column (rotate/zoom/help) takes from
+    // the right edge: the bezel, its 65px margin and the 62px slider. Map
+    // fits frame left of it.
+    controlsRightPx: BEZEL_PX + 65 + 62,
   },
   welcomeScreen: {
     idleTimeoutMs: 200_000, // how long the app can sit idle before the welcome overlay reappears
@@ -55,7 +59,7 @@ export const CONFIG = {
   },
   routing: {
     maxSnapDistance: 60, // map units; a pin farther than this from a road is reported as misplaced (it still routes, from the nearest road)
-    fitPaddingPx: 200, // Screen-pixel padding when the map fits to a newly-activated route.
+    fitPaddingPx: 200, // Screen-pixel padding when the map fits to a route or filter, measured from the UI around the map (closed drawer strip or open panel on the left, control column on the right), not the screen edge.
     destinationBufferPx: 200, // extra screen px kept around the destination's flag/balloon in a route fit, so the place's art around it shows too
     // Where each origin's "you are here" badge is drawn — independent of
     // that #origins anchor itself, which network.svg pins onto the road
@@ -72,6 +76,7 @@ export const CONFIG = {
   },
   drawer: {
     panelWidthPx: 826 + BEZEL_PX, // the sidebar, widened by the bezel so its content keeps its width; the filter fit keeps flags right of it while it's open
+    peekPx: 35 + BEZEL_PX, // how much of it still shows at the screen edge while closed, 35px past the bezel so the strip and tab clear it
   },
   details: {
     panelWidthPx: 1728 + BEZEL_PX, // Figma Info_card_overlay's 2160 narrowed 20%, plus the bezel; kiosk screen is fixed, so this is a constant, not measured

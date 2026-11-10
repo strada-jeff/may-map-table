@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMapControls } from "../hooks/MapControlsContext";
 import { CONFIG } from "../config";
-import { fitTransform, tweenTransform, zoomToScale } from "../hooks/mapTransform";
+import { fitTransform, tweenTransform, uiFitInsets, zoomToScale } from "../hooks/mapTransform";
 import { useFilter } from "../hooks/FilterContext";
 import { useDestinationPins } from "../hooks/useDestinationPins";
 import { useDrawer } from "../hooks/DrawerContext";
@@ -48,7 +48,7 @@ export default function FilterEffects() {
       padding,
       zoomToScale(CONFIG.map.minZoom),
       zoomToScale(CONFIG.map.maxZoom),
-      drawerOpen ? CONFIG.drawer.panelWidthPx : 0,
+      uiFitInsets(drawerOpen ? CONFIG.drawer.panelWidthPx : 0),
       visible.map((pin) => markerBox(pin)),
     );
     tweenTransform(controls, target);

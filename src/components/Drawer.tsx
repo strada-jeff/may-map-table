@@ -17,9 +17,7 @@ import iconShowChevrons from "../assets/icons/drawer-show-chevrons.svg";
 const MODEL_HOMES_CHIP_COLOR = "#82b1dd";
 const ALL_CHIP_COLOR = "#82b1dd";
 const PANEL_WIDTH = CONFIG.drawer.panelWidthPx;
-// How much of the panel still shows at the screen edge while closed: 35px
-// past the bezel, so the strip and tab clear it.
-const PEEK_PX = 35 + CONFIG.layout.bezelPx;
+const PEEK_PX = CONFIG.drawer.peekPx;
 
 export default function Drawer() {
   const { open, setOpen } = useDrawer();

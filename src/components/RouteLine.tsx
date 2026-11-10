@@ -12,6 +12,7 @@ import { CONFIG } from "../config";
 import { distance, resolveMapPoint } from "../routing";
 import {
   fitTransform,
+  uiFitInsets,
   tweenTransform,
   zoomToScale,
 } from "../hooks/mapTransform";
@@ -65,6 +66,16 @@ const ARROW_SIZE = 4;
 // trying to independently arrive at the same numbers.
 const BADGE_RADIUS_PX = 24;
 const BADGE_SCALE = BADGE_RADIUS_PX / BADGE_CIRCLE_RADIUS;
+// The badge artwork's bounds around its circle's center, in map units:
+// [left, top, right, bottom]. The artwork spans x 0–246, y 4–213 in its own
+// space (the arc of text rises above the circle); the ring's strokes add a
+// little below.
+const BADGE_EXTENT = [
+  -BADGE_CIRCLE_CX * BADGE_SCALE,
+  (4 - BADGE_CIRCLE_CY) * BADGE_SCALE,
+  (246 - BADGE_CIRCLE_CX) * BADGE_SCALE,
+  BADGE_RADIUS_PX + SHADOW_STROKE_WIDTH,
+] as const;
 const BADGE_RING_STROKE_WIDTH = LINE_STROKE_WIDTH / BADGE_SCALE;
 const BADGE_RING_SHADOW_STROKE_WIDTH = SHADOW_STROKE_WIDTH / BADGE_SCALE;
 const BADGE_RING_DASH_ARRAY = `${DASH_LENGTH / BADGE_SCALE} ${DASH_GAP / BADGE_SCALE}`;
@@ -145,14 +156,22 @@ export default function RouteLine({ route, fadeOut }: RouteLineProps) {
     if (!wrapper) return;
     const { width, height } = wrapper.getBoundingClientRect();
     const padding = CONFIG.routing.fitPaddingPx;
+    // The "you are here" badge is drawn in map units around badgePoint, so
+    // its whole artwork (ring plus the "YOU ARE HERE" arc above) is fitted
+    // as two corner points, not just the route's start.
+    const [bx, by] = badgePoint;
+    const badgeCorners: [number, number][] = [
+      [bx + BADGE_EXTENT[0], by + BADGE_EXTENT[1]],
+      [bx + BADGE_EXTENT[2], by + BADGE_EXTENT[3]],
+    ];
     const fitWith = (side: LabelSide) =>
       fitTransform(
         { width, height },
-        points,
+        [...points, ...badgeCorners],
         padding,
         zoomToScale(CONFIG.map.minZoom),
         zoomToScale(CONFIG.map.maxZoom),
-        detailsOpenForRoute ? CONFIG.details.panelWidthPx : 0,
+        uiFitInsets(detailsOpenForRoute ? CONFIG.details.panelWidthPx : 0),
         destination
           ? [markerBox(destination, CONFIG.routing.destinationBufferPx, { side, size: labelSize.current })]
           : [],

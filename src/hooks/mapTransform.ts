@@ -60,10 +60,23 @@ export function pinSize(scale: number): number {
  */
 export type MarkerBox = { point: Point; box: readonly [number, number, number, number] };
 
+export type FitInsets = { left?: number; right?: number };
+
+/** Screen px of UI around the map that fits should frame clear of: on the
+ * left whichever is wider of `leftPanelPx` (an open panel) and the closed
+ * drawer's strip, on the right the control column. */
+export function uiFitInsets(leftPanelPx = 0): FitInsets {
+  return {
+    left: Math.max(leftPanelPx, CONFIG.drawer.peekPx),
+    right: CONFIG.layout.controlsRightPx,
+  };
+}
+
 /** Transform that fits `points` inside the wrapper with `paddingPx` of
  * screen-space breathing room, clamped to [minScale, maxScale].
- * `leftInsetPx` leaves that much of the wrapper's left edge out of the fit
- * (e.g. under the details panel), fitting into what's right of it.
+ * `insets` leave that much of the wrapper's left/right edges out of the fit
+ * (e.g. under the details panel or the control column), fitting into
+ * what's between them; `paddingPx` is measured from there.
  * `markers` are fitted whole, not just their points: a marker's extent in
  * map units depends on the scale being chosen, so the fit is redone with
  * their boxes at the previous pass's scale until it settles. */
@@ -73,10 +86,10 @@ export function fitTransform(
   paddingPx: number,
   minScale: number,
   maxScale: number,
-  leftInsetPx = 0,
+  insets: FitInsets = {},
   markers: readonly MarkerBox[] = [],
 ): Transform {
-  const fit = (pts: readonly Point[]) => fitPoints(wrapperSize, pts, paddingPx, minScale, maxScale, leftInsetPx);
+  const fit = (pts: readonly Point[]) => fitPoints(wrapperSize, pts, paddingPx, minScale, maxScale, insets);
   let t = fit([...points, ...markers.map((m) => m.point)]);
   for (let pass = 0; pass < 4 && markers.length > 0; pass++) {
     const k = pinSize(t.scale) / t.scale;
@@ -95,7 +108,7 @@ function fitPoints(
   paddingPx: number,
   minScale: number,
   maxScale: number,
-  leftInsetPx: number,
+  { left = 0, right = 0 }: FitInsets,
 ): Transform {
   const xs = points.map((p) => p[0]);
   const ys = points.map((p) => p[1]);
@@ -105,14 +118,14 @@ function fitPoints(
   const maxY = Math.max(...ys);
   const boxWidth = Math.max(1, maxX - minX);
   const boxHeight = Math.max(1, maxY - minY);
-  const availWidth = Math.max(1, wrapperSize.width - leftInsetPx - 2 * paddingPx);
+  const availWidth = Math.max(1, wrapperSize.width - left - right - 2 * paddingPx);
   const availHeight = Math.max(1, wrapperSize.height - 2 * paddingPx);
   const scale = Math.min(
     maxScale,
     Math.max(minScale, Math.min(availWidth / boxWidth, availHeight / boxHeight)),
   );
   return centeredTransform(wrapperSize, [(minX + maxX) / 2, (minY + maxY) / 2], scale, {
-    x: leftInsetPx / 2,
+    x: (left - right) / 2,
     y: 0,
   });
 }
