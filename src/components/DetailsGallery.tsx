@@ -109,7 +109,7 @@ export default function DetailsGallery({ images, alt }: DetailsGalleryProps) {
         type="button"
         {...prevTap}
         aria-label="Previous image"
-        className={`details-gallery-prev absolute left-[39px] top-1/2 z-10 size-[86px] -translate-y-1/2 transition-opacity duration-300 ${
+        className={`details-gallery-prev absolute left-[calc(var(--bezel)+39px)] top-1/2 z-10 size-[86px] -translate-y-1/2 transition-opacity duration-300 ${
           selectedIndex === 0 ? "pointer-events-none opacity-0" : ""
         }`}
       >

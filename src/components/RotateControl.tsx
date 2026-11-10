@@ -40,7 +40,7 @@ export default function RotateControl() {
       onTouchStart={stopOnIdle}
       aria-pressed={rotated}
       aria-label="Rotate view 180 degrees"
-      className={`rotate-control absolute top-[72px] right-[63px] size-[65px] cursor-pointer ${isIdle ? "z-[60]" : "z-40"}`}
+      className={`rotate-control absolute top-[calc(var(--bezel)+72px)] right-[calc(var(--bezel)+63px)] size-[65px] cursor-pointer ${isIdle ? "z-[60]" : "z-40"}`}
     >
       {/* 85px export = the 65px circle plus its drop-shadow margin. */}
       <img src={rotateIcon} alt="" className="rotate-control-icon pointer-events-none absolute left-[-10px] top-[-6px] h-[85px] w-[85px] max-w-none" />

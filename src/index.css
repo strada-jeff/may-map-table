@@ -69,7 +69,7 @@ body {
 }
 
 .drawer-scroll::-webkit-scrollbar-track {
-  margin-top: 43px; /* bottom end meets the fade, above the chips */
+  margin-top: calc(var(--bezel) + 43px); /* top clears the bezel; bottom end meets the fade, above the chips */
   background: rgba(0, 0, 0, 0.15);
   border-radius: 40px;
 }
@@ -206,13 +206,13 @@ body {
    SidePanel, z-50) — it used to be z-index: 900, which beat all of those. */
 .zoom-slider-track {
   position: absolute;
-  right: 65px;
-  /* Below RotateControl (top 72px, 65px tall) with the same 40px gap the
-     column had; the bottom stays at 1514px. */
-  top: 177px;
+  right: calc(var(--bezel) + 65px);
+  /* Below RotateControl (top bezel + 72px, 65px tall) with the same 40px gap
+     the column had; the bottom stays at 1514px. */
+  top: calc(var(--bezel) + 177px);
   z-index: 40;
   width: 62px;
-  height: 1337px;
+  height: calc(1337px - var(--bezel));
   cursor: pointer;
   touch-action: none;
 }

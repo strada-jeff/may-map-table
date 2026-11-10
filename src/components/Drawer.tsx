@@ -17,8 +17,9 @@ import iconShowChevrons from "../assets/icons/drawer-show-chevrons.svg";
 const MODEL_HOMES_CHIP_COLOR = "#82b1dd";
 const ALL_CHIP_COLOR = "#82b1dd";
 const PANEL_WIDTH = CONFIG.drawer.panelWidthPx;
-// How much of the panel still shows at the screen edge while closed.
-const PEEK_PX = 35;
+// How much of the panel still shows at the screen edge while closed: 35px
+// past the bezel, so the strip and tab clear it.
+const PEEK_PX = 35 + CONFIG.layout.bezelPx;
 
 export default function Drawer() {
   const { open, setOpen } = useDrawer();
@@ -55,9 +56,9 @@ export default function Drawer() {
       className="drawer absolute left-0 top-0 z-[45] h-full select-none transition-transform duration-300 ease-out"
       style={{ transform: drawerTransform(open, PEEK_PX) }}
     >
-      <div className="flex h-full w-[826px] flex-col bg-mayfair-navy">
+      <div className="flex h-full flex-col bg-mayfair-navy" style={{ width: PANEL_WIDTH }}>
         <div className="relative min-h-0 flex-1">
-          <div className="drawer-scroll ml-[31px] flex h-full flex-col gap-[14px] overflow-y-auto pb-[152px] pl-[34px] pr-[64px] pt-[51px]">
+          <div className="drawer-scroll ml-[calc(var(--bezel)+31px)] flex h-full flex-col gap-[14px] overflow-y-auto pb-[152px] pl-[34px] pr-[64px] pt-[calc(var(--bezel)+51px)]">
             {visiblePins.map((pin) => (
               <DrawerCard
                 key={pin.id}
@@ -77,7 +78,7 @@ export default function Drawer() {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[152px] bg-gradient-to-b from-mayfair-navy/0 to-mayfair-navy" />
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-x-[20px] gap-y-[25px] pb-[63px] pl-[82px] pr-[60px] pt-[6px]">
+        <div className="flex shrink-0 flex-wrap items-center gap-x-[20px] gap-y-[25px] pb-[calc(var(--bezel)+63px)] pl-[calc(var(--bezel)+82px)] pr-[60px] pt-[6px]">
           <FilterChip
             label="all"
             color={ALL_CHIP_COLOR}
@@ -101,7 +102,7 @@ export default function Drawer() {
         {...toggleTap}
         // Tucks 70px under the panel's right edge; pl centers the label on
         // x=38 like Figma, straddling the panel edge rather than the tab.
-        className="absolute left-[756px] top-[1793px] flex h-[250px] w-[115px] flex-col items-center justify-center gap-[12px] rounded-full bg-mayfair-navy pl-[31px]"
+        className="absolute left-[calc(100%-70px)] top-[1793px] flex h-[250px] w-[115px] flex-col items-center justify-center gap-[12px] rounded-full bg-mayfair-navy pl-[31px]"
       >
         <span className="font-vision text-[24px] font-extrabold uppercase leading-none text-white [writing-mode:vertical-rl]">
           {open ? "hide" : "show"}

@@ -138,7 +138,7 @@ export default function DetailsView() {
               like the gallery, so each location opens scrolled to the top
               (keys distinct from the gallery's: they're siblings). */}
           <div key={`body-${pin.id}`} className="details-view-body flex min-h-0 flex-1 overflow-y-auto">
-            <div className="details-view-primary flex min-w-0 flex-1 flex-col pb-[84px] pl-[154px] pr-[131px]">
+            <div className="details-view-primary flex min-w-0 flex-1 flex-col pb-[calc(var(--bezel)+84px)] pl-[calc(var(--bezel)+154px)] pr-[131px]">
               {pin.kind === "model-home" ? (
                 <div className="details-view-modelhome-info flex flex-col pt-[160px]">
                   <p className="details-view-builder font-vision text-[40px] leading-[54px] text-mayfair-navy">{builderName}</p>

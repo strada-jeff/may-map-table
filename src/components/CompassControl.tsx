@@ -168,7 +168,7 @@ export default function CompassControl() {
   }
 
   return (
-    <div className="compass-control pointer-events-none absolute bottom-[67px] right-[82px] z-40">
+    <div className="compass-control pointer-events-none absolute bottom-[calc(var(--bezel)+67px)] right-[calc(var(--bezel)+82px)] z-40">
       <img
         src={compassPoints}
         alt=""

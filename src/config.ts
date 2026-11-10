@@ -1,4 +1,13 @@
+// The physical table's bezel covers this much of every screen edge (same on
+// all four sides, so it holds when the app flips 180°). Controls and panel
+// content keep clear of it; backgrounds still run to the edge. Also exposed
+// to CSS as --bezel (main.tsx).
+const BEZEL_PX = 80;
+
 export const CONFIG = {
+  layout: {
+    bezelPx: BEZEL_PX,
+  },
   welcomeScreen: {
     idleTimeoutMs: 200_000, // how long the app can sit idle before the welcome overlay reappears
   },
@@ -62,9 +71,9 @@ export const CONFIG = {
     >,
   },
   drawer: {
-    panelWidthPx: 826, // the sidebar; the filter fit keeps flags right of it while it's open
+    panelWidthPx: 826 + BEZEL_PX, // the sidebar, widened by the bezel so its content keeps its width; the filter fit keeps flags right of it while it's open
   },
   details: {
-    panelWidthPx: 1728, // Figma Info_card_overlay's 2160 narrowed 20%; kiosk screen is fixed, so this is a constant, not measured
+    panelWidthPx: 1728 + BEZEL_PX, // Figma Info_card_overlay's 2160 narrowed 20%, plus the bezel; kiosk screen is fixed, so this is a constant, not measured
   },
 } as const;
