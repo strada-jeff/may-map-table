@@ -55,7 +55,7 @@ export const CONFIG = {
   },
   routing: {
     maxSnapDistance: 60, // map units; a pin farther than this from a road is reported as misplaced (it still routes, from the nearest road)
-    fitPaddingPx: 300, // Screen-pixel padding when the map fits to a newly-activated route.
+    fitPaddingPx: 200, // Screen-pixel padding when the map fits to a newly-activated route.
     destinationBufferPx: 200, // extra screen px kept around the destination's flag/balloon in a route fit, so the place's art around it shows too
     // Where each origin's "you are here" badge is drawn — independent of
     // that #origins anchor itself, which network.svg pins onto the road

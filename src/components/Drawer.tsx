@@ -58,7 +58,9 @@ export default function Drawer() {
     >
       <div className="flex h-full flex-col bg-mayfair-navy" style={{ width: PANEL_WIDTH }}>
         <div className="relative min-h-0 flex-1">
-          <div className="drawer-scroll ml-[calc(var(--bezel)+31px)] flex h-full flex-col gap-[14px] overflow-y-auto pb-[152px] pl-[34px] pr-[64px] pt-[calc(var(--bezel)+51px)]">
+          {/* Cards and chips fade out while closed: the peek is wide enough
+              (to clear the bezel) that their right edges would show in it. */}
+          <div className={`drawer-scroll transition-opacity duration-300 ${open ? "" : "opacity-0"} ml-[calc(var(--bezel)+31px)] flex h-full flex-col gap-[14px] overflow-y-auto pb-[152px] pl-[34px] pr-[64px] pt-[calc(var(--bezel)+51px)]`}>
             {visiblePins.map((pin) => (
               <DrawerCard
                 key={pin.id}
@@ -78,7 +80,7 @@ export default function Drawer() {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[152px] bg-gradient-to-b from-mayfair-navy/0 to-mayfair-navy" />
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-x-[20px] gap-y-[25px] pb-[calc(var(--bezel)+63px)] pl-[calc(var(--bezel)+82px)] pr-[60px] pt-[6px]">
+        <div className={`flex shrink-0 flex-wrap items-center transition-opacity duration-300 ${open ? "" : "opacity-0"} gap-x-[20px] gap-y-[25px] pb-[calc(var(--bezel)+63px)] pl-[calc(var(--bezel)+82px)] pr-[60px] pt-[6px]`}>
           <FilterChip
             label="all"
             color={ALL_CHIP_COLOR}
